@@ -10,21 +10,21 @@ In standard setups, the task typically lasts 100 trials. Empirical Investigation
 ## Description of Datasets
 This investigation utilizes a dataset from a "many labs" initiative on the Iowa Gambling task grouping 10 studies and containing data from 617 healthy participants {cite:p}`steing1`. The data consist of the choices of each participant on each trial, and the resulting rewards and losses
 :::{note}
-All studies Not all studies had the same number of trials. They number of trails varied from 95, 100 and 150. 
+Not all studies had the same number of trials. They number of trails varied from 95, 100 and 150. 
 :::
 The Table below summarizes the multiple datasets used in this investigation.
-|    Study      | Number of Participants |    Trails      | Gender || IGT verision |
+|    Study      | Number of Participants |    Trails      | Gender | IGT verision |
 | :------------ | -------------: | :------------ | -------------: |
-|        0      |        15      |        95     |        5       |
-|     13720     |      162      |     100     |      2744      |
-|        0      |        19     |        100      |        5       |
-|     13720     |      40     |     100     |      2744      |
-|        0      |        25       |        100      |        5       |
-|     13720     |      70      |     100     |      2744      |
-|        0      |        57       |        150      |        5       |
-|     13720     |      41      |     150    |      2744      |
-|        0      |        153       |        100      |        5       |
-|     13720     |      35      |     100     |      2744      |
+|        {cite:t}`FRIDBERG201028`     |        15      |        95     |        5       |
+|     {cite:t}`horstmann2012iowa`     |      162      |     100     |      2744      |
+|        {cite:t}`kjome2010relationship`      |        19     |        100      |        5       |
+|     {cite:t}`maia2004reexamination`     |      40     |     100     |      2744      |
+|        {cite:t}`premkumar2008emotional`      |        25       |        100      |        5       |
+|     {cite:t}`vsmiracognitive`     |      70      |     100     |      2744      |
+|        {cite:t}`stein2`      |        57       |        150      |        5       |
+|     {cite:t}`wetzels2010bayesian`     |      41      |     150    |      2744      |
+|        {cite:t}`wood2005older`      |        153       |        100      |        5       |
+|     {cite:t}`worthy2013decomposing`     |      35      |     100     |      2744      |
 
 
 
