@@ -39,7 +39,7 @@ ax.legend(custom_lines, ['Cold', 'Medium', 'Hot']);
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mNameError[0m                                 Traceback (most recent call last)
-[0;32m/tmp/ipykernel_1643/812981093.py[0m in [0;36m<module>[0;34m[0m
+[0;32m/tmp/ipykernel_1620/812981093.py[0m in [0;36m<module>[0;34m[0m
 [1;32m      1[0m [0;31m# Fixing random state for reproducibility[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
 [0;32m----> 2[0;31m [0mnp[0m[0;34m.[0m[0mrandom[0m[0;34m.[0m[0mseed[0m[0;34m([0m[0;36m19680801[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
 [0m[1;32m      3[0m [0;34m[0m[0m
