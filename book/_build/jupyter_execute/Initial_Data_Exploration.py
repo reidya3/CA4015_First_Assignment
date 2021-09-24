@@ -1,43 +1,61 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Content with notebooks
-# 
-# You can also create content with Jupyter Notebooks. This means that you can include
-# code blocks and their outputs in your book.
-# 
-# ## Markdown + notebooks
-# 
-# As it is markdown, you can embed images, HTML, etc into your posts!
-# 
-# ![](https://myst-parser.readthedocs.io/en/latest/_static/logo-wide.svg)
-# 
-# You can also $add_{math}$ and
-# 
-# $$
-# math^{blocks}
-# $$
-# 
-# or
-# 
-# $$
-# \begin{aligned}
-# \mbox{mean} la_{tex} \\ \\
-# math blocks
-# \end{aligned}
-# $$
-# 
-# But make sure you \$Escape \$your \$dollar signs \$you want to keep!
-# 
-# ## MyST markdown
-# 
-# MyST markdown works in Jupyter Notebooks as well. For more information about MyST markdown, check
-# out [the MyST guide in Jupyter Book](https://jupyterbook.org/content/myst.html),
-# or see [the MyST markdown documentation](https://myst-parser.readthedocs.io/en/latest/).
-# 
-# ## Code blocks and outputs
-# 
-# Jupyter Book will also embed your code blocks and output in your book.
+# # Initial Data Exploration 
+# 
+# In this section, we profile  
+# The purpose of our initial data exploration is to:
+# a)	Check the validity of the data and perform data cleaning methods if needed.
+# b)	View the statistical details of the data and perform data visualization to improve our understanding of the data 
+# c)	Initiate new hypotheses on both the future clustering and evaluation method.
+# d)	Validate assumptions of any clustering methods we intend to use & perform transformations if needed.
+# e)	Measure clustering & central tendency.
+# 
+# <ol type = "a">
+#     <li>India</li>
+#     <li>Australia</li>
+#     <li>South Africa</li>
+#     <li>New Zealand</li>
+#     <li>Pakistan</li>
+#     <li>Srilanka</li>
+#     <li>West Indies</li>
+#     <li>Bangladesh</li>
+# </ol>
+# 
+# If you are viewing this as an HTML page, please use the content toolbar to the right for quick access to different sections.
+# 
+# ## Importing required libraries 
+# 
+# As it is markdown, you can embed images, HTML, etc into your posts!
+# 
+# ![](https://myst-parser.readthedocs.io/en/latest/_static/logo-wide.svg)
+# 
+# You can also $add_{math}$ and
+# 
+# $$
+# math^{blocks}
+# $$
+# 
+# or
+# 
+# $$
+# \begin{aligned}
+# \mbox{mean} la_{tex} \\ \\
+# math blocks
+# \end{aligned}
+# $$
+# 
+# But make sure you \$Escape \$your \$dollar signs \$you want to keep!
+# 
+# ## MyST markdown
+# 
+# MyST markdown works in Jupyter Notebooks as well. For more information about MyST markdown, check
+# out [the MyST guide in Jupyter Book](https://jupyterbook.org/content/myst.html),
+# or see [the MyST markdown documentation](https://myst-parser.readthedocs.io/en/latest/).
+# 
+# ## Code blocks and outputs
+# 
+# Jupyter Book will also embed your code blocks and output in your book.
 # For example, here's some sample Matplotlib code:
 
 # In[1]:
