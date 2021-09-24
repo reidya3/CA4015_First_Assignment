@@ -12,23 +12,26 @@ This investigation utilizes a dataset from a "many labs" initiative on the Iowa 
 :::{note}
 All studies Not all studies had the same number of trials. They number of trails varied from 95, 100 and 150. 
 :::
-The Table below summarizes the multiple datasets used in the current study.
-|    Study      | Number of Participants |    Trails      | Gender |
+The Table below summarizes the multiple datasets used in this investigation.
+|    Study      | Number of Participants |    Trails      | Gender || IGT verision |
 | :------------ | -------------: | :------------ | -------------: |
-|        0      |        5       |        0      |        5       |
-|     13720     |      2744      |     13720     |      2744      |
+|        0      |        15      |        95     |        5       |
+|     13720     |      162      |     100     |      2744      |
+|        0      |        19     |        100      |        5       |
+|     13720     |      40     |     100     |      2744      |
+|        0      |        25       |        100      |        5       |
+|     13720     |      70      |     100     |      2744      |
+|        0      |        57       |        150      |        5       |
+|     13720     |      41      |     150    |      2744      |
+|        0      |        153       |        100      |        5       |
+|     13720     |      35      |     100     |      2744      |
 
-Further explanation of these datasets is provided in the Initial Data Exploration Section 
 
- The model's parameters can be interrupted as several different psychological processes such as learnt behavior, impulsivity, stress reactions to punishments etc. Lili et al. describes three  models:
 
-- Values-Plus-Perseverance Mode (VVP)
-- Prospect Valence Learning Model with Delta (PVL-Delta)
-- Outcome Representation Learning Mode (ORL)
+Here, we restricted the analysis to the subset of 7 studies which used the classical 100 trials version of the IGT, resulting in 504 participants (age range: 18–88 years; for the 5 studies with available information about sex: 54% of females). Within this dataset, 153 participants come from a single study on aging [15]. Among these participants, 63 are older adults (61–88 years old; 17 males) and 90 are younger adults (18–35 years old; 22 males) matched in terms of education level and intelligence (WASI vocabulary)Further explanation of these datasets is provided in the Initial Data Exploration Section.
 
-:::{note}
-Each reinforcement model's parameters are contained in one dataset. 
-:::
+In this investigation, we seek to use a variety of clustering approaches to segment the participants into well-defined groups. 
+To start, we perform an initial data exploration to perform minimal transformations & data sanitization checks; acquire  rudimentary statistics of the datasets; measure cluster tendency and validate any assumptions required by our chosen clustering algorithm (K-means). Next, we perform cluster analysis  and evaluate our clusters using metrics such as Silhouette Coefficient and an Elbow curve. 
+These clusters represent participants that exhibit similar decision-making patterns, and may have similar underlying psychological qualties such as impulsivity, stress  . 
 
-In this investigation, we seek to use a variety of clustering approaches to segment the participants into well-defined groups. To start, we perform an initial data exploration to perform minimal transformations & data sanitization checks; acquire  rudimentary statistics of the datasets; measure cluster tendency and validate any assumptions required by our chosen clustering algorithm (K-means). Next, we perform cluster analysis  and evaluate our clusters using metrics such as Silhouette Coefficient and an Elbow curve. 
-These clusters represent participants that exhibit similar decision-making patterns, captured by the parameters of the underlying reinforcement model. Next, we adapt to form a federated k-means algorithim and compare results.Finally, we conclude with the most important outcomes of our work. 
+Next, we attempt to form a federated k-means algorithm and compare results.Finally, we conclude with the most important outcomes of our work. 
