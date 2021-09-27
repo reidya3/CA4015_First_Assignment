@@ -2,5 +2,5 @@
 ---
 
 ```{bibliography}
-:style: unsrt
+:style: plain
 ```
