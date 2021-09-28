@@ -229,11 +229,30 @@
   <a class="reference internal nav-link" href="#data-cleaning">
    Data Cleaning
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#data-augmentation">
+     Data Augmentation
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#data-processing">
    Data Processing
   </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pca">
+   PCA
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#standardisation">
+     Standardisation
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -251,10 +270,10 @@
 <p>The purpose of our initial data exploration is to:</p>
 <ol type = "a">
     <li>Check the validity of the data and perform data cleaning methods if needed.</li>
-    <li>View the statistical details of the data and perform data visualization to improve our understanding of the data</li>
-    <li>Initiate new hypotheses on both the future clustering and evaluation method.</li>
-    <li>Validate assumptions of any clustering methods we intend to use & perform transformations if needed.</li>
-    <li>Measure clustering & central tendency.</li>
+    <li>View the statistical details of the data</li>
+    <li>Add additional data from the {cite:t}`ahn2014decision` study as we are interested in clustering unhealthy individuals</li>
+    <li>Perform data visualization to improve our understanding of the data</li>
+    <li>Perform transformations (standardization, PCA)</li>
 </ol>
 <p>If you are viewing this as an HTML page, please use the content toolbar to the right for quick access to different sections.</p>
 <div class="section" id="importing-required-libraries">
@@ -263,6 +282,9 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </pre></div>
 </div>
 </div>
@@ -356,7 +378,7 @@ Choice dataframes have the following name format: Choice_1, Choice_2, Choice_3
 </div>
 </div>
 </div>
-<p>For uniformity, we will replace the column names to have a <code class="docutils literal notranslate"><span class="pre">Trial_&lt;Trial</span> <span class="pre">number&gt;</span></code> format as the variable names already indicates functionality.</p>
+<p>For uniformity, we will replace the column names to have a <code class="docutils literal notranslate"><span class="pre">Trial_&lt;Trial</span> <span class="pre">number&gt;</span></code> format as the dataframe variable names already indicates functionality.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;trial_</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">96</span><span class="p">)]</span>
@@ -650,9 +672,7 @@ max      4.000000    4.000000    4.000000    4.000000    4.000000    4.000000
 
 
 choice_150 basic statistics
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>         trial_1    trial_2    trial_3    trial_4    trial_5    trial_6
+         trial_1    trial_2    trial_3    trial_4    trial_5    trial_6
 count  98.000000  98.000000  98.000000  98.000000  98.000000  98.000000
 mean    2.795918   2.663265   2.469388   2.561224   2.500000   2.346939
 std     1.044960   1.083559   1.168346   1.175930   1.159897   1.103902
@@ -691,7 +711,9 @@ max    100.000000  100.000000  100.000000  100.000000  100.000000  100.000000
 
 
 win_100 basic statistics
-          trial_1     trial_2     trial_3     trial_4     trial_5     trial_6
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          trial_1     trial_2     trial_3     trial_4     trial_5     trial_6
 count  504.000000  504.000000  504.000000  504.000000  504.000000  504.000000
 mean    81.646825   77.956349   76.636905   77.172619   81.369048   80.724206
 std     24.124146   26.566060   25.105129   25.387493   25.387860   25.399812
@@ -742,7 +764,9 @@ max        0.0      0.0   0.000000      0.0    0.000000      0.0
 
 
 loss_100 basic statistics
-           trial_1      trial_2      trial_3      trial_4      trial_5  \
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>           trial_1      trial_2      trial_3      trial_4      trial_5  \
 count   504.000000   504.000000   504.000000   504.000000   504.000000   
 mean    -37.301587   -40.376984   -64.682540   -39.384921   -49.107143   
 std     149.610031   175.942949   192.871723   152.257429   157.402488   
@@ -789,6 +813,493 @@ max       0.000000
 </div>
 </div>
 </div>
+<div class="section" id="data-augmentation">
+<h3>Data Augmentation<a class="headerlink" href="#data-augmentation" title="Permalink to this headline">¶</a></h3>
+<p>We are interested in how healthy vs unhealthy individuals will cluster. To this end, we include data from a study conducted by <span id="id1">Ahn <em>et al.</em> [<a class="reference internal" href="References.html#id2">2014</a>]</span>. This dataset contains 48 healthy controls, 43 pure heroin and 38 pure amphetamine users.</p>
+<p>Now, we perform the necessary processing steps  to ‘pivot’ the new data so that it  resembles the already created dataframes. Unfortunately not all subjects had data present for all 100 trials. If a subject did not have complete data, they were removed from this investigation. As a result, we removed 1 healthy individual, 1 individual who takes heroin and 2 individuals who take amphetamine</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">remove_incomplete_subjects</span><span class="p">(</span><span class="n">ahn_df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    If a subject does not have data for ALL 100 trials</span>
+<span class="sd">        remove them</span>
+<span class="sd">    :param ahn_df: pandas dataframe in a format devised</span>
+<span class="sd">        by Ahn et al.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">subject</span> <span class="ow">in</span>  <span class="n">ahn_df</span><span class="p">[</span><span class="s2">&quot;subjID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+        <span class="n">subject_df</span> <span class="o">=</span> <span class="n">ahn_df</span><span class="p">[</span><span class="n">ahn_df</span><span class="p">[</span><span class="s2">&quot;subjID&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">subject</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">subject_df</span><span class="p">[</span><span class="s1">&#39;trial&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">101</span><span class="p">)):</span>
+            <span class="n">ahn_df</span> <span class="o">=</span> <span class="n">ahn_df</span><span class="p">[</span><span class="n">ahn_df</span><span class="p">[</span><span class="s2">&quot;subjID&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">subject</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">ahn_df</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ahn_healthy_100</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/IGTdata_healthy_control.txt&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">ahn_heroin_100</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/IGTdata_heroin.txt&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">ahn_amphetamine_100</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/IGTdata_amphetamine.txt&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">ahn_healthy_100</span> <span class="o">=</span> <span class="n">remove_incomplete_subjects</span><span class="p">(</span><span class="n">ahn_healthy_100</span><span class="p">)</span>
+<span class="n">ahn_heroin_100</span> <span class="o">=</span> <span class="n">remove_incomplete_subjects</span><span class="p">(</span><span class="n">ahn_heroin_100</span><span class="p">)</span>
+<span class="n">ahn_amphetamine_100</span> <span class="o">=</span> <span class="n">remove_incomplete_subjects</span><span class="p">(</span><span class="n">ahn_amphetamine_100</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">ahn_healthy_100</span><span class="p">[</span><span class="s2">&quot;subjID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">==</span> <span class="mi">47</span>
+<span class="k">assert</span> <span class="n">ahn_heroin_100</span><span class="p">[</span><span class="s2">&quot;subjID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">==</span> <span class="mi">42</span>
+<span class="k">assert</span> <span class="n">ahn_amphetamine_100</span><span class="p">[</span><span class="s2">&quot;subjID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">==</span> <span class="mi">36</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Down below, we define two helper functions that pivot and concat data.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pivot_ahn_to_many_labs</span><span class="p">(</span><span class="n">org_df</span><span class="p">,</span> <span class="n">health_status</span><span class="p">,</span> <span class="n">selection_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pivots a dataframe present in format devised by Ahn et al. to</span>
+<span class="sd">    one devised by the authors of the many labs initiative</span>
+<span class="sd">    </span>
+<span class="sd">    :param org_dataframe: pandas dataframe in a format devised</span>
+<span class="sd">        by Ahn et al.</span>
+<span class="sd">    :param health_status: a variable detailing whether the subject is</span>
+<span class="sd">        healthy, or takes heroin/amphetamine.</span>
+<span class="sd">    :param selection_type: selection type decides do we want choices, </span>
+<span class="sd">        wins or losses of the particpants.</span>
+<span class="sd">        options:</span>
+<span class="sd">            deck -&gt; choices</span>
+<span class="sd">            gain -&gt; wins</span>
+<span class="sd">            losses -&gt; losses</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">new_dataframe</span> <span class="o">=</span> <span class="n">org_df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="s1">&#39;subjID&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;trial&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="n">selection_type</span><span class="p">]</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">new_dataframe</span> <span class="o">=</span> <span class="n">new_dataframe</span><span class="o">.</span><span class="n">add_prefix</span><span class="p">(</span><span class="s1">&#39;trial_&#39;</span><span class="p">)</span>
+    <span class="n">new_dataframe</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="n">health_status</span><span class="p">)</span>
+    <span class="n">new_dataframe</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;study&#39;</span><span class="p">,</span><span class="s1">&#39;Ahn&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_dataframe</span>
+    
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">concat_ahn_to_many_labs</span><span class="p">(</span> <span class="n">many_labs_df</span><span class="p">,</span> <span class="n">ahn_healthy_df</span><span class="p">,</span> <span class="n">ahn_heroin_df</span><span class="p">,</span> <span class="n">ahn_amphetamine_df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Concats a 100 trial &#39;many labs&#39; dataframe with the dataframes provided by Ahn et al.</span>
+<span class="sd">    Also, maps the health status(&#39;healthy&#39;) and study to each particpant </span>
+<span class="sd">        of a many labs dataset.</span>
+<span class="sd">    </span>
+<span class="sd">    :param many_labs_df: Dataframe containing data from the many labs paper</span>
+<span class="sd">    :param ahn_healthy_df: Contains the healthy individuals of the Ahn et al study</span>
+<span class="sd">    :param ahn_heroin_df: Contains the individuals who take heroin (Ahn et al. study)</span>
+<span class="sd">    :param ahn_heroin_df: Contains the individuals who take amphetamines (Ahn et al, study)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">many_labs_df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s1">&#39;healthy&#39;</span><span class="p">)</span>
+    <span class="n">many_labs_df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="n">index_100</span><span class="p">[</span><span class="s1">&#39;Study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">concated_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span>
+        <span class="n">many_labs_df</span><span class="p">,</span> <span class="n">ahn_healthy_df</span><span class="p">,</span> <span class="n">ahn_heroin_df</span><span class="p">,</span> <span class="n">ahn_amphetamine_df</span>
+            <span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">concated_df</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Next, we pivot the Ahn et al. data so that it follows the many labs format i.e. split by choice, win or loss.
+The variable name of the pivoted datasets have the form:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ahn_{health_status}_{selection_type}_100</span></code></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ahn_healthy_choice_100</span> <span class="o">=</span> <span class="n">pivot_ahn_to_many_labs</span><span class="p">(</span><span class="n">ahn_healthy_100</span><span class="p">,</span> <span class="s1">&#39;healthy&#39;</span><span class="p">,</span> <span class="s1">&#39;deck&#39;</span><span class="p">)</span>
+<span class="n">ahn_heroin_choice_100</span> <span class="o">=</span> <span class="n">pivot_ahn_to_many_labs</span><span class="p">(</span><span class="n">ahn_heroin_100</span><span class="p">,</span> <span class="s1">&#39;heroin&#39;</span><span class="p">,</span> <span class="s1">&#39;deck&#39;</span><span class="p">)</span>
+<span class="n">ahn_amphetamine_choice_100</span> <span class="o">=</span> <span class="n">pivot_ahn_to_many_labs</span><span class="p">(</span><span class="n">ahn_amphetamine_100</span><span class="p">,</span> <span class="s1">&#39;amphetamine&#39;</span><span class="p">,</span> <span class="s1">&#39;deck&#39;</span><span class="p">)</span>
+
+<span class="n">ahn_healthy_win_100</span> <span class="o">=</span> <span class="n">pivot_ahn_to_many_labs</span><span class="p">(</span><span class="n">ahn_healthy_100</span><span class="p">,</span> <span class="s1">&#39;healthy&#39;</span><span class="p">,</span> <span class="s1">&#39;gain&#39;</span><span class="p">)</span>
+<span class="n">ahn_heroin_win_100</span> <span class="o">=</span> <span class="n">pivot_ahn_to_many_labs</span><span class="p">(</span><span class="n">ahn_heroin_100</span><span class="p">,</span> <span class="s1">&#39;heroin&#39;</span><span class="p">,</span> <span class="s1">&#39;gain&#39;</span><span class="p">)</span>
+<span class="n">ahn_amphetamine_win_100</span> <span class="o">=</span> <span class="n">pivot_ahn_to_many_labs</span><span class="p">(</span><span class="n">ahn_amphetamine_100</span><span class="p">,</span> <span class="s1">&#39;amphetamine&#39;</span><span class="p">,</span> <span class="s1">&#39;gain&#39;</span><span class="p">)</span>
+
+<span class="n">ahn_healthy_loss_100</span> <span class="o">=</span> <span class="n">pivot_ahn_to_many_labs</span><span class="p">(</span><span class="n">ahn_healthy_100</span><span class="p">,</span> <span class="s1">&#39;healthy&#39;</span><span class="p">,</span> <span class="s1">&#39;loss&#39;</span><span class="p">)</span>
+<span class="n">ahn_heroin_loss_100</span> <span class="o">=</span> <span class="n">pivot_ahn_to_many_labs</span><span class="p">(</span><span class="n">ahn_heroin_100</span><span class="p">,</span> <span class="s1">&#39;heroin&#39;</span><span class="p">,</span> <span class="s1">&#39;loss&#39;</span><span class="p">)</span>
+<span class="n">ahn_amphetamine_loss_100</span> <span class="o">=</span> <span class="n">pivot_ahn_to_many_labs</span><span class="p">(</span><span class="n">ahn_amphetamine_100</span><span class="p">,</span> <span class="s1">&#39;amphetamine&#39;</span><span class="p">,</span> <span class="s1">&#39;loss&#39;</span><span class="p">)</span>
+
+<span class="n">ahn_healthy_choice_100</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>study</th>
+      <th>health status</th>
+      <th>trial_1</th>
+      <th>trial_2</th>
+      <th>trial_3</th>
+      <th>trial_4</th>
+      <th>trial_5</th>
+      <th>trial_6</th>
+      <th>trial_7</th>
+      <th>trial_8</th>
+      <th>...</th>
+      <th>trial_91</th>
+      <th>trial_92</th>
+      <th>trial_93</th>
+      <th>trial_94</th>
+      <th>trial_95</th>
+      <th>trial_96</th>
+      <th>trial_97</th>
+      <th>trial_98</th>
+      <th>trial_99</th>
+      <th>trial_100</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>103</th>
+      <td>Ahn</td>
+      <td>healthy</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>4</td>
+      <td>3</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>...</td>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>104</th>
+      <td>Ahn</td>
+      <td>healthy</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>2</td>
+      <td>3</td>
+      <td>1</td>
+      <td>1</td>
+      <td>...</td>
+      <td>2</td>
+      <td>4</td>
+      <td>4</td>
+      <td>2</td>
+      <td>4</td>
+      <td>2</td>
+      <td>4</td>
+      <td>2</td>
+      <td>4</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>114</th>
+      <td>Ahn</td>
+      <td>healthy</td>
+      <td>2</td>
+      <td>1</td>
+      <td>2</td>
+      <td>4</td>
+      <td>4</td>
+      <td>2</td>
+      <td>2</td>
+      <td>1</td>
+      <td>...</td>
+      <td>4</td>
+      <td>2</td>
+      <td>4</td>
+      <td>4</td>
+      <td>2</td>
+      <td>2</td>
+      <td>4</td>
+      <td>2</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>115</th>
+      <td>Ahn</td>
+      <td>healthy</td>
+      <td>1</td>
+      <td>3</td>
+      <td>3</td>
+      <td>4</td>
+      <td>3</td>
+      <td>4</td>
+      <td>2</td>
+      <td>4</td>
+      <td>...</td>
+      <td>1</td>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>4</td>
+      <td>4</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>116</th>
+      <td>Ahn</td>
+      <td>healthy</td>
+      <td>3</td>
+      <td>2</td>
+      <td>1</td>
+      <td>4</td>
+      <td>4</td>
+      <td>3</td>
+      <td>2</td>
+      <td>1</td>
+      <td>...</td>
+      <td>3</td>
+      <td>3</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>3</td>
+      <td>4</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 102 columns</p>
+</div></div></div>
+</div>
+<p>We concat the many_labs dataframe with the dataframes provided by Ahn et al. for each type(i.e. choice, win or loss).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">total_choice_100</span> <span class="o">=</span> <span class="n">concat_ahn_to_many_labs</span><span class="p">(</span><span class="n">choice_100</span><span class="p">,</span><span class="n">ahn_healthy_choice_100</span><span class="p">,</span> <span class="n">ahn_heroin_choice_100</span><span class="p">,</span> <span class="n">ahn_amphetamine_choice_100</span><span class="p">)</span>
+<span class="n">total_win_100</span> <span class="o">=</span> <span class="n">concat_ahn_to_many_labs</span><span class="p">(</span><span class="n">win_100</span><span class="p">,</span><span class="n">ahn_healthy_win_100</span><span class="p">,</span> <span class="n">ahn_heroin_win_100</span><span class="p">,</span> <span class="n">ahn_amphetamine_win_100</span><span class="p">)</span>
+<span class="n">total_loss_100</span> <span class="o">=</span> <span class="n">concat_ahn_to_many_labs</span><span class="p">(</span><span class="n">loss_100</span><span class="p">,</span><span class="n">ahn_healthy_loss_100</span><span class="p">,</span> <span class="n">ahn_heroin_loss_100</span><span class="p">,</span> <span class="n">ahn_amphetamine_loss_100</span><span class="p">)</span>
+<span class="n">total_choice_100</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>study</th>
+      <th>health status</th>
+      <th>trial_1</th>
+      <th>trial_2</th>
+      <th>trial_3</th>
+      <th>trial_4</th>
+      <th>trial_5</th>
+      <th>trial_6</th>
+      <th>trial_7</th>
+      <th>trial_8</th>
+      <th>...</th>
+      <th>trial_91</th>
+      <th>trial_92</th>
+      <th>trial_93</th>
+      <th>trial_94</th>
+      <th>trial_95</th>
+      <th>trial_96</th>
+      <th>trial_97</th>
+      <th>trial_98</th>
+      <th>trial_99</th>
+      <th>trial_100</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>4</td>
+      <td>3</td>
+      <td>2</td>
+      <td>1</td>
+      <td>2</td>
+      <td>...</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>4</td>
+      <td>2</td>
+      <td>4</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>2</td>
+      <td>1</td>
+      <td>4</td>
+      <td>4</td>
+      <td>3</td>
+      <td>2</td>
+      <td>3</td>
+      <td>2</td>
+      <td>...</td>
+      <td>4</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>2</td>
+      <td>4</td>
+      <td>4</td>
+      <td>2</td>
+      <td>2</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>4</td>
+      <td>2</td>
+      <td>3</td>
+      <td>1</td>
+      <td>4</td>
+      <td>2</td>
+      <td>4</td>
+      <td>4</td>
+      <td>...</td>
+      <td>3</td>
+      <td>2</td>
+      <td>1</td>
+      <td>4</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>4</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>4</td>
+      <td>3</td>
+      <td>4</td>
+      <td>2</td>
+      <td>1</td>
+      <td>4</td>
+      <td>3</td>
+      <td>2</td>
+      <td>...</td>
+      <td>4</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>3</td>
+      <td>4</td>
+      <td>1</td>
+      <td>4</td>
+      <td>3</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>1</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>1</td>
+      <td>...</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 102 columns</p>
+</div></div></div>
+</div>
+<p>The next two cells map the health status(‘healthy’) and study name to each subject in the 95 and 150 trial studies. <strong>Note</strong>, this was completed for 100 trial studies above in the <code class="docutils literal notranslate"><span class="pre">pivot_ahn_to_many_labs()</span></code> function .</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">choice_95</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s1">&#39;healthy&#39;</span><span class="p">)</span>
+<span class="n">choice_95</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="n">index_95</span><span class="p">[</span><span class="s1">&#39;Study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">win_95</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s1">&#39;healthy&#39;</span><span class="p">)</span>
+<span class="n">win_95</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="n">index_95</span><span class="p">[</span><span class="s1">&#39;Study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">loss_95</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s1">&#39;healthy&#39;</span><span class="p">)</span>
+<span class="n">loss_95</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="n">index_95</span><span class="p">[</span><span class="s1">&#39;Study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">choice_150</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s1">&#39;healthy&#39;</span><span class="p">)</span>
+<span class="n">choice_150</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="n">index_150</span><span class="p">[</span><span class="s1">&#39;Study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">win_150</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s1">&#39;healthy&#39;</span><span class="p">)</span>
+<span class="n">win_150</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="n">index_150</span><span class="p">[</span><span class="s1">&#39;Study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">loss_150</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s1">&#39;healthy&#39;</span><span class="p">)</span>
+<span class="n">loss_150</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="n">index_150</span><span class="p">[</span><span class="s1">&#39;Study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 <p>Cumulative reward is commonly used to evaluate reinforcement learning models (RLM). This metric stems form the idea on how humans learn through interaction. RLMs attempt to be a computational approach of the same mechanism:</p>
 <ul class="simple">
 <li><p>A agent receives state <span class="math notranslate nohighlight">\(S_{0}\)</span> from the environment (In this case, the agent received the four decks of cards, “untouched”).</p></li>
@@ -800,445 +1311,325 @@ max       0.000000
 $<span class="math notranslate nohighlight">\(
 G(t) = \sum_{k=0}^T R_{t+k+1}
 \)</span>$</p>
-<p>We  attempt to plot the calmative reward for the participants surveyed. However, given the large number of participants available, it is infeasible to plot for every subject. Therefore, we will group participants by study. So, the G(t) for a study will be cacluated as follows:</p>
+<p>In the same respect, we  attempt to plot the calmative reward (total) for the participants surveyed. However, given the large number of participants available, it is infeasible to plot for every subject. Therefore, we will group participants by study. When plotting, the cumulative total at trial T for a study of N participants will be calculated as follows:</p>
 <div class="math notranslate nohighlight">
 \[
-G(t) = \sum_{i=0}^n\sum_{i=0}^n i^2 
+\sum_{n=1}^N\sum_{t=1}^T (W + L)_{t}
 \]</div>
-<p>The next few code cells perform the data processing steps required to produce the visualisations. Asserts are used to test that the transformation has been performed correctly.</p>
+<p>Where W denotes the win and L denotes the loss. W is a positive integer number whilst L is a negative integer.</p>
+<p>The next few code cells perform the data processing steps required to produce the visualizations. Asserts are used to test that the transformation has been performed correctly.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 95 Trial studies</span>
-<span class="c1"># Getting the reward (positive or negative) for each subject</span>
-<span class="n">rewards_95</span> <span class="o">=</span> <span class="n">win_95</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">loss_95</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">rewards_95</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">50</span>
-<span class="k">assert</span> <span class="n">rewards_95</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">13</span><span class="p">,</span><span class="mi">7</span><span class="p">]</span> <span class="o">==</span> <span class="mi">100</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_cumulative_reward</span><span class="p">(</span><span class="n">win_df</span><span class="p">,</span> <span class="n">loss_df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrives the cumulative reward dataframe for each subject of a study.</span>
+<span class="sd">    Also, sets a globals &#39;rewards&#39; variable which</span>
+<span class="sd">        holds the reward at each trial for every subject of a study.</span>
+<span class="sd">    :param win_df: contain the wins received by participants</span>
+<span class="sd">    :param loss_df: contain the loses received by participants</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">trial_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">win_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span>
+    <span class="c1"># Set a &#39;reward global variable&#39;, used later on in PCA </span>
+    <span class="nb">globals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;rewards_</span><span class="si">{</span><span class="n">trial_num</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">win_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">loss_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span>
+    <span class="n">cum_reward</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;rewards_</span><span class="si">{</span><span class="n">trial_num</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">cum_reward</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">win_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,:</span><span class="mi">2</span><span class="p">],</span> <span class="n">cum_reward</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+    <span class="nb">globals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;rewards_</span><span class="si">{</span><span class="n">trial_num</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="n">win_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="nb">globals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;rewards_</span><span class="si">{</span><span class="n">trial_num</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="n">win_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
 
-<span class="c1"># Acquiring the cumaltive reward for each particpant</span>
-<span class="n">cum_reward_95</span> <span class="o">=</span> <span class="n">rewards_95</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">cum_reward_95</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">350</span>
-<span class="k">assert</span> <span class="n">cum_reward_95</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">==</span>  <span class="mi">500</span>
-<span class="k">assert</span> <span class="n">cum_reward_95</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">67</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">450</span>
-
-<span class="c1"># Acquiring the sum of cumulative rewards for each trial </span>
-<span class="n">cum_reward_95</span> <span class="o">=</span> <span class="n">cum_reward_95</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">cum_reward_95</span><span class="p">[</span><span class="s1">&#39;trial_1&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1200</span>
-<span class="k">assert</span> <span class="n">cum_reward_95</span><span class="p">[</span><span class="s1">&#39;trial_5&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5500</span>
-<span class="k">assert</span> <span class="n">cum_reward_95</span><span class="p">[</span><span class="s1">&#39;trial_91&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">650</span>
-<span class="k">assert</span> <span class="n">cum_reward_95</span><span class="p">[</span><span class="s1">&#39;trial_95&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1250</span>
-
-<span class="c1"># All 15 particpants in a 95 trial came from same study</span>
-<span class="n">cum_reward_95_mapped</span> <span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index_95</span><span class="p">[</span><span class="s1">&#39;Study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">data</span><span class="o">=</span><span class="n">cum_reward_95</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-<span class="n">cum_reward_95_mapped</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,:</span><span class="mi">10</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">cum_reward</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>trial_1</th>
-      <th>trial_2</th>
-      <th>trial_3</th>
-      <th>trial_4</th>
-      <th>trial_5</th>
-      <th>trial_6</th>
-      <th>trial_7</th>
-      <th>trial_8</th>
-      <th>trial_9</th>
-      <th>trial_10</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Fridberg</th>
-      <td>1200</td>
-      <td>2500</td>
-      <td>3500</td>
-      <td>4650</td>
-      <td>5500</td>
-      <td>6800</td>
-      <td>7650</td>
-      <td>8800</td>
-      <td>8550</td>
-      <td>9550</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 100 Trial studies</span>
-<span class="c1"># Getting the reward (positive or negative) for each subject</span>
-<span class="n">rewards_100</span> <span class="o">=</span> <span class="n">win_100</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">loss_100</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">rewards_100</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">200</span>
-<span class="k">assert</span> <span class="n">rewards_100</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">500</span><span class="p">,</span><span class="mi">97</span><span class="p">]</span> <span class="o">==</span> <span class="mi">50</span>
-
-<span class="c1"># Acquiring the cumaltive reward for each particpant</span>
-<span class="n">cum_reward_100</span> <span class="o">=</span> <span class="n">rewards_100</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">cum_reward_100</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1000</span>
-<span class="k">assert</span> <span class="n">cum_reward_100</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">499</span><span class="p">,</span> <span class="mi">98</span><span class="p">]</span> <span class="o">==</span> <span class="mi">25</span>
-<span class="k">assert</span> <span class="n">cum_reward_100</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">92</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1050</span> 
-
-<span class="c1"># mapping subject to their corresponding study</span>
-<span class="n">cum_reward_100</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">index_100</span><span class="p">[</span><span class="s1">&#39;Study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-<span class="k">assert</span> <span class="n">cum_reward_100</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Subj_5&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Horstmann&#39;</span>
-<span class="k">assert</span> <span class="n">cum_reward_100</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Subj_250&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;SteingroverInPrep&#39;</span>
-<span class="k">assert</span> <span class="n">cum_reward_100</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Subj_500&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Worthy&#39;</span>
-
-<span class="c1"># Acquiring the sum of cumulative rewards for each trial grouped by study </span>
-<span class="n">cum_reward_100_mapped</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span> <span class="o">=</span> <span class="n">cum_reward_100</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">columns</span><span class="o">=</span><span class="n">column_names</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">100</span><span class="p">])</span>
-
-<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">column_names</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">100</span><span class="p">]:</span>
-    <span class="k">for</span> <span class="n">study</span><span class="p">,</span> <span class="n">sum_value</span> <span class="ow">in</span> <span class="n">cum_reward_100</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;study&#39;</span><span class="p">)[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-        <span class="n">cum_reward_100_mapped</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">study</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_value</span>
-
-<span class="k">assert</span> <span class="n">cum_reward_100_mapped</span><span class="p">[</span><span class="s1">&#39;trial_1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Horstmann&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">cum_reward_100</span><span class="p">[</span><span class="n">cum_reward_100</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Horstmann&#39;</span><span class="p">][</span><span class="s1">&#39;trial_1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-<span class="k">assert</span> <span class="n">cum_reward_100_mapped</span><span class="p">[</span><span class="s1">&#39;trial_20&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Maia&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">cum_reward_100</span><span class="p">[</span><span class="n">cum_reward_100</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Maia&#39;</span><span class="p">][</span><span class="s1">&#39;trial_20&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-<span class="k">assert</span> <span class="n">cum_reward_100_mapped</span><span class="p">[</span><span class="s1">&#39;trial_69&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Wood&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">cum_reward_100</span><span class="p">[</span><span class="n">cum_reward_100</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Wood&#39;</span><span class="p">][</span><span class="s1">&#39;trial_69&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-<span class="k">assert</span> <span class="n">cum_reward_100_mapped</span><span class="p">[</span><span class="s1">&#39;trial_87&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Premkumar&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">cum_reward_100</span><span class="p">[</span><span class="n">cum_reward_100</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Premkumar&#39;</span><span class="p">][</span><span class="s1">&#39;trial_87&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-
-
-<span class="n">cum_reward_100_mapped</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">10</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>trial_1</th>
-      <th>trial_2</th>
-      <th>trial_3</th>
-      <th>trial_4</th>
-      <th>trial_5</th>
-      <th>trial_6</th>
-      <th>trial_7</th>
-      <th>trial_8</th>
-      <th>trial_9</th>
-      <th>trial_10</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Horstmann</th>
-      <td>900</td>
-      <td>450</td>
-      <td>-3600</td>
-      <td>-5750</td>
-      <td>-2650</td>
-      <td>-5200</td>
-      <td>-9400</td>
-      <td>-17450</td>
-      <td>-20150</td>
-      <td>-24350</td>
-    </tr>
-    <tr>
-      <th>Kjome</th>
-      <td>1600</td>
-      <td>3230</td>
-      <td>3800</td>
-      <td>5215</td>
-      <td>5805</td>
-      <td>6790</td>
-      <td>7515</td>
-      <td>8690</td>
-      <td>9370</td>
-      <td>10670</td>
-    </tr>
-    <tr>
-      <th>Maia</th>
-      <td>3350</td>
-      <td>6550</td>
-      <td>8900</td>
-      <td>11950</td>
-      <td>14350</td>
-      <td>17150</td>
-      <td>20000</td>
-      <td>22300</td>
-      <td>20000</td>
-      <td>22500</td>
-    </tr>
-    <tr>
-      <th>SteingroverInPrep</th>
-      <td>-1450</td>
-      <td>-3650</td>
-      <td>-7200</td>
-      <td>-6050</td>
-      <td>-7650</td>
-      <td>-11750</td>
-      <td>-9900</td>
-      <td>-11950</td>
-      <td>-10750</td>
-      <td>-10000</td>
-    </tr>
-    <tr>
-      <th>Premkumar</th>
-      <td>2100</td>
-      <td>4230</td>
-      <td>5235</td>
-      <td>7075</td>
-      <td>8915</td>
-      <td>10760</td>
-      <td>11630</td>
-      <td>12915</td>
-      <td>14745</td>
-      <td>16900</td>
-    </tr>
-    <tr>
-      <th>Wood</th>
-      <td>12750</td>
-      <td>24930</td>
-      <td>32430</td>
-      <td>44020</td>
-      <td>51750</td>
-      <td>62055</td>
-      <td>70930</td>
-      <td>79645</td>
-      <td>80015</td>
-      <td>87995</td>
-    </tr>
-    <tr>
-      <th>Worthy</th>
-      <td>3100</td>
-      <td>5550</td>
-      <td>7750</td>
-      <td>9900</td>
-      <td>12100</td>
-      <td>14100</td>
-      <td>16750</td>
-      <td>18100</td>
-      <td>16500</td>
-      <td>17850</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>There is a lot more that you can do with outputs (such as including interactive outputs)
-with your book. For more information about this, see <a class="reference external" href="https://jupyterbook.org">the Jupyter Book documentation</a></p>
-<p>cum_reward_95</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 150 Trial studies</span>
-<span class="c1"># Getting the reward (positive or negative) for each subject</span>
-<span class="n">rewards_150</span> <span class="o">=</span> <span class="n">win_150</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">loss_150</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">rewards_150</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">50</span>
-<span class="k">assert</span> <span class="n">rewards_150</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">96</span><span class="p">,</span><span class="mi">143</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">100</span>
-
-<span class="c1"># Acquiring the cumaltive reward for each particpant</span>
-<span class="n">cum_reward_150</span> <span class="o">=</span> <span class="n">rewards_150</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">cum_reward_150</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">142</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1800</span>
-<span class="k">assert</span> <span class="n">cum_reward_150</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">93</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="o">==</span> <span class="mi">300</span>
-
-<span class="c1"># mapping subject to their corresponding study</span>
-<span class="n">cum_reward_150</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">index_150</span><span class="p">[</span><span class="s1">&#39;Study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-<span class="k">assert</span> <span class="n">cum_reward_150</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Subj_5&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Steingroever2011&#39;</span>
-<span class="k">assert</span> <span class="n">cum_reward_150</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Subj_93&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Wetzels&#39;</span>
-
-
-<span class="c1"># Acquiring the sum of cumulative rewards for each trial grouped by study </span>
-<span class="n">cum_reward_150_mapped</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span> <span class="o">=</span> <span class="n">cum_reward_150</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">columns</span><span class="o">=</span><span class="n">column_names</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">150</span><span class="p">])</span>
-
-<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">column_names</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">150</span><span class="p">]:</span>
-    <span class="k">for</span> <span class="n">study</span><span class="p">,</span> <span class="n">sum_value</span> <span class="ow">in</span> <span class="n">cum_reward_150</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;study&#39;</span><span class="p">)[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-        <span class="n">cum_reward_150_mapped</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">study</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_value</span>
-
-<span class="k">assert</span> <span class="n">cum_reward_100_mapped</span><span class="p">[</span><span class="s1">&#39;trial_1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Horstmann&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">cum_reward_100</span><span class="p">[</span><span class="n">cum_reward_100</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Horstmann&#39;</span><span class="p">][</span><span class="s1">&#39;trial_1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-<span class="k">assert</span> <span class="n">cum_reward_100_mapped</span><span class="p">[</span><span class="s1">&#39;trial_20&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Maia&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">cum_reward_100</span><span class="p">[</span><span class="n">cum_reward_100</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Maia&#39;</span><span class="p">][</span><span class="s1">&#39;trial_20&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-
-<span class="n">cum_reward_150_mapped</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">10</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>trial_1</th>
-      <th>trial_2</th>
-      <th>trial_3</th>
-      <th>trial_4</th>
-      <th>trial_5</th>
-      <th>trial_6</th>
-      <th>trial_7</th>
-      <th>trial_8</th>
-      <th>trial_9</th>
-      <th>trial_10</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Steingroever2011</th>
-      <td>1850</td>
-      <td>3100</td>
-      <td>2250</td>
-      <td>550</td>
-      <td>-3400</td>
-      <td>-3500</td>
-      <td>-4750</td>
-      <td>-6900</td>
-      <td>-7900</td>
-      <td>-8450</td>
-    </tr>
-    <tr>
-      <th>Wetzels</th>
-      <td>1600</td>
-      <td>1150</td>
-      <td>1450</td>
-      <td>1750</td>
-      <td>1350</td>
-      <td>-1450</td>
-      <td>-1350</td>
-      <td>-900</td>
-      <td>-200</td>
-      <td>-1400</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>Visualizations of the sum of cumulative rewards at trails, grouped by study. Note, a green line indicates a positive end value where as a red line indicates a negative end value.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;darkgrid&#39;</span><span class="p">)</span>
-<span class="n">end_value</span><span class="p">,</span> <span class="n">colour</span> <span class="o">=</span> <span class="n">cum_reward_95_mapped</span><span class="p">[</span><span class="s1">&#39;trial_95&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;red&#39;</span>
-<span class="k">if</span> <span class="n">end_value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="n">colour</span> <span class="o">=</span><span class="s1">&#39;green&#39;</span>
-
-<span class="n">fig</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cum_reward_95_mapped</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)),</span> <span class="n">y</span> <span class="o">=</span><span class="n">cum_reward_95_mapped</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span> <span class="n">color</span><span class="o">=</span><span class="n">colour</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Trials&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Culmatative reward ($)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cum_reward_95_mapped</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span><span class="si">}</span><span class="s2"> study (95 trials, 15 particpants) &quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_32_0.png" src="_images/Initial_Data_Exploration_32_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">study</span> <span class="ow">in</span> <span class="n">cum_reward_100_mapped</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
-    <span class="n">end_value</span><span class="p">,</span> <span class="n">colour</span> <span class="o">=</span> <span class="n">cum_reward_100_mapped</span><span class="p">[</span><span class="s1">&#39;trial_100&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">study</span><span class="p">],</span> <span class="s1">&#39;red&#39;</span>
-    <span class="k">if</span> <span class="n">end_value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">colour</span> <span class="o">=</span><span class="s1">&#39;green&#39;</span>
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cum_reward_100_mapped</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)),</span> <span class="n">y</span> <span class="o">=</span><span class="n">cum_reward_100_mapped</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">study</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="n">colour</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Trials&quot;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Culmatative reward ($)&quot;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">study</span><span class="p">)</span><span class="si">}</span><span class="s2"> study (100 trial, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">index_100</span><span class="p">[</span><span class="n">index_100</span><span class="p">[</span><span class="s1">&#39;Study&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">study</span><span class="p">])</span><span class="si">}</span><span class="s2"> participants) &quot;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_33_0.png" src="_images/Initial_Data_Exploration_33_0.png" />
-<img alt="_images/Initial_Data_Exploration_33_1.png" src="_images/Initial_Data_Exploration_33_1.png" />
-<img alt="_images/Initial_Data_Exploration_33_2.png" src="_images/Initial_Data_Exploration_33_2.png" />
-<img alt="_images/Initial_Data_Exploration_33_3.png" src="_images/Initial_Data_Exploration_33_3.png" />
-<img alt="_images/Initial_Data_Exploration_33_4.png" src="_images/Initial_Data_Exploration_33_4.png" />
-<img alt="_images/Initial_Data_Exploration_33_5.png" src="_images/Initial_Data_Exploration_33_5.png" />
-<img alt="_images/Initial_Data_Exploration_33_6.png" src="_images/Initial_Data_Exploration_33_6.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">study</span> <span class="ow">in</span> <span class="n">cum_reward_150_mapped</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
-    <span class="n">end_value</span><span class="p">,</span> <span class="n">colour</span> <span class="o">=</span> <span class="n">cum_reward_150_mapped</span><span class="p">[</span><span class="s1">&#39;trial_150&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">study</span><span class="p">],</span> <span class="s1">&#39;red&#39;</span>
-    <span class="k">if</span> <span class="n">end_value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">colour</span> <span class="o">=</span><span class="s1">&#39;green&#39;</span>
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cum_reward_150_mapped</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)),</span> <span class="n">y</span> <span class="o">=</span><span class="n">cum_reward_150_mapped</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">study</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="n">colour</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Trials&quot;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Culmatative reward ($)&quot;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">study</span><span class="p">)</span><span class="si">}</span><span class="s2"> study (150 trial, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">index_150</span><span class="p">[</span><span class="n">index_150</span><span class="p">[</span><span class="s1">&#39;Study&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">study</span><span class="p">])</span><span class="si">}</span><span class="s2"> participants) &quot;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_34_0.png" src="_images/Initial_Data_Exploration_34_0.png" />
-<img alt="_images/Initial_Data_Exploration_34_1.png" src="_images/Initial_Data_Exploration_34_1.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="n">axrow</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="n">axrow</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-    <span class="n">axrow</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cum_reward_95</span> <span class="o">=</span> <span class="n">get_cumulative_reward</span><span class="p">(</span><span class="n">win_95</span><span class="p">,</span><span class="n">loss_95</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">cum_reward_95</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">350</span>
+<span class="k">assert</span> <span class="n">cum_reward_95</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="o">==</span>  <span class="mi">500</span>
+<span class="k">assert</span> <span class="n">cum_reward_95</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">69</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">450</span>
 
-<span class="n">nrows</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">study</span> <span class="ow">in</span> <span class="n">cum_reward_100_mapped</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
-    <span class="n">end_value</span><span class="p">,</span> <span class="n">colour</span> <span class="o">=</span> <span class="n">cum_reward_100_mapped</span><span class="p">[</span><span class="s1">&#39;trial_100&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">study</span><span class="p">],</span> <span class="s1">&#39;red&#39;</span>
-    <span class="k">if</span> <span class="n">end_value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">colour</span> <span class="o">=</span><span class="s1">&#39;green&#39;</span>
-    <span class="n">x</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cum_reward_100_mapped</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)),</span>
-    <span class="n">y</span> <span class="o">=</span><span class="n">cum_reward_100_mapped</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">study</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="n">colour</span><span class="p">)</span>
-    <span class="n">plot</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+<span class="n">cum_reward_100</span> <span class="o">=</span> <span class="n">get_cumulative_reward</span><span class="p">(</span><span class="n">total_win_100</span><span class="p">,</span> <span class="n">total_loss_100</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">cum_reward_100</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1000</span>
+<span class="k">assert</span> <span class="n">cum_reward_100</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">499</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span> <span class="o">==</span> <span class="mi">25</span>
+<span class="k">assert</span> <span class="n">cum_reward_100</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">94</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1050</span> 
+
+<span class="n">cum_reward_150</span> <span class="o">=</span> <span class="n">get_cumulative_reward</span><span class="p">(</span><span class="n">win_150</span><span class="p">,</span> <span class="n">loss_150</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">cum_reward_150</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">144</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1800</span>
+<span class="k">assert</span> <span class="n">cum_reward_150</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">93</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span> <span class="o">==</span> <span class="mi">300</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Visualizations of the sum of the cumulative rewards, grouped by a ‘many labs’ study. Note, a green line indicates a positive end value where as a red line indicates a negative end value.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">visualize_cumulative_reward_by_study</span><span class="p">(</span><span class="n">cum_reward_df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    visualize the cumulative reward dataframe grouped by  study.</span>
+<span class="sd">    :param cum_reward_df: contain the cumulative rewards by participants in &#39;X&#39; trial studies</span>
+<span class="sd">        where &#39;X&#39; can be 95,100 and 150</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sum_cum_reward_df</span> <span class="o">=</span> <span class="n">cum_reward_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;study&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">trial_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sum_cum_reward_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;darkgrid&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">study</span> <span class="ow">in</span> <span class="n">sum_cum_reward_df</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="n">end_value</span><span class="p">,</span> <span class="n">colour</span> <span class="o">=</span> <span class="n">sum_cum_reward_df</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;trial_</span><span class="si">{</span><span class="n">trial_num</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">study</span><span class="p">],</span> <span class="s1">&#39;red&#39;</span>
+        <span class="k">if</span> <span class="n">end_value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">colour</span> <span class="o">=</span><span class="s1">&#39;green&#39;</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">trial_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">y</span> <span class="o">=</span><span class="n">sum_cum_reward_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">study</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="n">colour</span>
+                <span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Trials&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Culmatative reward ($)&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">study</span><span class="p">)</span><span class="si">}</span><span class="s2"> study (100 trial, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cum_reward_df</span><span class="p">[</span><span class="n">cum_reward_df</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">study</span><span class="p">])</span><span class="si">}</span><span class="s2"> participants)&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Please find below the visualization for the single 95 trial studY. It seems as though Participants generally perform well in the early stages, with their performance decreasing later on.Although there could be outliers distorting the data</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">visualize_cumulative_reward_by_study</span><span class="p">(</span><span class="n">cum_reward_95</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">  File</span><span class="nn"> &quot;C:\Users\tonyr\AppData\Local\Temp/ipykernel_16016/3977357598.py&quot;</span><span class="gt">, line </span><span class="mi">12</span>
-    <span class="n">y</span> <span class="o">=</span><span class="n">cum_reward_100_mapped</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">study</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="n">colour</span><span class="p">)</span>
-                                                                     <span class="o">^</span>
-<span class="ne">SyntaxError</span>: unmatched &#39;)&#39;
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\users\tonyr\onedrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\ca4015_first_assignment\venv\lib\site-packages\seaborn\_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
 </pre></div>
+</div>
+<img alt="_images/Initial_Data_Exploration_51_1.png" src="_images/Initial_Data_Exploration_51_1.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">visualize_cumulative_reward_by_study</span><span class="p">(</span><span class="n">cum_reward_100</span><span class="p">[</span><span class="n">cum_reward_100</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;Ahn&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\users\tonyr\onedrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\ca4015_first_assignment\venv\lib\site-packages\seaborn\_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="_images/Initial_Data_Exploration_52_1.png" src="_images/Initial_Data_Exploration_52_1.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\users\tonyr\onedrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\ca4015_first_assignment\venv\lib\site-packages\seaborn\_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="_images/Initial_Data_Exploration_52_3.png" src="_images/Initial_Data_Exploration_52_3.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\users\tonyr\onedrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\ca4015_first_assignment\venv\lib\site-packages\seaborn\_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="_images/Initial_Data_Exploration_52_5.png" src="_images/Initial_Data_Exploration_52_5.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\users\tonyr\onedrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\ca4015_first_assignment\venv\lib\site-packages\seaborn\_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="_images/Initial_Data_Exploration_52_7.png" src="_images/Initial_Data_Exploration_52_7.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\users\tonyr\onedrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\ca4015_first_assignment\venv\lib\site-packages\seaborn\_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="_images/Initial_Data_Exploration_52_9.png" src="_images/Initial_Data_Exploration_52_9.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\users\tonyr\onedrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\ca4015_first_assignment\venv\lib\site-packages\seaborn\_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="_images/Initial_Data_Exploration_52_11.png" src="_images/Initial_Data_Exploration_52_11.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\users\tonyr\onedrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\ca4015_first_assignment\venv\lib\site-packages\seaborn\_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="_images/Initial_Data_Exploration_52_13.png" src="_images/Initial_Data_Exploration_52_13.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">visualize_cumulative_reward_by_study</span><span class="p">(</span><span class="n">cum_reward_150</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\users\tonyr\onedrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\ca4015_first_assignment\venv\lib\site-packages\seaborn\_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="_images/Initial_Data_Exploration_53_1.png" src="_images/Initial_Data_Exploration_53_1.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\users\tonyr\onedrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\ca4015_first_assignment\venv\lib\site-packages\seaborn\_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="_images/Initial_Data_Exploration_53_3.png" src="_images/Initial_Data_Exploration_53_3.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ahn_cum_reward</span> <span class="o">=</span> <span class="n">cum_reward_100</span><span class="p">[</span><span class="n">cum_reward_100</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Ahn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;health status&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">101</span><span class="p">),</span><span class="n">ahn_cum_reward</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;heroin&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;heroin&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">101</span><span class="p">),</span><span class="n">ahn_cum_reward</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;amphetamine&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;amphetamine&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Culmatative reward of unhealthy subjects subjects&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Trials&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Cumulative reward ($)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/Initial_Data_Exploration_54_0.png" src="_images/Initial_Data_Exploration_54_0.png" />
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="data-processing">
 <h2>Data Processing<a class="headerlink" href="#data-processing" title="Permalink to this headline">¶</a></h2>
-<p>The performance of the participants on IGT may have been altered by factors that varied across the included studies (e.g. randomly shuffled payoff or
-fixed payoff sequence) . To mitigate against these factors and allow for more accurate comparison, we restrict our investigation to a subset of the available data. This subset contains the 7 investigations that use the</p>
+<p>The performance of the ‘healthy’ participants on IGT may have been altered by factors that varied across the included studies (e.g. fatigue due to longer trial length). To mitigate against these factors and allow for more accurate comparison, we restrict our investigation to a subset of the available data. This subset contains the 7 investigations that use the classical 100 trials. This subset includes 504 participants (age range: 18 to 88). Of those 5 studies that had information on gender, 54% were female. We plan to cluster people by their:</p>
+<ul class="simple">
+<li><p>choices</p></li>
+<li><p>rewards</p></li>
+</ul>
+</div>
+<div class="section" id="pca">
+<h2>PCA<a class="headerlink" href="#pca" title="Permalink to this headline">¶</a></h2>
+<p>Although standardization is typically used for features of incomparable units (e.g. height in cm and weight in kg), we will still standardize the choices and rewards due to k-means “isotropic” nature. In this case, if we left our variances unequal;  we would inversely putting more weight on features with high variance. In addition, we will perform <b>principal component analysis</b> due to avoid the curse of dimensionality that k-means can suffer from. The function of PCA is to reduce the dimensionality of a data set consisting of many variables correlated with each other, either heavily or lightly, while retaining the variation present in the data set to the maximum extent.</p>
+<p>The same is done by transforming the variables (i.e. features) to a new set of variables, which are known as the <b>principal components</b> (or simply, the PCs) and are orthogonal, ordered such that the retention of variation present in the original variables decreases as we move down in the order.</p>
+<p>The procedure of PCA involves five steps: <br></p>
+<ol class="simple">
+<li><p>Standardise the data <br></p></li>
+<li><p>Compute covariance matrix <br></p></li>
+<li><p>Identify the eigenvalues and eigenvectors of the covariance matrix and order them according to the eigenvalues <br></p></li>
+<li><p>Compute a feature vector <br></p></li>
+<li><p>Recast the data <br></p></li>
+</ol>
+<div class="section" id="standardisation">
+<h3>Standardisation<a class="headerlink" href="#standardisation" title="Permalink to this headline">¶</a></h3>
+<p>We now standardize the data using the following formulae:
+$<span class="math notranslate nohighlight">\(X_i = X_i - \bar{X}~~~~~~~~~~~~~~~~~~X_i = \frac{X_i}{\sigma}\)</span>$</p>
+<p>The standard deviation should equal 1 after standardization</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">labeled_choice_100</span> <span class="o">=</span> <span class="n">total_choice_100</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,[</span><span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="s1">&#39;health status&#39;</span><span class="p">]]</span>
+<span class="n">values_to_be_scaled_choice_100</span> <span class="o">=</span>  <span class="n">total_choice_100</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:]</span>
+<span class="n">values_to_be_scaled_choice_100</span>  <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">values_to_be_scaled_choice_100</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">values_to_be_scaled_choice_100</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We will use the <code class="docutils literal notranslate"><span class="pre">PCA</span></code> function supplied by the <code class="docutils literal notranslate"><span class="pre">Scikit-learn</span></code> library for dimensionality reduction.  But how do we find the optimal number of components? Which eigenvalues are important?  The scree plot below describes the cumulative explained variance for each component. We reach 80% explained at the 58 component mark.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">values_to_be_scaled_choice_100</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number of components&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;cumulative explained variance&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Scree plot&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/Initial_Data_Exploration_62_0.png" src="_images/Initial_Data_Exploration_62_0.png" />
+</div>
+</div>
+<p>According to the average-eigenvalue test (Kaiser-Guttman test) we should retain only those eigenvalues that are above the average which is 1.0. <br>
+Jolliffe relaxes this criterium and suggest to retain eigenvalues greater than 0.7.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kasier_criterion</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">&#39;Kasier criterion optimal component number: </span><span class="si">{</span><span class="n">kasier_criterion</span><span class="si">}</span><span class="s1">, explained variance: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">)[</span><span class="n">kasier_criterion</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="p">)</span>
+<span class="n">jolliffe_criterion</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_</span> <span class="o">&gt;</span> <span class="mf">0.7</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s1">&#39;Jolliffe criterion optimal component number: </span><span class="si">{</span><span class="n">jolliffe_criterion</span><span class="si">}</span><span class="s1"> , expalined variance: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">)[</span><span class="n">jolliffe_criterion</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Kasier criterion optimal component number: 36, explained variance: 0.6178998663574315
+Jolliffe criterion optimal component number: 57 , expalined variance: 0.7970759424837319
+</pre></div>
+</div>
+</div>
+</div>
+<p>Unfortunately, the optimal number of principal components is still quite high for either criterion and does not lend itself well to visualisation. For the purpose of this investigation, we decide to go with the Kaiser criterion as it is more accepted. In addition, 36 principal components (Kasier) account for approx. 61.79% of the explained variance whilst 57 principal components (Jolliffe). We will now repeat the process for the rewards dataframe.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;hide-input&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="n">labeled_rewards_100</span> <span class="o">=</span> <span class="n">rewards_100</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,[</span><span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="s1">&#39;health status&#39;</span><span class="p">]]</span>
+<span class="n">values_to_be_scaled_rewards_100</span> <span class="o">=</span>  <span class="n">rewards_100</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:]</span>
+<span class="n">values_to_be_scaled_rewards_100</span>  <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">values_to_be_scaled_rewards_100</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">values_to_be_scaled_rewards_100</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+
+<span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">values_to_be_scaled_rewards_100</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number of components&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;cumulative explained variance&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Scree plot&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">kasier_criterion</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">&#39;Kasier criterion optimal component number: </span><span class="si">{</span><span class="n">kasier_criterion</span><span class="si">}</span><span class="s1">, explained variance: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">)[</span><span class="n">kasier_criterion</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="p">)</span>
+<span class="n">jolliffe_criterion</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_</span> <span class="o">&gt;</span> <span class="mf">0.7</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s1">&#39;Jolliffe criterion optimal component number: </span><span class="si">{</span><span class="n">jolliffe_criterion</span><span class="si">}</span><span class="s1"> , expalined variance: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">)[</span><span class="n">jolliffe_criterion</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/Initial_Data_Exploration_66_0.png" src="_images/Initial_Data_Exploration_66_0.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Kasier criterion optimal component number: 46, explained variance: 0.6459086403443649
+Jolliffe criterion optimal component number: 71 , expalined variance: 0.8574374373634465
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally, we fit the <code class="docutils literal notranslate"><span class="pre">pca</span></code> model with the chosen dataframe (choices or rewards), apply the dimensionality reduction on that dataframe and save the resulting dataframe with the optimal number of componenets.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pca_choice</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">36</span><span class="p">)</span>
+<span class="n">dim_reduced_choice</span> <span class="o">=</span> <span class="n">pca_choice</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">values_to_be_scaled_choice_100</span><span class="p">)</span>
+<span class="n">dim_reduced_choice</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">dim_reduced_choice</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;component_</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">37</span><span class="p">)])</span>
+<span class="n">dim_reduced_choice</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">labeled_choice_100</span><span class="p">,</span> <span class="n">dim_reduced_choice</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+<span class="n">dim_reduced_choice</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;data/dim_reduced_choice.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pca_reward</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">46</span><span class="p">)</span>
+<span class="n">dim_reduced_rewards</span> <span class="o">=</span> <span class="n">pca_reward</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">values_to_be_scaled_rewards_100</span><span class="p">)</span>
+<span class="n">dim_reduced_rewards</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">dim_reduced_rewards</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;component_</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">47</span><span class="p">)])</span>
+<span class="n">dim_reduced_rewards</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">labeled_rewards_100</span><span class="p">,</span> <span class="n">dim_reduced_rewards</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+<span class="n">dim_reduced_rewards</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;data/dim_reduced_rewards.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 

@@ -4,5 +4,6 @@ numpy
 pyppeteer
 pandas
 sklearn
-seaborn 
+seaborn
 plotly
+statsmodels

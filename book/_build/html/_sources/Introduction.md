@@ -13,18 +13,18 @@ This investigation utilizes a dataset from a "many labs" initiative on the Iowa 
 Not all studies had the same number of trials. They number of trails varied from 95, 100 and 150. 
 :::
 The Table below summarizes the multiple datasets used in this investigation.
-| Labs         | Number of Participants | Trails | IGT version | 
-| :------------ | -------------: | :------------ | -------------: | 
-| {cite:t}`FRIDBERG201028` | 15 | 95 | Modified | 
-| {cite:t}`horstmann2012iowa` | 162 | 100 | Original  | 
-| {cite:t}`kjome2010relationship` | 19 | 100 | Original |
-| {cite:t}`maia2004reexamination` | 40 | 100 | Original | 
-| {cite:t}`premkumar2008emotional` | 25 | 100 | Original | 
-| {cite:t}`vsmiracognitive` | 70 | 100 | Original | 
-| {cite:t}`stein2` | 57 | 150 | Modified | 
-| {cite:t}`wetzels2010bayesian` | 41 | 150 | Modified |
-| {cite:t}`wood2005older` | 153 | 100 | Original | 
-| {cite:t}`worthy2013decomposing` | 35 | 100 | Original |
+| Labs         | Number of Participants | Trails |  
+| :------------ | -------------: | :------------ |  
+| {cite:t}`FRIDBERG201028` | 15 | 95 | 
+| {cite:t}`horstmann2012iowa` | 162 | 100 |  
+| {cite:t}`kjome2010relationship` | 19 | 100 | 
+| {cite:t}`maia2004reexamination` | 40 | 100 |  
+| {cite:t}`premkumar2008emotional` | 25 | 100 |  
+| {cite:t}`vsmiracognitive` | 70 | 100 |  
+| {cite:t}`stein2` | 57 | 150 | 
+| {cite:t}`wetzels2010bayesian` | 41 | 150 |
+| {cite:t}`wood2005older` | 153 | 100 |  
+| {cite:t}`worthy2013decomposing` | 35 | 100 |  
 
 For further clarification of the different IGT versions used, please consult this [paper](http://irep.ntu.ac.uk/id/eprint/20294/1/220623_2604.pdf). In addition, explanation of these datasets is provided in the Initial Data Exploration Section.
 

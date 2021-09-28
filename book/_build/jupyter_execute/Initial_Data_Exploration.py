@@ -1,43 +1,28 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# # Initial Data Exploration  
-# The purpose of our initial data exploration is to:
-# <ol type = "a">
-#     <li>Check the validity of the data and perform data cleaning methods if needed.</li>
-#     <li>View the statistical details of the data and perform data visualization to improve our understanding of the data</li>
-#     <li>Initiate new hypotheses on both the future clustering and evaluation method.</li>
-#     <li>Validate assumptions of any clustering methods we intend to use & perform transformations if needed.</li>
-#     <li>Measure clustering & central tendency.</li>
-# </ol>
-# 
-# If you are viewing this as an HTML page, please use the content toolbar to the right for quick access to different sections.
-# 
-# ## Importing required libraries 
+# # Initial Data Exploration  
+# The purpose of our initial data exploration is to:
+# <ol type = "a">
+#     <li>Check the validity of the data and perform data cleaning methods if needed.</li>
+#     <li>View the statistical details of the data</li>
+#     <li>Add additional data from the {cite:t}`ahn2014decision` study as we are interested in clustering unhealthy individuals</li>
+#     <li>Perform data visualization to improve our understanding of the data</li>
+#     <li>Perform transformations (standardization, PCA)</li>
+# </ol>
+# 
+# If you are viewing this as an HTML page, please use the content toolbar to the right for quick access to different sections.
+# 
+# ## Importing required libraries 
 # Data processing
 
 # In[1]:
 
 
 import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+import numpy as np
 
 
 # Data Visualization 
@@ -99,7 +84,7 @@ print(f'Loss dataframes have the following name format: {", ".join(list(loss_100
 print(f'Choice dataframes have the following name format: {", ".join(list(choice_100.columns[:3]))}')
 
 
-# For uniformity, we will replace the column names to have a `Trial_<Trial number>` format as the variable names already indicates functionality. 
+# For uniformity, we will replace the column names to have a `Trial_<Trial number>` format as the dataframe variable names already indicates functionality. 
 
 # In[8]:
 
@@ -189,6 +174,156 @@ for trial_num in [95, 100, 150]:
     print('\n')
 
 
+# ### Data Augmentation
+# 
+# We are interested in how healthy vs unhealthy individuals will cluster. To this end, we include data from a study conducted by {cite:t}`ahn2014decision`. This dataset contains 48 healthy controls, 43 pure heroin and 38 pure amphetamine users.
+
+# Now, we perform the necessary processing steps  to 'pivot' the new data so that it  resembles the already created dataframes. Unfortunately not all subjects had data present for all 100 trials. If a subject did not have complete data, they were removed from this investigation. As a result, we removed 1 healthy individual, 1 individual who takes heroin and 2 individuals who take amphetamine
+
+# In[16]:
+
+
+def remove_incomplete_subjects(ahn_df):
+    """
+    If a subject does not have data for ALL 100 trials
+        remove them
+    :param ahn_df: pandas dataframe in a format devised
+        by Ahn et al.
+    """
+    for subject in  ahn_df["subjID"].unique():
+        subject_df = ahn_df[ahn_df["subjID"] == subject]
+        if subject_df['trial'].values.tolist() != list(range(1,101)):
+            ahn_df = ahn_df[ahn_df["subjID"] != subject]
+    return ahn_df
+
+
+# In[17]:
+
+
+ahn_healthy_100 = pd.read_csv('data/IGTdata_healthy_control.txt', sep="\t")
+ahn_heroin_100 = pd.read_csv('data/IGTdata_heroin.txt', sep="\t")
+ahn_amphetamine_100 = pd.read_csv('data/IGTdata_amphetamine.txt', sep="\t")
+
+ahn_healthy_100 = remove_incomplete_subjects(ahn_healthy_100)
+ahn_heroin_100 = remove_incomplete_subjects(ahn_heroin_100)
+ahn_amphetamine_100 = remove_incomplete_subjects(ahn_amphetamine_100)
+
+assert ahn_healthy_100["subjID"].nunique() == 47
+assert ahn_heroin_100["subjID"].nunique() == 42
+assert ahn_amphetamine_100["subjID"].nunique() == 36
+
+
+# Down below, we define two helper functions that pivot and concat data.
+
+# In[18]:
+
+
+def pivot_ahn_to_many_labs(org_df, health_status, selection_type):
+    """
+    Pivots a dataframe present in format devised by Ahn et al. to
+    one devised by the authors of the many labs initiative
+    
+    :param org_dataframe: pandas dataframe in a format devised
+        by Ahn et al.
+    :param health_status: a variable detailing whether the subject is
+        healthy, or takes heroin/amphetamine.
+    :param selection_type: selection type decides do we want choices, 
+        wins or losses of the particpants.
+        options:
+            deck -> choices
+            gain -> wins
+            losses -> losses
+    """
+    new_dataframe = org_df.pivot(
+        index='subjID', columns='trial').rename_axis(None, axis=0)[selection_type].rename_axis(None, axis=1)
+    new_dataframe = new_dataframe.add_prefix('trial_')
+    new_dataframe.insert(0,'health status', health_status)
+    new_dataframe.insert(0,'study','Ahn')
+    return new_dataframe
+    
+
+
+# In[19]:
+
+
+def concat_ahn_to_many_labs( many_labs_df, ahn_healthy_df, ahn_heroin_df, ahn_amphetamine_df):
+    """
+    Concats a 100 trial 'many labs' dataframe with the dataframes provided by Ahn et al.
+    Also, maps the health status('healthy') and study to each particpant 
+        of a many labs dataset.
+    
+    :param many_labs_df: Dataframe containing data from the many labs paper
+    :param ahn_healthy_df: Contains the healthy individuals of the Ahn et al study
+    :param ahn_heroin_df: Contains the individuals who take heroin (Ahn et al. study)
+    :param ahn_heroin_df: Contains the individuals who take amphetamines (Ahn et al, study)
+    """
+    many_labs_df.insert(0,'health status', 'healthy')
+    many_labs_df.insert(0, 'study', index_100['Study'].values)
+    concated_df = pd.concat([
+        many_labs_df, ahn_healthy_df, ahn_heroin_df, ahn_amphetamine_df
+            ], ignore_index=True)
+    
+    return concated_df
+
+
+# Next, we pivot the Ahn et al. data so that it follows the many labs format i.e. split by choice, win or loss.
+# The variable name of the pivoted datasets have the form:
+# -   `ahn_{health_status}_{selection_type}_100`
+
+# In[20]:
+
+
+ahn_healthy_choice_100 = pivot_ahn_to_many_labs(ahn_healthy_100, 'healthy', 'deck')
+ahn_heroin_choice_100 = pivot_ahn_to_many_labs(ahn_heroin_100, 'heroin', 'deck')
+ahn_amphetamine_choice_100 = pivot_ahn_to_many_labs(ahn_amphetamine_100, 'amphetamine', 'deck')
+
+ahn_healthy_win_100 = pivot_ahn_to_many_labs(ahn_healthy_100, 'healthy', 'gain')
+ahn_heroin_win_100 = pivot_ahn_to_many_labs(ahn_heroin_100, 'heroin', 'gain')
+ahn_amphetamine_win_100 = pivot_ahn_to_many_labs(ahn_amphetamine_100, 'amphetamine', 'gain')
+
+ahn_healthy_loss_100 = pivot_ahn_to_many_labs(ahn_healthy_100, 'healthy', 'loss')
+ahn_heroin_loss_100 = pivot_ahn_to_many_labs(ahn_heroin_100, 'heroin', 'loss')
+ahn_amphetamine_loss_100 = pivot_ahn_to_many_labs(ahn_amphetamine_100, 'amphetamine', 'loss')
+
+ahn_healthy_choice_100.head(5)
+
+
+# We concat the many_labs dataframe with the dataframes provided by Ahn et al. for each type(i.e. choice, win or loss).
+
+# In[21]:
+
+
+total_choice_100 = concat_ahn_to_many_labs(choice_100,ahn_healthy_choice_100, ahn_heroin_choice_100, ahn_amphetamine_choice_100)
+total_win_100 = concat_ahn_to_many_labs(win_100,ahn_healthy_win_100, ahn_heroin_win_100, ahn_amphetamine_win_100)
+total_loss_100 = concat_ahn_to_many_labs(loss_100,ahn_healthy_loss_100, ahn_heroin_loss_100, ahn_amphetamine_loss_100)
+total_choice_100.head(5)
+
+
+# The next two cells map the health status('healthy') and study name to each subject in the 95 and 150 trial studies. **Note**, this was completed for 100 trial studies above in the `pivot_ahn_to_many_labs()` function .
+# 
+
+# In[22]:
+
+
+choice_95.insert(0,'health status', 'healthy')
+choice_95.insert(0, 'study', index_95['Study'].values)
+win_95.insert(0,'health status', 'healthy')
+win_95.insert(0, 'study', index_95['Study'].values)
+loss_95.insert(0,'health status', 'healthy')
+loss_95.insert(0, 'study', index_95['Study'].values)
+
+
+# In[23]:
+
+
+choice_150.insert(0,'health status', 'healthy')
+choice_150.insert(0, 'study', index_150['Study'].values)
+win_150.insert(0,'health status', 'healthy')
+win_150.insert(0, 'study', index_150['Study'].values)
+loss_150.insert(0,'health status', 'healthy')
+loss_150.insert(0, 'study', index_150['Study'].values)
+
+
 # Cumulative reward is commonly used to evaluate reinforcement learning models (RLM). This metric stems form the idea on how humans learn through interaction. RLMs attempt to be a computational approach of the same mechanism:
 # - A agent receives state $S_{0}$ from the environment (In this case, the agent received the four decks of cards, "untouched").
 # - Based on the $S_{0}$, the agent takes an action $A_{0}$  (our agent will pick a card from deck A, B, C, or D).
@@ -198,183 +333,300 @@ for trial_num in [95, 100, 150]:
 # Therefore, Cumulative reward at trial t can be defined as:
 # $$
 # G(t) = \sum_{k=0}^T R_{t+k+1}
-# $$
+# $$ 
 # 
-# We  attempt to plot the calmative reward for the participants surveyed. However, given the large number of participants available, it is infeasible to plot for every subject. Therefore, we will group participants by study. So, the G(t) for a study will be cacluated as follows:
+# 
+# In the same respect, we  attempt to plot the calmative reward (total) for the participants surveyed. However, given the large number of participants available, it is infeasible to plot for every subject. Therefore, we will group participants by study. When plotting, the cumulative total at trial T for a study of N participants will be calculated as follows:
 # 
 # $$
-# G(t) = \sum_{i=0}^n\sum_{i=0}^n i^2 
+# \sum_{n=1}^N\sum_{t=1}^T (W + L)_{t}
 # $$
+# Where W denotes the win and L denotes the loss. W is a positive integer number whilst L is a negative integer.
 # 
-# The next few code cells perform the data processing steps required to produce the visualisations. Asserts are used to test that the transformation has been performed correctly. 
+# The next few code cells perform the data processing steps required to produce the visualizations. Asserts are used to test that the transformation has been performed correctly. 
 
-# In[16]:
-
-
-# 95 Trial studies
-# Getting the reward (positive or negative) for each subject
-rewards_95 = win_95.add(loss_95)
-assert rewards_95.iloc[1,2] == 50
-assert rewards_95.iloc[13,7] == 100
-
-# Acquiring the cumaltive reward for each particpant
-cum_reward_95 = rewards_95.cumsum(axis=1)
-assert cum_reward_95.iloc[0,8] == -350
-assert cum_reward_95.iloc[11, 6] ==  500
-assert cum_reward_95.iloc[8,67] == -450
-
-# Acquiring the sum of cumulative rewards for each trial 
-cum_reward_95 = cum_reward_95.sum(axis=0)
-assert cum_reward_95['trial_1'] == 1200
-assert cum_reward_95['trial_5'] == 5500
-assert cum_reward_95['trial_91'] == -650
-assert cum_reward_95['trial_95'] == 1250
-
-# All 15 particpants in a 95 trial came from same study
-cum_reward_95_mapped =pd.DataFrame(index=index_95['Study'].unique().tolist(), data=cum_reward_95.to_dict())
-cum_reward_95_mapped.iloc[:,:10]
+# In[24]:
 
 
-# In[17]:
+def get_cumulative_reward(win_df, loss_df):
+    """
+    Retrives the cumulative reward dataframe for each subject of a study.
+    Also, sets a globals 'rewards' variable which
+        holds the reward at each trial for every subject of a study.
+    :param win_df: contain the wins received by participants
+    :param loss_df: contain the loses received by participants
+    """
+    trial_num = len(win_df.columns.values) - 2
+    # Set a 'reward global variable', used later on in PCA 
+    globals()[f'rewards_{trial_num}'] = win_df.iloc[:,2:].add(loss_df.iloc[:,2:])
+    cum_reward = globals()[f'rewards_{trial_num}'].cumsum(axis=1)
+    cum_reward = pd.merge(
+        win_df.iloc[:,:2], cum_reward, left_index=True, right_index=True
+        )
+    globals()[f'rewards_{trial_num}'].insert(0,'health status', win_df.iloc[:,1])
+    globals()[f'rewards_{trial_num}'].insert(0, 'study', win_df.iloc[:,0])
+
+    return cum_reward
 
 
-# 100 Trial studies
-# Getting the reward (positive or negative) for each subject
-rewards_100 = win_100.add(loss_100)
-assert rewards_100.iloc[2,3] == -200
-assert rewards_100.iloc[500,97] == 50
-
-# Acquiring the cumaltive reward for each particpant
-cum_reward_100 = rewards_100.cumsum(axis=1)
-assert cum_reward_100.iloc[3, 9] == -1000
-assert cum_reward_100.iloc[499, 98] == 25
-assert cum_reward_100.iloc[2, 92] == -1050 
-
-# mapping subject to their corresponding study
-cum_reward_100['study']  = index_100['Study'].values.tolist()
-assert cum_reward_100['study'].loc['Subj_5'] == 'Horstmann'
-assert cum_reward_100['study'].loc['Subj_250'] == 'SteingroverInPrep'
-assert cum_reward_100['study'].loc['Subj_500'] == 'Worthy'
-
-# Acquiring the sum of cumulative rewards for each trial grouped by study 
-cum_reward_100_mapped = pd.DataFrame(index = cum_reward_100['study'].unique().tolist(), columns=column_names[0:100])
-
-for name in column_names[0:100]:
-    for study, sum_value in cum_reward_100.groupby('study')[name].sum().iteritems():
-        cum_reward_100_mapped[name].loc[study] = sum_value
-
-assert cum_reward_100_mapped['trial_1'].loc['Horstmann'] == cum_reward_100[cum_reward_100['study'] == 'Horstmann']['trial_1'].sum()
-assert cum_reward_100_mapped['trial_20'].loc['Maia'] == cum_reward_100[cum_reward_100['study'] == 'Maia']['trial_20'].sum()
-assert cum_reward_100_mapped['trial_69'].loc['Wood'] == cum_reward_100[cum_reward_100['study'] == 'Wood']['trial_69'].sum()
-assert cum_reward_100_mapped['trial_87'].loc['Premkumar'] == cum_reward_100[cum_reward_100['study'] == 'Premkumar']['trial_87'].sum()
+# In[25]:
 
 
-cum_reward_100_mapped.iloc[:, :10]
+
+cum_reward_95 = get_cumulative_reward(win_95,loss_95)
+assert cum_reward_95.iloc[0,10] == -350
+assert cum_reward_95.iloc[11, 8] ==  500
+assert cum_reward_95.iloc[8,69] == -450
+
+cum_reward_100 = get_cumulative_reward(total_win_100, total_loss_100)
+assert cum_reward_100.iloc[3, 11] == -1000
+assert cum_reward_100.iloc[499, 100] == 25
+assert cum_reward_100.iloc[2, 94] == -1050 
+
+cum_reward_150 = get_cumulative_reward(win_150, loss_150)
+assert cum_reward_150.iloc[4,144] == 1800
+assert cum_reward_150.iloc[93, 10] == 300
 
 
-# There is a lot more that you can do with outputs (such as including interactive outputs)
-# with your book. For more information about this, see [the Jupyter Book documentation](https://jupyterbook.org)
-
-# cum_reward_95
-
-# In[18]:
+# In[ ]:
 
 
-# 150 Trial studies
-# Getting the reward (positive or negative) for each subject
-rewards_150 = win_150.add(loss_150)
-assert rewards_150.iloc[4,3] == 50
-assert rewards_150.iloc[96,143] == -100
-
-# Acquiring the cumaltive reward for each particpant
-cum_reward_150 = rewards_150.cumsum(axis=1)
-assert cum_reward_150.iloc[4,142] == 1800
-assert cum_reward_150.iloc[93, 8] == 300
-
-# mapping subject to their corresponding study
-cum_reward_150['study']  = index_150['Study'].values.tolist()
-assert cum_reward_150['study'].loc['Subj_5'] == 'Steingroever2011'
-assert cum_reward_150['study'].loc['Subj_93'] == 'Wetzels'
 
 
-# Acquiring the sum of cumulative rewards for each trial grouped by study 
-cum_reward_150_mapped = pd.DataFrame(index = cum_reward_150['study'].unique().tolist(), columns=column_names[0:150])
 
-for name in column_names[0:150]:
-    for study, sum_value in cum_reward_150.groupby('study')[name].sum().iteritems():
-        cum_reward_150_mapped[name].loc[study] = sum_value
-
-assert cum_reward_100_mapped['trial_1'].loc['Horstmann'] == cum_reward_100[cum_reward_100['study'] == 'Horstmann']['trial_1'].sum()
-assert cum_reward_100_mapped['trial_20'].loc['Maia'] == cum_reward_100[cum_reward_100['study'] == 'Maia']['trial_20'].sum()
-
-cum_reward_150_mapped.iloc[:, :10]
+# In[ ]:
 
 
-# Visualizations of the sum of cumulative rewards at trails, grouped by study. Note, a green line indicates a positive end value where as a red line indicates a negative end value. 
-
-# In[19]:
 
 
-sns.set(style='darkgrid')
-end_value, colour = cum_reward_95_mapped['trial_95'].iloc[0], 'red'
-if end_value > 0:
-    colour ='green'
 
-fig = sns.lineplot(x=list(range(1, len(cum_reward_95_mapped.columns)+1)), y =cum_reward_95_mapped.iloc[0,:], color=colour)
-plt.xlabel("Trials")
-plt.ylabel("Culmatative reward ($)")
-plt.title(f"{''.join(cum_reward_95_mapped.index.unique().to_list())} study (95 trials, 15 particpants) ")
-plt.show(fig)
+# In[ ]:
 
 
-# In[20]:
 
 
-for study in cum_reward_100_mapped.index:
-    end_value, colour = cum_reward_100_mapped['trial_100'].loc[study], 'red'
-    if end_value > 0:
-        colour ='green'
-    fig = sns.lineplot(x=list(range(1, len(cum_reward_100_mapped.columns)+1)), y =cum_reward_100_mapped.loc[study].values.tolist(), color=colour)
-    plt.xlabel("Trials")
-    plt.ylabel("Culmatative reward ($)")
-    plt.title(f"{''.join(study)} study (100 trial, {len(index_100[index_100['Study'] == study])} participants) ")
-    plt.show()
+
+# In[ ]:
 
 
-# In[21]:
 
 
-for study in cum_reward_150_mapped.index:
-    end_value, colour = cum_reward_150_mapped['trial_150'].loc[study], 'red'
-    if end_value > 0:
-        colour ='green'
-    fig = sns.lineplot(x=list(range(1, len(cum_reward_150_mapped.columns)+1)), y =cum_reward_150_mapped.loc[study].values.tolist(), color=colour)
-    plt.xlabel("Trials")
-    plt.ylabel("Culmatative reward ($)")
-    plt.title(f"{''.join(study)} study (150 trial, {len(index_150[index_150['Study'] == study])} participants) ")
-    plt.show(fig)
+
+# In[ ]:
 
 
-# In[22]:
 
 
-def plot(axrow, x, y):
-    axrow[0].plot(x, color='red')
-    axrow[1].plot(y, color='green')
 
-nrows = 3
-fig, axes = plt.subplots(nrows, 2)
-for study in cum_reward_100_mapped.index:
-    end_value, colour = cum_reward_100_mapped['trial_100'].loc[study], 'red'
-    if end_value > 0:
-        colour ='green'
-    x=list(range(1, len(cum_reward_100_mapped.columns)+1)),
-    y =cum_reward_100_mapped.loc[study].values.tolist(), color=colour)
-    plot(row)
+# In[ ]:
 
 
-# ## Data Processing 
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# Visualizations of the sum of the cumulative rewards, grouped by a 'many labs' study. Note, a green line indicates a positive end value where as a red line indicates a negative end value. 
+
+# In[26]:
+
+
+def visualize_cumulative_reward_by_study(cum_reward_df):
+    """
+    visualize the cumulative reward dataframe grouped by  study.
+    :param cum_reward_df: contain the cumulative rewards by participants in 'X' trial studies
+        where 'X' can be 95,100 and 150
+    """
+    sum_cum_reward_df = cum_reward_df.groupby(['study']).sum()
+    trial_num = len(sum_cum_reward_df.columns.values)
+
+    sns.set(style='darkgrid')
+    for study in sum_cum_reward_df.index:
+        end_value, colour = sum_cum_reward_df[f'trial_{trial_num}'].loc[study], 'red'
+        if end_value > 0:
+            colour ='green'
+        fig = sns.lineplot(
+            list(range(1, trial_num + 1)), y =sum_cum_reward_df.loc[study].values.tolist(), color=colour
+                )
+        plt.xlabel("Trials")
+        plt.ylabel("Culmatative reward ($)")
+        plt.title(f"{''.join(study)} study (100 trial, {len(cum_reward_df[cum_reward_df['study'] == study])} participants)")
+        plt.show(fig)
+
+
+# Please find below the visualization for the single 95 trial studY. It seems as though Participants generally perform well in the early stages, with their performance decreasing later on.Although there could be outliers distorting the data
+
+# In[27]:
+
+
+visualize_cumulative_reward_by_study(cum_reward_95)
+
+
+# In[28]:
+
+
+visualize_cumulative_reward_by_study(cum_reward_100[cum_reward_100['study'] != 'Ahn'])
+
+
+# In[29]:
+
+
+visualize_cumulative_reward_by_study(cum_reward_150)
+
+
+# In[30]:
+
+
+ahn_cum_reward = cum_reward_100[cum_reward_100['study'] == 'Ahn'].groupby(['health status']).sum()
+plt.plot(range(1,101),ahn_cum_reward.loc['heroin'], label='heroin',color='red')
+plt.plot(range(1,101),ahn_cum_reward.loc['amphetamine'], label='amphetamine',color='yellow')
+plt.legend()
+plt.title('Culmatative reward of unhealthy subjects subjects')
+plt.xlabel('Trials')
+plt.ylabel('Cumulative reward ($)')
+plt.tight_layout()
+plt.show()
+
+
+# ## Data Processing
+# 
+# The performance of the 'healthy' participants on IGT may have been altered by factors that varied across the included studies (e.g. fatigue due to longer trial length). To mitigate against these factors and allow for more accurate comparison, we restrict our investigation to a subset of the available data. This subset contains the 7 investigations that use the classical 100 trials. This subset includes 504 participants (age range: 18 to 88). Of those 5 studies that had information on gender, 54% were female. We plan to cluster people by their:
+# - choices
+# - rewards 
+
+# ## PCA
+# 
+# Although standardization is typically used for features of incomparable units (e.g. height in cm and weight in kg), we will still standardize the choices and rewards due to k-means "isotropic" nature. In this case, if we left our variances unequal;  we would inversely putting more weight on features with high variance. In addition, we will perform <b>principal component analysis</b> due to avoid the curse of dimensionality that k-means can suffer from. The function of PCA is to reduce the dimensionality of a data set consisting of many variables correlated with each other, either heavily or lightly, while retaining the variation present in the data set to the maximum extent. 
+# 
+# The same is done by transforming the variables (i.e. features) to a new set of variables, which are known as the <b>principal components</b> (or simply, the PCs) and are orthogonal, ordered such that the retention of variation present in the original variables decreases as we move down in the order. 
 # 
 
-# The performance of the participants on IGT may have been altered by factors that varied across the included studies (e.g. randomly shuffled payoff or
-# fixed payoff sequence) . To mitigate against these factors and allow for more accurate comparison, we restrict our investigation to a subset of the available data. This subset contains the 7 investigations that use the   
+# The procedure of PCA involves five steps: <br>
+# 1) Standardise the data <br>
+# 2) Compute covariance matrix <br>
+# 3) Identify the eigenvalues and eigenvectors of the covariance matrix and order them according to the eigenvalues <br>
+# 4) Compute a feature vector <br>
+# 5) Recast the data <br>
+# 
+
+# #### Standardisation
+
+# We now standardize the data using the following formulae:
+# $$X_i = X_i - \bar{X}~~~~~~~~~~~~~~~~~~X_i = \frac{X_i}{\sigma}$$
+# 
+# The standard deviation should equal 1 after standardization
+
+# In[31]:
+
+
+labeled_choice_100 = total_choice_100.loc[:,['study', 'health status']]
+values_to_be_scaled_choice_100 =  total_choice_100.iloc[:,2:]
+values_to_be_scaled_choice_100  = StandardScaler().fit_transform(values_to_be_scaled_choice_100)
+
+assert np.std(values_to_be_scaled_choice_100) == 1
+
+
+# We will use the `PCA` function supplied by the `Scikit-learn` library for dimensionality reduction.  But how do we find the optimal number of components? Which eigenvalues are important?  The scree plot below describes the cumulative explained variance for each component. We reach 80% explained at the 58 component mark.
+
+# In[32]:
+
+
+pca = PCA().fit(values_to_be_scaled_choice_100)
+plt.plot(np.cumsum(pca.explained_variance_ratio_))
+plt.xlabel('number of components')
+plt.ylabel('cumulative explained variance')
+plt.title('Scree plot')
+plt.show()
+
+
+# According to the average-eigenvalue test (Kaiser-Guttman test) we should retain only those eigenvalues that are above the average which is 1.0. <br>
+# Jolliffe relaxes this criterium and suggest to retain eigenvalues greater than 0.7. 
+# 
+
+# In[33]:
+
+
+kasier_criterion = np.where(pca.explained_variance_ > 1)[-1][-1]
+print(
+        f'Kasier criterion optimal component number: {kasier_criterion}, explained variance: {np.cumsum(pca.explained_variance_ratio_)[kasier_criterion]}'
+    )
+jolliffe_criterion = np.where(pca.explained_variance_ > 0.7)[-1][-1]
+print(
+    f'Jolliffe criterion optimal component number: {jolliffe_criterion} , expalined variance: {np.cumsum(pca.explained_variance_ratio_)[jolliffe_criterion]}'
+    )
+
+
+# Unfortunately, the optimal number of principal components is still quite high for either criterion and does not lend itself well to visualisation. For the purpose of this investigation, we decide to go with the Kaiser criterion as it is more accepted. In addition, 36 principal components (Kasier) account for approx. 61.79% of the explained variance whilst 57 principal components (Jolliffe). We will now repeat the process for the rewards dataframe. 
+
+# In[34]:
+
+
+{
+    "tags": [
+        "hide-input",
+    ]
+}
+
+labeled_rewards_100 = rewards_100.loc[:,['study', 'health status']]
+values_to_be_scaled_rewards_100 =  rewards_100.iloc[:,2:]
+values_to_be_scaled_rewards_100  = StandardScaler().fit_transform(values_to_be_scaled_rewards_100)
+
+assert np.std(values_to_be_scaled_rewards_100) == 1
+
+pca = PCA().fit(values_to_be_scaled_rewards_100)
+plt.plot(np.cumsum(pca.explained_variance_ratio_))
+plt.xlabel('number of components')
+plt.ylabel('cumulative explained variance')
+plt.title('Scree plot')
+plt.show()
+kasier_criterion = np.where(pca.explained_variance_ > 1)[-1][-1]
+print(
+        f'Kasier criterion optimal component number: {kasier_criterion}, explained variance: {np.cumsum(pca.explained_variance_ratio_)[kasier_criterion]}'
+    )
+jolliffe_criterion = np.where(pca.explained_variance_ > 0.7)[-1][-1]
+print(
+    f'Jolliffe criterion optimal component number: {jolliffe_criterion} , expalined variance: {np.cumsum(pca.explained_variance_ratio_)[jolliffe_criterion]}'
+    )
+
+
+# Finally, we fit the `pca` model with the chosen dataframe (choices or rewards), apply the dimensionality reduction on that dataframe and save the resulting dataframe with the optimal number of componenets.
+
+# In[35]:
+
+
+pca_choice = PCA(n_components=36)
+dim_reduced_choice = pca_choice.fit_transform(values_to_be_scaled_choice_100)
+dim_reduced_choice = pd.DataFrame(data=dim_reduced_choice, columns=[f'component_{num}' for num in range(1,37)])
+dim_reduced_choice = pd.merge(
+        labeled_choice_100, dim_reduced_choice, left_index=True, right_index=True
+        )
+dim_reduced_choice.to_csv("data/dim_reduced_choice.tsv", sep="\t")
+
+
+# In[36]:
+
+
+pca_reward = PCA(n_components=46)
+dim_reduced_rewards = pca_reward.fit_transform(values_to_be_scaled_rewards_100)
+dim_reduced_rewards = pd.DataFrame(data=dim_reduced_rewards, columns=[f'component_{num}' for num in range(1,47)])
+dim_reduced_rewards = pd.merge(
+        labeled_rewards_100, dim_reduced_rewards, left_index=True, right_index=True
+        )
+dim_reduced_rewards.to_csv("data/dim_reduced_rewards.tsv", sep="\t")
+
