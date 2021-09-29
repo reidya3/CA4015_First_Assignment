@@ -7,3 +7,4 @@ sklearn
 seaborn
 plotly
 statsmodels
+pyclustertend
