@@ -8,7 +8,7 @@ The Iowa Gambling task {cite:p}`bechara1994insensitivity` asses real-life decisi
 In standard setups, the task typically lasts 100 trials. Empirical Investigations  have shown that healthy (neurotypical) test takers generally become aware of the "good" and "bad" decks after 20 to 40 trials {cite:p}`brand1`. However, patients who suffer from orbitofrontal cortex (OFC) dysfunction tend to continue choosing bad decks even though realization of continued monetary loss may have already occurred in these participants. As presented above, participants must choose long-term advantageous choices over short-term favourable picks to achieve the greatest monetary gain. Therefore, IGT remains a popular choice to evaluate decision making and by extension, impulsivity as it does not suffer from the self-reflection biases that questionnaires tend to display. 
 
 ## Description of Datasets
-This investigation utilizes a dataset from a "many labs" initiative on the Iowa Gambling task grouping 10 studies and containing data from 617 healthy participants {cite:p}`steing1`. The data consist of the choices of each participant on each trial, and the resulting rewards and losses.
+This investigation utilizes a dataset from a "many labs" initiative on the Iowa Gambling task grouping 10 studies and containing data from 617 healthy participants {cite:p}`steingroever2015data`. The data consist of the choices of each participant on each trial, and the resulting rewards and losses.
 :::{note}
 Not all studies had the same number of trials. They number of trails varied from 95, 100 and 150. 
 :::
