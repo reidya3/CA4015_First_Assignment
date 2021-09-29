@@ -28,6 +28,6 @@ The Table below summarizes the multiple datasets used in this investigation.
 
 For further clarification of the different IGT versions used, please consult this [paper](http://irep.ntu.ac.uk/id/eprint/20294/1/220623_2604.pdf). In addition, explanation of these datasets is provided in the Initial Data Exploration Section.
 
-In this investigation, we seek to use a variety of clustering approaches to segment the participants into well-defined groups. uch as learnt behavior, impulsivity, stress reactions to punishments etc. 
+In this investigation, we seek to use a variety of clustering approaches to segment the participants into well-defined groups.
 To start, we perform an initial data exploration to perform transformations & data sanitization checks; acquire  rudimentary statistics of the datasets; measure cluster tendency and validate any assumptions required by our chosen clustering algorithm (K-means). Next, we perform cluster analysis  and evaluate our clusters using metrics such as Silhouette Coefficient and an Elbow curve. 
 These clusters represent participants that exhibit similar decision-making patterns, and may have similar underlying psychological qualities such as impulsivity, stress reaction level to punishments or similar learnt experiences. Next, we attempt to form a federated k-means algorithm to preserve the privacy of the individual labs and compare results. Finally, we conclude with the most important outcomes of our work. 
