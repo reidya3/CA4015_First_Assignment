@@ -52,7 +52,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="References" href="References.html" />
-    <link rel="prev" title="Clustering Analysis" href="Clustering_Analysis.html" />
+    <link rel="prev" title="Federated K-Means" href="Federated_k_means.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -102,6 +102,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="Clustering_Analysis.html">
    Clustering Analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Federated_k_means.html">
+   Federated K-Means
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -196,6 +201,19 @@
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show">
             
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#future-work">
+   Future work
+  </a>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -207,6 +225,20 @@
   <div class="section" id="conclusion">
 <h1>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h1>
 <hr class="docutils" />
+<p>In this investigation, we investigate the clustering of participants who conducted the Iowa gambling task. Utilized features included card deck choice, a health binary variable and the subject’s cumulative reward at different intervals i.e. monitoring the balance between exploration and exploitation. In addition, we augment the existing data by adding participants from the ahn et al study. This enables us to not only examine the behavioural difference between unhealthy and healthy individuals, but also the varying decision-making deficiencies between opioid and stimulant dependent individuals.</p>
+<p>Our most significant results are the following:</p>
+<ol class="simple">
+<li><p>Exploratory data analysis of the various studies contradicts the general assumption of IGT i.e., the preference of healthy individuals to seek long-term reward. Rather than picking the two advantageous decks (C, D), ad-hoc analysis (put in label) demonstrated participants generally prefer one of the advantageous (deck D) and one of the disadvantageous (deck B). Possible reasons for this observed discrepancy may be found in the particular payoff scheme of the study and subsequent biases that might have been introduced.</p></li>
+<li><p>Similarly, we observed a high inter-study and inter-individual variability in IGT performance in healthy participants. Participant variability could be due divergent psychological attributes to between the healthy participants such as different learn behaviour, propensity to gamboling, impulsivity or different decision making strategies. Different IGT versions could explain the other discrepancy.</p></li>
+<li><p>There is a high degree of</p></li>
+<li><p>K-means could reasonably cluster all unhealthy individuals into a single cluster but healthy individuals were distrubuted evenly between the choosen clusters.</p></li>
+<li><p>The devised federated k-means algorithm  achieved</p></li>
+</ol>
+<div class="section" id="future-work">
+<h2>Future work<a class="headerlink" href="#future-work" title="Permalink to this headline">¶</a></h2>
+<p>There are several possibilities to extend this work in future. Currently, both heroin and amphetamine addicts are grouped into the same cluster using K-means (even with different numbers of K and principal components).  We plan to experiment with hierarchical clustering algorithms that might be able to model the distinction between these subgroups in a wider ‘poor decision making’ cluster. Furthermore, sub-groups of healthy participants may be revealed with associated advantageous or disadvantageous decision behaviour.
+In addition, we plan to train a reinforcement leaning model on the datasets and perform clustering utilizing the parameters of that model.  Similar endeavours have shown to be fruitful, with such parameters often increasing interoperability of results. Our devised federated k-means algorithm could also be improved by incorporating mini batch k-means, for large local datasets or devices with low computational capacity. This would result in only a trivial reduction in accuracy and would be particularly useful if the decentralised device was a mobile phone, for example. Finally, we are interested in incorporating other features about the subjects such as socio-economic status,  gender, and a chronic gambling addiction indicator. We hope such features might uncover certain card decision patterns or behavioural inabilities during the task.</p>
+</div>
 </div>
 
     <script type="text/x-thebe-config">
@@ -239,11 +271,11 @@
 <div class='prev-next-bottom'>
     
     <div id="prev">
-        <a class="left-prev" href="Clustering_Analysis.html" title="previous page">
+        <a class="left-prev" href="Federated_k_means.html" title="previous page">
             <i class="prevnext-label fas fa-angle-left"></i>
             <div class="prevnext-info">
                 <p class="prevnext-label">previous</p>
-                <p class="prevnext-title">Clustering Analysis</p>
+                <p class="prevnext-title">Federated K-Means</p>
             </div>
         </a>
     </div>

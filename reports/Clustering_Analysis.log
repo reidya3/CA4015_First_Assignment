@@ -17,29 +17,16 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-# Fixing random state for reproducibility
-np.random.seed(19680801)
-
-N = 10
-data = [np.logspace(0, 1, 100) + np.random.randn(100) + ii for ii in range(N)]
-data = np.array(data).
-rcParams['axes.prop_cycle'] = cycler(color=cmap(np.linspace(0, 1, N)))
-
-
-from matplotlib.lines import Line2D
-custom_lines = [Line2D([0], [0], color=cmap(0.), lw=4),
-                Line2D([0], [0], color=cmap(.5), lw=4),
-                Line2D([0], [0], color=cmap(1.), lw=4)]
-
-fig, ax = plt.subplots(figsize=(10, 5))
-lines = ax.plot(data)
-ax.legend(custom_lines, ['Cold', 'Medium', 'Hot']);
+print(f"Choice's hopkins statistic {hopkins(dim_reduced_choice.iloc[:,2:])}")
+print(f"Reward's hopkins statistic {hopkins(dim_reduced_rewards.iloc[:,2:])}") 
 ------------------
 
-[0;36m  File [0;32m"/tmp/ipykernel_1609/760097720.py"[0;36m, line [0;32m6[0m
-[0;31m    data = np.array(data).[0m
-[0m                          ^[0m
-[0;31mSyntaxError[0m[0;31m:[0m invalid syntax
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+[0;32m/tmp/ipykernel_1619/3032019449.py[0m in [0;36m<module>[0;34m[0m
+[0;32m----> 1[0;31m [0mprint[0m[0;34m([0m[0;34mf"Choice's hopkins statistic {hopkins(dim_reduced_choice.iloc[:,2:])}"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m      2[0m [0mprint[0m[0;34m([0m[0;34mf"Reward's hopkins statistic {hopkins(dim_reduced_rewards.iloc[:,2:])}"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
 
-SyntaxError: invalid syntax (760097720.py, line 6)
+[0;31mNameError[0m: name 'dim_reduced_choice' is not defined
+NameError: name 'dim_reduced_choice' is not defined
 

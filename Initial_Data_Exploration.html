@@ -107,6 +107,11 @@
   </a>
  </li>
  <li class="toctree-l1">
+  <a class="reference internal" href="Federated_k_means.html">
+   Federated K-Means
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="Conclusion.html">
    Conclusion
   </a>
@@ -273,6 +278,7 @@
     <li>View the statistical details of the data</li>
     <li>Add additional data from the {cite:t}`ahn2014decision` study as we are interested in clustering unhealthy individuals</li>
     <li>Perform data visualization to improve our understanding of the data</li>
+    <li>Feature Engineer</li>
     <li>Perform transformations (standardization, PCA)</li>
 </ol>
 <p>If you are viewing this as an HTML page, please use the content toolbar to the right for quick access to different sections.</p>
@@ -631,7 +637,7 @@ Does index_150 contain any null values? False
 </div>
 </div>
 <p>This finding seems to contradict the original ‘many labs’ paper. They suggest that their should be missing data present in the 100 trial dataframes due to incompletely received datasets (i.e., missing data for one participant in
-Kjome et al. study, and for two participants in Wood et al. study). However, they use the word ‘might’ so it is possible this has been rectified since then. I also further validated this assumption using the R programming language as the organizers provided the datasets in the rdata format. The below screenshot confirms my assumption that no missing values are present.</p>
+Kjome et al. study, and for two participants in Wood et al. study). However, they use the word ‘might’ so it is possible that this has been rectified since then. I also further validated this assumption by using the R programming language as the organizers provided the datasets in the rdata format. The below screenshot confirms my assumption that no missing values are present.</p>
 <p><img alt="absence-of-missing-values-verified-in-r" src="_images/missing_values_verified_in_r.png" /></p>
 <p>Next, we calculate the basic statistics of each data set. This is a trivial step and it is designed to increase my understanding of the problem.</p>
 <div class="cell docutils container">
@@ -817,8 +823,8 @@ max       0.000000
 </div>
 <div class="section" id="data-augmentation">
 <h3>Data Augmentation<a class="headerlink" href="#data-augmentation" title="Permalink to this headline">¶</a></h3>
-<p>We are interested in how healthy vs unhealthy individuals will cluster. To this end, we include data from a study conducted by <span id="id1">Ahn <em>et al.</em> [<a class="reference internal" href="References.html#id3">2014</a>]</span>. This dataset contains 48 healthy controls, 43 pure heroin and 38 pure amphetamine users.</p>
-<p>Now, we perform the necessary processing steps  to ‘pivot’ the new data so that it  resembles the already created dataframes. Unfortunately not all subjects had data present for all 100 trials. If a subject did not have complete data, they were removed from this investigation. As a result, we removed 1 healthy individual, 1 individual who takes heroin and 2 individuals who take amphetamine</p>
+<p>We are interested in how healthy vs unhealthy individuals will cluster. To this end, we include data from a study conducted by <span id="id1">Ahn <em>et al.</em> [<a class="reference internal" href="References.html#id9">2014</a>]</span>. This dataset contains 48 healthy controls, 43 pure heroin and 38 pure amphetamine users.</p>
+<p>Now, we perform the necessary processing steps  to ‘pivot’ the new data so that it  resembles the already created dataframes. Unfortunately not every subject had data present for all of the 100 trials. If a subject had incomplete data, they were removed from this investigation. As a result, we removed 1 healthy individual, 1 individual who takes heroin and 2 individuals who take amphetamine.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">remove_incomplete_subjects</span><span class="p">(</span><span class="n">ahn_df</span><span class="p">):</span>
@@ -889,7 +895,7 @@ max       0.000000
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">concat_ahn_to_many_labs</span><span class="p">(</span> <span class="n">many_labs_df</span><span class="p">,</span> <span class="n">ahn_healthy_df</span><span class="p">,</span> <span class="n">ahn_heroin_df</span><span class="p">,</span> <span class="n">ahn_amphetamine_df</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Concats a 100 trial &#39;many labs&#39; dataframe with the dataframes provided by Ahn et al.</span>
-<span class="sd">    Also, maps the health status(&#39;healthy&#39;) and study to each particpant </span>
+<span class="sd">    Also, maps the health status(&#39;healthy&#39;) and the study&#39;s first author to each particpant </span>
 <span class="sd">        of a many labs dataset.</span>
 <span class="sd">    </span>
 <span class="sd">    :param many_labs_df: Dataframe containing data from the many labs paper</span>
@@ -1099,7 +1105,7 @@ The variable name of the pivoted datasets have the form:</p>
 <p>5 rows × 102 columns</p>
 </div></div></div>
 </div>
-<p>We concat the many_labs dataframe with the dataframes provided by Ahn et al. for each type(i.e. choice, win or loss).</p>
+<p>We concat the many_labs dataframe with the dataframes provided by Ahn et al. for each type (i.e. choice, win or loss).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">total_choice_100</span> <span class="o">=</span> <span class="n">concat_ahn_to_many_labs</span><span class="p">(</span><span class="n">choice_100</span><span class="p">,</span><span class="n">ahn_healthy_choice_100</span><span class="p">,</span> <span class="n">ahn_heroin_choice_100</span><span class="p">,</span> <span class="n">ahn_amphetamine_choice_100</span><span class="p">)</span>
@@ -1277,7 +1283,7 @@ The variable name of the pivoted datasets have the form:</p>
 <p>5 rows × 102 columns</p>
 </div></div></div>
 </div>
-<p>The next two cells map the health status(‘healthy’) and study name to each subject in the 95 and 150 trial studies. <strong>Note</strong>, this was completed for 100 trial studies above in the <code class="docutils literal notranslate"><span class="pre">pivot_ahn_to_many_labs()</span></code> function .</p>
+<p>The next two cells map the health status(‘healthy’) and study’s first author to each subject in the 95 and 150 trial studies. <strong>Note</strong>, this was completed for 100 trial studies above in the <code class="docutils literal notranslate"><span class="pre">pivot_ahn_to_many_labs()</span></code> function .</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">choice_95</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s1">&#39;healthy&#39;</span><span class="p">)</span>
@@ -1313,7 +1319,7 @@ The variable name of the pivoted datasets have the form:</p>
 $<span class="math notranslate nohighlight">\(
 G(t) = \sum_{k=0}^T R_{t+k+1}
 \)</span>$</p>
-<p>In the same respect, we  attempt to plot the calmative reward (total) for the participants surveyed. However, given the large number of participants available, it is infeasible to plot for every subject. Therefore, we will group participants by study. When plotting, the average cumulative total at trial T for a study of N participants will be calculated as follows:</p>
+<p>In the same respect, we  attempt to plot the cumulative reward (total) for the participants surveyed. However, given the large number of participants available, it is infeasible to plot for every subject. Therefore, we will group participants by study. When plotting, the average cumulative total at trial T for a study of N participants will be calculated as follows:</p>
 <div class="math notranslate nohighlight">
 \[
 \frac{1}{N} \sum_{n=1}^N\sum_{t=1}^T (W + L)_{t}
@@ -1364,7 +1370,6 @@ G(t) = \sum_{k=0}^T R_{t+k+1}
 </div>
 </div>
 </div>
-<p>Visualizations of the sum of the cumulative rewards, grouped by a ‘many labs’ study. Note, a green line indicates a positive end value where as a red line indicates a negative end value. Initially,we concluded that some data transformations incorrectly as our pre-conceptions were not met but ad-hoc analysis revealed no errors. However as <span id="id2">Bull <em>et al.</em> [<a class="reference internal" href="References.html#id2">2015</a>]</span> notes “researchers have observed high inter-study and inter-individual variability in IGT performance in healthy participants.”</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">visualize_cumulative_reward_by_study</span><span class="p">(</span><span class="n">cum_reward_df</span><span class="p">):</span>
@@ -1394,12 +1399,7 @@ G(t) = \sum_{k=0}^T R_{t+k+1}
 </div>
 </div>
 </div>
-<p>Please find below the visualizations of the average cumulative grouped by the many labs studies. These visualizations can be grouped into four major observations:</p>
-<ul class="simple">
-<li><p><strong>Kjome, wood, worthy</strong></p></li>
-<li><p>**Fridberg,</p></li>
-<li><p><strong>Steingover2011, Wetzels</strong>m <strong>Horstman</strong>:</p></li>
-</ul>
+<p>Visualizations of the <strong>average sum</strong> of the <strong>cumulative</strong> rewards, grouped by a ‘many labs’ study. Note, a green line indicates a positive end value where as a red line indicates a negative end value i.e. take home pay. Initially,we concluded that some data transformations incorrectly as our pre-conceptions were not met but ad-hoc analysis revealed no errors. However as <span id="id2">Bull <em>et al.</em> [<a class="reference internal" href="References.html#id8">2015</a>]</span> notes “researchers have observed high inter-study and inter-individual variability in IGT performance in healthy participants.”. According to <span id="id3">[<a class="reference internal" href="References.html#id20">Bechara <em>et al.</em>, 1994</a>]</span>.  healthy subjects should gradually learn to choose an approximately equal number of cards from decks C and D and avoid cards from decks A and B, assuming that they focus on the long-term monetary outcome i.e. the largest take home award . Although <code class="docutils literal notranslate"><span class="pre">Steingroever2011</span></code> and <code class="docutils literal notranslate"><span class="pre">Wetzel</span></code> follow this trend, the other studies do not. This confirms our hypothesis that healthy subjects do not exclusively focus on the long-term outcome. Instead, subjects predominantly consider a combination of gain and loss frequency choices and may be influenced by psychological differences such as impulsivity or  propensity to gambling.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">visualize_cumulative_reward_by_study</span><span class="p">(</span><span class="n">cum_reward_95</span><span class="p">)</span>
@@ -1407,7 +1407,7 @@ G(t) = \sum_{k=0}^T R_{t+k+1}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_43_0.png" src="_images/Initial_Data_Exploration_43_0.png" />
+<img alt="_images/Initial_Data_Exploration_41_0.png" src="_images/Initial_Data_Exploration_41_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1417,13 +1417,13 @@ G(t) = \sum_{k=0}^T R_{t+k+1}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_44_0.png" src="_images/Initial_Data_Exploration_44_0.png" />
-<img alt="_images/Initial_Data_Exploration_44_1.png" src="_images/Initial_Data_Exploration_44_1.png" />
-<img alt="_images/Initial_Data_Exploration_44_2.png" src="_images/Initial_Data_Exploration_44_2.png" />
-<img alt="_images/Initial_Data_Exploration_44_3.png" src="_images/Initial_Data_Exploration_44_3.png" />
-<img alt="_images/Initial_Data_Exploration_44_4.png" src="_images/Initial_Data_Exploration_44_4.png" />
-<img alt="_images/Initial_Data_Exploration_44_5.png" src="_images/Initial_Data_Exploration_44_5.png" />
-<img alt="_images/Initial_Data_Exploration_44_6.png" src="_images/Initial_Data_Exploration_44_6.png" />
+<img alt="_images/Initial_Data_Exploration_42_0.png" src="_images/Initial_Data_Exploration_42_0.png" />
+<img alt="_images/Initial_Data_Exploration_42_1.png" src="_images/Initial_Data_Exploration_42_1.png" />
+<img alt="_images/Initial_Data_Exploration_42_2.png" src="_images/Initial_Data_Exploration_42_2.png" />
+<img alt="_images/Initial_Data_Exploration_42_3.png" src="_images/Initial_Data_Exploration_42_3.png" />
+<img alt="_images/Initial_Data_Exploration_42_4.png" src="_images/Initial_Data_Exploration_42_4.png" />
+<img alt="_images/Initial_Data_Exploration_42_5.png" src="_images/Initial_Data_Exploration_42_5.png" />
+<img alt="_images/Initial_Data_Exploration_42_6.png" src="_images/Initial_Data_Exploration_42_6.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1433,10 +1433,13 @@ G(t) = \sum_{k=0}^T R_{t+k+1}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_45_0.png" src="_images/Initial_Data_Exploration_45_0.png" />
-<img alt="_images/Initial_Data_Exploration_45_1.png" src="_images/Initial_Data_Exploration_45_1.png" />
+<img alt="_images/Initial_Data_Exploration_43_0.png" src="_images/Initial_Data_Exploration_43_0.png" />
+<img alt="_images/Initial_Data_Exploration_43_1.png" src="_images/Initial_Data_Exploration_43_1.png" />
 </div>
 </div>
+<p>A common held belief is that people who suffer from subsistence issues exhibit decision-making deficits.
+These results seem to confirm this as we observed the second lowest average cumulative reward at the end trial (i.e take home award). However, although both types of substance users exhibit similar behaviour (i.e. an initial surge followed by a decline by choosing the “bad cards”)
+the average heroin user tends to perform more poorly when compared to an amphetamine user. Different classes of drugs, such as stimulants and opiates might have different degree of impairment on the decision making progress.  For example, pre-cinical trails conduced by <span id="id4">Stewart <em>et al.</em> [<a class="reference internal" href="References.html#id5">1984</a>]</span> describe notable differences between stimulants and opiates, which exert fundamentally different behavioral effects, such that stimulants produce arousing and activating effects, whereas opiates produce mixed inhibitory and excitatory effects. Again, this is a small sample size so results have to be interrupted with caution!</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ahn_cum_reward</span> <span class="o">=</span> <span class="n">cum_reward_100</span><span class="p">[</span><span class="n">cum_reward_100</span><span class="p">[</span><span class="s1">&#39;study&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Ahn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;health status&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -1453,18 +1456,376 @@ G(t) = \sum_{k=0}^T R_{t+k+1}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_46_0.png" src="_images/Initial_Data_Exploration_46_0.png" />
+<img alt="_images/Initial_Data_Exploration_45_0.png" src="_images/Initial_Data_Exploration_45_0.png" />
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="data-processing">
 <h2>Data Processing<a class="headerlink" href="#data-processing" title="Permalink to this headline">¶</a></h2>
-<p>The performance of the ‘healthy’ participants on IGT may have been altered by factors that varied across the included studies (e.g. fatigue due to longer trial length). To mitigate against these factors and allow for more accurate comparison, we restrict our investigation to a subset of the available data. This subset contains the 7 investigations that use the classical 100 trials. This subset includes 504 participants (age range: 18 to 88). Of those 5 studies that had information on gender, 54% were female. We plan to cluster people by their:</p>
+<p>If we were to include every feature currently available, we would have high dimensional dataset. K-means suffers from the ‘curse of dimensionality’ as the distance metric (Euclidean distance) suffers in high dimensions.  Ah-hoc analysis using a dimensailty reduction technique known as principal component analysis (discussed later on) on the 100 trial choice dataset still revealed a high number of relevant components, 36 (Kaiser-Guttman test). This motivates us to perform feature engineering and create the following columns:</p>
 <ul class="simple">
-<li><p>choices</p></li>
-<li><p>rewards</p></li>
+<li><p><strong>health_binary:</strong> A binary variable, 1 if the subject is healthy. Otherwise, 0</p></li>
+<li><p><strong>cum_reward_25:</strong> The cumulative reward (as explained above) at trial 25. We include the cumulative reward at specified trial intervals in attempt to model the behaviour/progress of a subject when performing the task. For example, we would expect an individual that has a propensity for gambling to initially achieve well but would loose money overtime as the decks with higher wins (<span class="math notranslate nohighlight">\(100) result in a long-term net loss, while the decks with smaller wins (\)</span>50) yield a net gain</p></li>
+<li><p><strong>cum_reward_50:</strong> The cumulative reward at trial 50.</p></li>
+<li><p><strong>cum_reward_75:</strong> The cumulative reward at trial 57.</p></li>
+<li><p><strong>cum_reward_100:</strong> The cumulative reward at trial 100.</p></li>
+<li><p><strong>A:</strong> Count of the number of times card deck A (‘bad deck’) was picked.</p></li>
+<li><p><strong>B:</strong> Count of the number of times card deck B (‘bad deck’) was picked.</p></li>
+<li><p><strong>C:</strong> Count of the number of times card deck C (‘good deck’) was picked.</p></li>
+<li><p><strong>D:</strong> Count of the number of times card deck D (‘good deck’) was picked.</p></li>
 </ul>
+<p>The performance of the ‘healthy’ participants on IGT may have been altered by factors that varied across the included studies (e.g. fatigue due to longer trial length). In addition, the card deck count features would be influenced by trial length and could lead to clustering by study rather than my behaviour. (However, this could have ben rectified by scaling) To mitigate against these factors and allow for more accurate comparison, we restrict our investigation to a subset of the available data (many labs + Ahn et al.). This subset contains 8 investigations, 7 that use the classical 100 trials from the ‘many labs’ paper and the <span id="id5">Ahn <em>et al.</em> [<a class="reference internal" href="References.html#id9">2014</a>]</span> study. This subset includes 629 participants (age range: 18 to 88). Of those 5 studies that had information on gender, 54% were female.</p>
+<p>Engineering the card occurrence columns:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">card_choice_df</span> <span class="o">=</span> <span class="n">total_choice_100</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="o">.</span><span class="n">value_counts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">card_choice_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;D&#39;</span><span class="p">]</span>
+<span class="n">card_choice_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>21</td>
+      <td>42</td>
+      <td>15</td>
+      <td>22</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>14</td>
+      <td>35</td>
+      <td>18</td>
+      <td>33</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>21</td>
+      <td>42</td>
+      <td>7</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>13</td>
+      <td>24</td>
+      <td>28</td>
+      <td>35</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>15</td>
+      <td>31</td>
+      <td>28</td>
+      <td>26</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Engineering the cumulative reward columns:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">processed_100</span> <span class="o">=</span> <span class="n">cum_reward_100</span><span class="p">[[</span><span class="s1">&#39;study&#39;</span><span class="p">,</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s1">&#39;trial_25&#39;</span><span class="p">,</span><span class="s1">&#39;trial_50&#39;</span><span class="p">,</span><span class="s1">&#39;trial_75&#39;</span><span class="p">,</span><span class="s1">&#39;trial_100&#39;</span><span class="p">]]</span>
+<span class="n">processed_100</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>study</th>
+      <th>health status</th>
+      <th>trial_25</th>
+      <th>trial_50</th>
+      <th>trial_75</th>
+      <th>trial_100</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>-250</td>
+      <td>-550</td>
+      <td>-800</td>
+      <td>-1800</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>150</td>
+      <td>-400</td>
+      <td>500</td>
+      <td>-800</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>-300</td>
+      <td>-500</td>
+      <td>-350</td>
+      <td>-450</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>-450</td>
+      <td>-500</td>
+      <td>500</td>
+      <td>1200</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>-600</td>
+      <td>-700</td>
+      <td>150</td>
+      <td>-1300</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>624</th>
+      <td>Ahn</td>
+      <td>amphetamine</td>
+      <td>1250</td>
+      <td>190</td>
+      <td>860</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <th>625</th>
+      <td>Ahn</td>
+      <td>amphetamine</td>
+      <td>115</td>
+      <td>-690</td>
+      <td>-1340</td>
+      <td>-1815</td>
+    </tr>
+    <tr>
+      <th>626</th>
+      <td>Ahn</td>
+      <td>amphetamine</td>
+      <td>300</td>
+      <td>-505</td>
+      <td>-2075</td>
+      <td>-925</td>
+    </tr>
+    <tr>
+      <th>627</th>
+      <td>Ahn</td>
+      <td>amphetamine</td>
+      <td>535</td>
+      <td>-200</td>
+      <td>-795</td>
+      <td>-1785</td>
+    </tr>
+    <tr>
+      <th>628</th>
+      <td>Ahn</td>
+      <td>amphetamine</td>
+      <td>1335</td>
+      <td>-925</td>
+      <td>-1990</td>
+      <td>-2390</td>
+    </tr>
+  </tbody>
+</table>
+<p>629 rows × 6 columns</p>
+</div></div></div>
+</div>
+<p>Engineering the healthy binary column:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">processed_100</span><span class="p">[</span><span class="s1">&#39;health binary&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">processed_100</span><span class="p">[</span><span class="s1">&#39;health status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span>  <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span><span class="s1">&#39;healthy&#39;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">processed_100</span><span class="p">[</span><span class="n">processed_100</span><span class="p">[</span><span class="s1">&#39;health binary&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">78</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/ipykernel_launcher.py:1: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  &quot;&quot;&quot;Entry point for launching an IPython kernel.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">processed_100</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">processed_100</span><span class="p">,</span> <span class="n">card_choice_df</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+<span class="n">processed_100</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>study</th>
+      <th>health status</th>
+      <th>trial_25</th>
+      <th>trial_50</th>
+      <th>trial_75</th>
+      <th>trial_100</th>
+      <th>health binary</th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>-250</td>
+      <td>-550</td>
+      <td>-800</td>
+      <td>-1800</td>
+      <td>1</td>
+      <td>21</td>
+      <td>42</td>
+      <td>15</td>
+      <td>22</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>150</td>
+      <td>-400</td>
+      <td>500</td>
+      <td>-800</td>
+      <td>1</td>
+      <td>14</td>
+      <td>35</td>
+      <td>18</td>
+      <td>33</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>-300</td>
+      <td>-500</td>
+      <td>-350</td>
+      <td>-450</td>
+      <td>1</td>
+      <td>21</td>
+      <td>42</td>
+      <td>7</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>-450</td>
+      <td>-500</td>
+      <td>500</td>
+      <td>1200</td>
+      <td>1</td>
+      <td>13</td>
+      <td>24</td>
+      <td>28</td>
+      <td>35</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>-600</td>
+      <td>-700</td>
+      <td>150</td>
+      <td>-1300</td>
+      <td>1</td>
+      <td>15</td>
+      <td>31</td>
+      <td>28</td>
+      <td>26</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
 </div>
 <div class="section" id="pca">
 <h2>PCA<a class="headerlink" href="#pca" title="Permalink to this headline">¶</a></h2>
@@ -1485,11 +1846,11 @@ $<span class="math notranslate nohighlight">\(X_i = X_i - \bar{X}~~~~~~~~~~~~~~~
 <p>The standard deviation should equal 1 after standardization</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">labeled_choice_100</span> <span class="o">=</span> <span class="n">total_choice_100</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,[</span><span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="s1">&#39;health status&#39;</span><span class="p">]]</span>
-<span class="n">values_to_be_scaled_choice_100</span> <span class="o">=</span>  <span class="n">total_choice_100</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:]</span>
-<span class="n">values_to_be_scaled_choice_100</span>  <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">values_to_be_scaled_choice_100</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">labeled_processed_100</span> <span class="o">=</span> <span class="n">processed_100</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,[</span><span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="s1">&#39;health status&#39;</span><span class="p">]]</span>
+<span class="n">values_to_be_scaled_processed_100</span> <span class="o">=</span>  <span class="n">processed_100</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:]</span>
+<span class="n">scaled_processed_100</span>  <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">values_to_be_scaled_processed_100</span><span class="p">)</span>
 
-<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">values_to_be_scaled_choice_100</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">scaled_processed_100</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
 </pre></div>
 </div>
 </div>
@@ -1497,7 +1858,7 @@ $<span class="math notranslate nohighlight">\(X_i = X_i - \bar{X}~~~~~~~~~~~~~~~
 <p>We will use the <code class="docutils literal notranslate"><span class="pre">PCA</span></code> function supplied by the <code class="docutils literal notranslate"><span class="pre">Scikit-learn</span></code> library for dimensionality reduction.  But how do we find the optimal number of components? Which eigenvalues are important?  The scree plot below describes the cumulative explained variance for each component. We reach 80% explained variance at the 58 component mark.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">values_to_be_scaled_choice_100</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">scaled_processed_100</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number of components&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;cumulative explained variance&#39;</span><span class="p">)</span>
@@ -1507,7 +1868,7 @@ $<span class="math notranslate nohighlight">\(X_i = X_i - \bar{X}~~~~~~~~~~~~~~~
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_54_0.png" src="_images/Initial_Data_Exploration_54_0.png" />
+<img alt="_images/Initial_Data_Exploration_60_0.png" src="_images/Initial_Data_Exploration_60_0.png" />
 </div>
 </div>
 <p>According to the average-eigenvalue test (Kaiser-Guttman test) we should retain only those eigenvalues that are above the average which is 1.0. <br>
@@ -1526,72 +1887,175 @@ Jolliffe relaxes this criterium and suggest to retain eigenvalues greater than 0
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Kasier criterion optimal component number: 36, explained variance: 0.6178998663574315
-Jolliffe criterion optimal component number: 57 , expalined variance: 0.797075942483732
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Kasier criterion optimal component number: 2, explained variance: 0.7168193073625705
+Jolliffe criterion optimal component number: 3 , expalined variance: 0.8117508248086707
 </pre></div>
 </div>
 </div>
 </div>
-<p>Unfortunately, the optimal number of principal components is still quite high for either criterion and does not lend itself well to visualisation. For the purpose of this investigation, we decide to go with the Kaiser criterion as it is more accepted. In addition, 36 principal components (Kasier) account for approx. 61.79% of the explained variance whilst 57 principal components (Jolliffe). We will now repeat the process for the rewards dataframe.</p>
+<p>For the purpose of this investigation, we decide to go with <strong>both</strong> the Kaiser criterion and Jolaliffe criterion . In addition, 2 principal components (Kasier) account for approx. 71.68% of the explained variance whilst 3 principal components (Jolliffe) account for approx. 81.17% of the explained variance.</p>
+<p>Finally, we fit the <code class="docutils literal notranslate"><span class="pre">pca</span></code> model with the dataframes containing top 2 and 3 components , apply the dimensionality reduction on those respective dataframe and save the resulting dataframes.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">labeled_rewards_100</span> <span class="o">=</span> <span class="n">rewards_100</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,[</span><span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="s1">&#39;health status&#39;</span><span class="p">]]</span>
-<span class="n">values_to_be_scaled_rewards_100</span> <span class="o">=</span>  <span class="n">rewards_100</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:]</span>
-<span class="n">values_to_be_scaled_rewards_100</span>  <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">values_to_be_scaled_rewards_100</span><span class="p">)</span>
-
-<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">values_to_be_scaled_rewards_100</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
-
-<span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">values_to_be_scaled_rewards_100</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number of components&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;cumulative explained variance&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Scree plot&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="n">kasier_criterion</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s1">&#39;Kasier criterion optimal component number: </span><span class="si">{</span><span class="n">kasier_criterion</span><span class="si">}</span><span class="s1">, explained variance: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">)[</span><span class="n">kasier_criterion</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
-    <span class="p">)</span>
-<span class="n">jolliffe_criterion</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_</span> <span class="o">&gt;</span> <span class="mf">0.7</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s1">&#39;Jolliffe criterion optimal component number: </span><span class="si">{</span><span class="n">jolliffe_criterion</span><span class="si">}</span><span class="s1"> , expalined variance: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">)[</span><span class="n">jolliffe_criterion</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
-    <span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pca_2d</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">dim_reduced_2d</span> <span class="o">=</span> <span class="n">pca_2d</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">scaled_processed_100</span><span class="p">)</span>
+<span class="n">dim_reduced_2d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">dim_reduced_2d</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;component_</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)])</span>
+<span class="n">dim_reduced_2d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">labeled_processed_100</span><span class="p">,</span> <span class="n">dim_reduced_2d</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+<span class="n">dim_reduced_2d</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;data/dim_reduced_2d.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">dim_reduced_2d</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_58_0.png" src="_images/Initial_Data_Exploration_58_0.png" />
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Kasier criterion optimal component number: 46, explained variance: 0.6459086403443648
-Jolliffe criterion optimal component number: 71 , expalined variance: 0.8574374373634465
-</pre></div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>study</th>
+      <th>health status</th>
+      <th>component_1</th>
+      <th>component_2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>-1.703901</td>
+      <td>0.529617</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>0.169127</td>
+      <td>0.714179</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>-0.913123</td>
+      <td>1.028506</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>1.472582</td>
+      <td>0.978087</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>-0.267429</td>
+      <td>0.801555</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
-</div>
-</div>
-<p>Finally, we fit the <code class="docutils literal notranslate"><span class="pre">pca</span></code> model with the chosen dataframe (choices or rewards), apply the dimensionality reduction on that dataframe and save the resulting dataframe with the optimal number of componenets.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pca_choice</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">36</span><span class="p">)</span>
-<span class="n">dim_reduced_choice</span> <span class="o">=</span> <span class="n">pca_choice</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">values_to_be_scaled_choice_100</span><span class="p">)</span>
-<span class="n">dim_reduced_choice</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">dim_reduced_choice</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;component_</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">37</span><span class="p">)])</span>
-<span class="n">dim_reduced_choice</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-        <span class="n">labeled_choice_100</span><span class="p">,</span> <span class="n">dim_reduced_choice</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pca_3d</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">dim_reduced_3d</span> <span class="o">=</span> <span class="n">pca_3d</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">scaled_processed_100</span><span class="p">)</span>
+<span class="n">dim_reduced_3d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">dim_reduced_3d</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;component_</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">)])</span>
+<span class="n">dim_reduced_3d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">labeled_processed_100</span><span class="p">,</span> <span class="n">dim_reduced_3d</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
-<span class="n">dim_reduced_choice</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;data/dim_reduced_choice.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">dim_reduced_3d</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;data/dim_reduced_3d.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">dim_reduced_3d</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pca_reward</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">46</span><span class="p">)</span>
-<span class="n">dim_reduced_rewards</span> <span class="o">=</span> <span class="n">pca_reward</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">values_to_be_scaled_rewards_100</span><span class="p">)</span>
-<span class="n">dim_reduced_rewards</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">dim_reduced_rewards</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;component_</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">47</span><span class="p">)])</span>
-<span class="n">dim_reduced_rewards</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-        <span class="n">labeled_rewards_100</span><span class="p">,</span> <span class="n">dim_reduced_rewards</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
-<span class="n">dim_reduced_rewards</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;data/dim_reduced_rewards.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>study</th>
+      <th>health status</th>
+      <th>component_1</th>
+      <th>component_2</th>
+      <th>component_3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>-1.703901</td>
+      <td>0.529617</td>
+      <td>0.118642</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>0.169127</td>
+      <td>0.714179</td>
+      <td>-0.240990</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>-0.913123</td>
+      <td>1.028506</td>
+      <td>-0.473166</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>1.472582</td>
+      <td>0.978087</td>
+      <td>0.555986</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Horstmann</td>
+      <td>healthy</td>
+      <td>-0.267429</td>
+      <td>0.801555</td>
+      <td>0.819148</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 </div>
 </div>
