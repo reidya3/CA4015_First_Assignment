@@ -1,2 +1,16 @@
 # Conclusion 
 ---
+In this investigation, we investigate the clustering of participants who conducted the Iowa gambling task. Utilized features included card deck choice, a health binary variable and the subject's cumulative reward at different intervals i.e. monitoring the balance between exploration and exploitation. In addition, we augment the existing data by adding participants from the ahn et al study. This enables us to not only examine the behavioural difference between unhealthy and healthy individuals, but also the varying decision-making deficiencies between opioid and stimulant dependent individuals.  
+
+Our most significant results are the following: 
+1. Exploratory data analysis of the various studies contradicts the general assumption of IGT i.e., the preference of healthy individuals to seek long-term reward. Rather than picking the two advantageous decks (C, D), ad-hoc analysis (put in label) demonstrated participants generally prefer one of the advantageous (deck D) and one of the disadvantageous (deck B). Possible reasons for this observed discrepancy may be found in the particular payoff scheme of the study and subsequent biases that might have been introduced. 
+2. Similarly, we observed a high inter-study and inter-individual variability in IGT performance in healthy participants. Participant variability could be due divergent psychological attributes to between the healthy participants such as different learn behaviour, propensity to gamboling, impulsivity or different decision making strategies. Different IGT versions could explain the other discrepancy. 
+3. There is a high degree of 
+3. K-means could reasonably cluster all unhealthy individuals into a single cluster but healthy individuals were distrubuted evenly between the choosen clusters. 
+4.  The devised federated k-means algorithm  achieved 
+
+## Future work
+There are several possibilities to extend this work in future. Currently, both heroin and amphetamine addicts are grouped into the same cluster using K-means (even with different numbers of K and principal components).  We plan to experiment with hierarchical clustering algorithms that might be able to model the distinction between these subgroups in a wider ‘poor decision making’ cluster. Furthermore, sub-groups of healthy participants may be revealed with associated advantageous or disadvantageous decision behaviour. 
+In addition, we plan to train a reinforcement leaning model on the datasets and perform clustering utilizing the parameters of that model.  Similar endeavours have shown to be fruitful, with such parameters often increasing interoperability of results. Our devised federated k-means algorithm could also be improved by incorporating mini batch k-means, for large local datasets or devices with low computational capacity. This would result in only a trivial reduction in accuracy and would be particularly useful if the decentralised device was a mobile phone, for example. Finally, we are interested in incorporating other features about the subjects such as socio-economic status,  gender, and a chronic gambling addiction indicator. We hope such features might uncover certain card decision patterns or behavioural inabilities during the task.
+
+ 

@@ -53,7 +53,7 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Conclusion" href="Conclusion.html" />
+    <link rel="next" title="Clustering Analysis" href="Federated_k_means.html" />
     <link rel="prev" title="Initial Data Exploration" href="Initial_Data_Exploration.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -103,6 +103,11 @@
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
+   Clustering Analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Federated_k_means.html">
    Clustering Analysis
   </a>
  </li>
@@ -243,6 +248,64 @@
   <a class="reference internal nav-link" href="#k-means">
    K-Means
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#elbow-method">
+     Elbow method
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sillhoute-method">
+   Sillhoute method
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#findings">
+   Findings
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#top-2-principal-component-dataset">
+     Top 2 principal component dataset
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#healthy-vs-unhealthy">
+       Healthy vs Unhealthy
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#study-vs-study">
+       Study vs Study
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#top-3-principal-compnent-dataset">
+     Top 3 principal compnent  dataset
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id2">
+       Healthy vs Unhealthy
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id3">
+       Study vs Study
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#k-2-2d-dataset">
+       (k=2, 2D dataset)
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -258,11 +321,17 @@
   <div class="section" id="clustering-analysis">
 <h1>Clustering Analysis<a class="headerlink" href="#clustering-analysis" title="Permalink to this headline">¶</a></h1>
 <p>The purpose of our cluster analysis is to:</p>
-<ol type = "a">
-    <li>Measure clustering & central tendency.</li>
-    <li>Perform k-means</li>
-    <li>Evaluate the clusters, <b>particularly</b> how unhealthy vs healthy individuals cluster</li>
-</ol><div class="cell docutils container">
+<ul class="simple">
+<li><p>Measure clustering &amp; central tendency.</p></li>
+<li><p>Perform k-means</p></li>
+<li><p>Evaluate the clusters, <strong>particularly</strong>:</p>
+<ul>
+<li><p>unhealthy vs healthy</p></li>
+<li><p>study vs study</p></li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyclustertend</span> <span class="kn">import</span> <span class="n">ivat</span><span class="p">,</span> <span class="n">vat</span>
 <span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">scale</span>
@@ -275,6 +344,9 @@
 <span class="kn">from</span> <span class="nn">pyclustertend</span> <span class="kn">import</span> <span class="n">ivat</span>
 <span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">silhouette_score</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">yellowbrick.cluster</span> <span class="kn">import</span> <span class="n">SilhouetteVisualizer</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 </pre></div>
 </div>
 </div>
@@ -282,14 +354,14 @@
 <div class="section" id="measure-cluster-tendency">
 <h2>Measure Cluster Tendency<a class="headerlink" href="#measure-cluster-tendency" title="Permalink to this headline">¶</a></h2>
 <p>Clustering algorithms such as k-means are used to determine the structure of multi-dimensional data. Clusters are natural disjoint groups. However, K-means will find clusters in data even if none “actually” exist. Therefore, a fundamentally question to ask before applying any clustering algorithms is : Are clusters present at all?
-Ww will measure the clustering tendency of both the choice and reward datasets before subjecting it to k-means. To do this, we employ two methods:</p>
+We will measure the clustering tendency of both datasets before subjecting it to k-means. These datasets contain the top <strong>two principal components (2D)</strong> and the top <strong>three principal components (3D)</strong>, respectively To do this, we employ two methods:</p>
 <ul class="simple">
-<li><p>Hopkin’s stastisic  of randomness</p></li>
+<li><p>Hopkins’s statistic  of randomness</p></li>
 <li><p>VAT (visual assessment of tendency)</p></li>
 </ul>
 <div class="section" id="hopkins-statistics">
 <h3>Hopkins statistics<a class="headerlink" href="#hopkins-statistics" title="Permalink to this headline">¶</a></h3>
-<p>Hopkins statistics <span id="id1">[]</span> tests the spatial randomness of a dataset i.e. it measures the probability that a given dataset is generated by a uniform distribution. It is based on the difference between the distance from a real point to its nearest neighbor, U, and the distance from a uniformly generated point within the data space to the nearest real data point, W.</p>
+<p>Hopkins statistics <span id="id1">[<a class="reference internal" href="References.html#id5">Banerjee and Dave, 2004</a>]</span> tests the spatial randomness of a dataset i.e. it measures the probability that a given dataset is generated by a uniform distribution. It is based on the difference between the distance from a real point to its nearest neighbor, U, and the distance from a uniformly generated point within the data space to the nearest real data point, W.</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(H_{0}\)</span>: The dataset <strong>is</strong> uniformly distributed</p></li>
 <li><p><span class="math notranslate nohighlight">\(H_{1}\)</span>: The dataset <strong>is not</strong> uniformly distributed</p></li>
@@ -330,8 +402,8 @@ H = \frac{\sum_{i=1}^{m} u_{i}^{d}}{\sum_{i=1}^{m} u_{i}^{d} + \sum_{i=1}^{m} w_
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dim_reduced_choice</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/dim_reduced_choice.tsv&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="n">dim_reduced_rewards</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/dim_reduced_rewards.tsv&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dim_reduced_2d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/dim_reduced_2d.tsv&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">dim_reduced_3d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/dim_reduced_3d.tsv&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -345,8 +417,13 @@ H = \frac{\sum_{i=1}^{m} u_{i}^{d}}{\sum_{i=1}^{m} u_{i}^{d} + \sum_{i=1}^{m} w_
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Choice&#39;s hopkins statistic 0.6621270631000734
-Reward&#39;s hopkins statistic 0.7373527255970126
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="o">~</span>\<span class="n">AppData</span>\<span class="n">Local</span>\<span class="n">Temp</span><span class="o">/</span><span class="n">ipykernel_50684</span><span class="o">/</span><span class="mf">3032019449.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Choice&#39;s hopkins statistic </span><span class="si">{</span><span class="n">hopkins</span><span class="p">(</span><span class="n">dim_reduced_choice</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reward&#39;s hopkins statistic </span><span class="si">{</span><span class="n">hopkins</span><span class="p">(</span><span class="n">dim_reduced_rewards</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="ne">NameError</span>: name &#39;dim_reduced_choice&#39; is not defined
 </pre></div>
 </div>
 </div>
@@ -354,10 +431,10 @@ Reward&#39;s hopkins statistic 0.7373527255970126
 <div class="section" id="ivat-visual-assessment-of-tendency">
 <h4>IVAT (visual assessment of tendency)<a class="headerlink" href="#ivat-visual-assessment-of-tendency" title="Permalink to this headline">¶</a></h4>
 <p>VAT is visual method of assessing the clustering likelihood of a dataset. VAT creates a minimum spanning tree of observations, where the pairwise distance between those observations is displayed as the black squares of an ordered dissimilarity square-shaped Map. The densely black squares on the diagonal can be understood as the number of clusters. The different shade of black provides insight on not only the numbers of clusters but, also the cluster hierarchy. <strong>Note</strong>, This algorithm is not a substitute for cluster evaluation metrics (Elbow, Silhouette coefficient). It merely suggests if clusters exist in the datasets, so as to avoid conducting cluster analysis on datasets in the first place. IVAT is just an improved version improved version of the VAT algorithm which produce more precise images but is more computational expensive.</p>
-<p><strong>IVAT MAP of Choices</strong></p>
+<p><strong>IVAT MAP 2D</strong></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ivat</span><span class="p">(</span><span class="n">dim_reduced_choice</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ivat</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -365,10 +442,10 @@ Reward&#39;s hopkins statistic 0.7373527255970126
 <img alt="_images/Clustering_Analysis_8_0.png" src="_images/Clustering_Analysis_8_0.png" />
 </div>
 </div>
-<p><strong>IVAT MAP of Rewards</strong></p>
+<p><strong>IVAT MAP 3D</strong></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ivat</span><span class="p">(</span><span class="n">dim_reduced_rewards</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ivat</span><span class="p">(</span><span class="n">dim_reduced_3d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -382,42 +459,321 @@ Reward&#39;s hopkins statistic 0.7373527255970126
 </div>
 <div class="section" id="k-means">
 <h2>K-Means<a class="headerlink" href="#k-means" title="Permalink to this headline">¶</a></h2>
-<p>K-means is a common clustering algorithm. Although a simple clustering algorithm , it has wide application areas including in customer segmentation and Image compression. The main steps of this algorthim are
-$<span class="math notranslate nohighlight">\( \sum_{i=0}^{n} \min_{\mu_j \in C} (||x_i - \mu_j||^2) \)</span>$</p>
-<p>But how do we find the correct number of clusters?</p>
+<p>K-means is a common clustering algorithm. Although a simple clustering algorithm , it has wide application areas including in customer segmentation and Image compression. K-means is a centroid based algorithm that aims to minimize the sum of distances between the points and their respective cluster centroid..  The main steps of this algorithm are:</p>
+<ul class="simple">
+<li><p><strong>Step 1</strong>: Choose the number (k) of clusters</p></li>
+<li><p><strong>Step 2</strong>: Select k random points which will become the inital centroids</p></li>
+<li><p><strong>Step 3</strong>: Assign all data points to the nearest centroid.</p></li>
+<li><p><strong>step 4</strong>: Compute the centroid of the newly formed clusters by by taking the
+mean of data instances currently associated with that cluster.</p></li>
+<li><p><strong>Step 5</strong>: Repeat steps 3 and 4 untill either:</p>
+<ul>
+<li><p>Centroids of newly formed clusters do not change</p></li>
+<li><p>Points remain in the same cluster</p></li>
+<li><p>Maximum number of iterations are reached</p></li>
+</ul>
+</li>
+</ul>
+<p>But how do we find the optimal number of clusters?</p>
+<ul class="simple">
+<li><p>Elbow method</p></li>
+<li><p>Silhouette coefficient</p></li>
+</ul>
+<div class="section" id="elbow-method">
+<h3>Elbow method<a class="headerlink" href="#elbow-method" title="Permalink to this headline">¶</a></h3>
+<p>The Elbow method calculates the error or ‘distortion’ between the data points (<span class="math notranslate nohighlight">\(y_{i}\)</span>) and their corresponding centroid (<span class="math notranslate nohighlight">\(ŷ_{i}\)</span>) of N data points for k clusters where k ⋹ {1…10}. The error metric used is the Sum of Squared Error (SSE):
+$<span class="math notranslate nohighlight">\(
+SSE = \sum_{i=1}^{N} {(y_i - ŷ_i)^2}
+\)</span>$</p>
+<p>We plot these values in an attempt to find an ‘elbow’ within the curve.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fixing random state for reproducibility</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">19680801</span><span class="p">)</span>
-
-<span class="n">N</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">+</span> <span class="n">ii</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span>
-<span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.prop_cycle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cycler</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">cmap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">)))</span>
-
-
-<span class="kn">from</span> <span class="nn">matplotlib.lines</span> <span class="kn">import</span> <span class="n">Line2D</span>
-<span class="n">custom_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">Line2D</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">cmap</span><span class="p">(</span><span class="mf">0.</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
-                <span class="n">Line2D</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">cmap</span><span class="p">(</span><span class="mf">.5</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
-                <span class="n">Line2D</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">cmap</span><span class="p">(</span><span class="mf">1.</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mi">4</span><span class="p">)]</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="n">lines</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">custom_lines</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Cold&#39;</span><span class="p">,</span> <span class="s1">&#39;Medium&#39;</span><span class="p">,</span> <span class="s1">&#39;Hot&#39;</span><span class="p">]);</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sum_of_squared_distances</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+    <span class="n">km_2d</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">km_2d</span> <span class="o">=</span> <span class="n">km_2d</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:])</span>
+    <span class="n">Sum_of_squared_distances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">km_2d</span><span class="o">.</span><span class="n">inertia_</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">Sum_of_squared_distances</span><span class="p">,</span> <span class="s1">&#39;bx-&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;No of Clusters&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Sum_of_squared_distances&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Elbow Method For Optimal k for 2D dataset&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">  File</span><span class="nn"> &quot;C:\Users\tonyr\AppData\Local\Temp/ipykernel_15092/760097720.py&quot;</span><span class="gt">, line </span><span class="mi">6</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span>
-                          <span class="o">^</span>
-<span class="ne">SyntaxError</span>: invalid syntax
+<img alt="_images/Clustering_Analysis_13_0.png" src="_images/Clustering_Analysis_13_0.png" />
+</div>
+</div>
+<p>We can see that the optimal number of clusters occur at k=2 to 4.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sum_of_squared_distances</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+    <span class="n">km_3d</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">km_3d</span> <span class="o">=</span> <span class="n">km_3d</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dim_reduced_3d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:])</span>
+    <span class="n">Sum_of_squared_distances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">km_3d</span><span class="o">.</span><span class="n">inertia_</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">Sum_of_squared_distances</span><span class="p">,</span> <span class="s1">&#39;bx-&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;No of Clusters&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Sum_of_squared_distances&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Elbow Method For Optimal k for 3D dataset&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/Clustering_Analysis_15_0.png" src="_images/Clustering_Analysis_15_0.png" />
+</div>
+</div>
+<p>Here, determining the amount of clusters is more ambiguous. But I believe there is a dip at k=2 to k=6 mark.</p>
+</div>
+</div>
+<div class="section" id="sillhoute-method">
+<h2>Sillhoute method<a class="headerlink" href="#sillhoute-method" title="Permalink to this headline">¶</a></h2>
+<p>This method is another method of finding the correct number of clusters(k). Silhouette coefficient for a particular data point (<span class="math notranslate nohighlight">\(i\)</span>), is defined as:
+$<span class="math notranslate nohighlight">\(
+s_{i} = \frac{b_{i} - a_{i}}{max(b_{i}, a_{i})}
+\)</span>$
+where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(s_{i}\)</span>: the silhouette coefficient, ranging from -1 to 1. A score of 1 (the best) means that data point <span class="math notranslate nohighlight">\(i\)</span> is compact in its cluster and far away from other clusters. Conversely, the worst value is -1, while values near 0 denote overlapping clusters.</p></li>
+<li><p><span class="math notranslate nohighlight">\(b_{i}\)</span>: average distance between <span class="math notranslate nohighlight">\(i\)</span> and all the other data points in its cluster.</p></li>
+<li><p><span class="math notranslate nohighlight">\(a_{i}\)</span>: minimum average distance from <span class="math notranslate nohighlight">\(i\)</span> to all clusters to which <span class="math notranslate nohighlight">\(i\)</span> does not belong to</p></li>
+</ul>
+<p>We evaluate using silhouette plots. These plots display how close each point in one cluster is to points in the neighboring clusters.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">yellowbrick.cluster</span> <span class="kn">import</span> <span class="n">SilhouetteVisualizer</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span>  <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Create KMeans instance for different number of clusters</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">km</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">visualizer</span> <span class="o">=</span> <span class="n">SilhouetteVisualizer</span><span class="p">(</span><span class="n">km</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;yellowbrick&#39;</span><span class="p">)</span>
+    <span class="n">visualizer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:])</span>
+    <span class="n">visualizer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/Clustering_Analysis_19_0.png" src="_images/Clustering_Analysis_19_0.png" />
+<img alt="_images/Clustering_Analysis_19_1.png" src="_images/Clustering_Analysis_19_1.png" />
+<img alt="_images/Clustering_Analysis_19_2.png" src="_images/Clustering_Analysis_19_2.png" />
+</div>
+</div>
+<p>This lies up with our previous assumption on the optimal number of clusters of the 2d dataset is 3. K=4 seem to be sub optimal due to wide foundations in size of the silhouette plot. The silhouette score for each cluster is above average silhouette scores when k =2, 3 or 4. However the fluctuation in size at 3 seems to be more uniform compared to 2. Thus, we  select the optimal number of clusters as 3.</p>
+<p>Another method of evaluating is to simply plot the silhouette coefficient</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sill_coef</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">K</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">K</span><span class="p">:</span>
+    <span class="n">kmeanModel</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">kmeanModel</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dim_reduced_3d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span>
+    <span class="n">sill_coef</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">silhouette_score</span><span class="p">(</span><span class="n">dim_reduced_3d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:],</span> <span class="n">kmeanModel</span><span class="o">.</span><span class="n">labels_</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">sill_coef</span><span class="p">,</span>  <span class="n">color</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;K&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Silhouette Coefficient for K-Means Clustering (3D dataset)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Silhouette Coefficient&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/Clustering_Analysis_21_0.png" src="_images/Clustering_Analysis_21_0.png" />
+</div>
+</div>
+<p>Here, we find the optimal number of cluster to be k=2 and 5 as these values of k maximizes the silhouette coefficient.</p>
+</div>
+<div class="section" id="findings">
+<h2>Findings<a class="headerlink" href="#findings" title="Permalink to this headline">¶</a></h2>
+<p>As mentioned previously, clusters can be considered as disjoint groups. In this context, these clusters seek to represent people with similar latent physiological process or possible decision strategies. K-means clusters individuals by their choice options, a health binary variable variable if they are healthy or not and the cumulative reward at various intervals in the task in an attempt to relate the groupings to the the decision-making behavior of individual participants.</p>
+<div class="section" id="top-2-principal-component-dataset">
+<h3>Top 2 principal component dataset<a class="headerlink" href="#top-2-principal-component-dataset" title="Permalink to this headline">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">km_2d</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dim_reduced_3d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:])</span>
+<span class="n">dim_reduced_2d</span><span class="p">[</span><span class="s2">&quot;clusters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">km_2d</span><span class="o">.</span><span class="n">labels_</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">dim_reduced_2d</span><span class="p">[</span><span class="s1">&#39;health binary&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dim_reduced_2d</span><span class="p">[</span><span class="s1">&#39;health status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span>  <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span><span class="s1">&#39;healthy&#39;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>There is a lot more that you can do with outputs (such as including interactive outputs)
-with your book. For more information about this, see <a class="reference external" href="https://jupyterbook.org">the Jupyter Book documentation</a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># ax1.plot(df.x, df.y)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Sharing Y axis&#39;</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;component_1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;component_2&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">dim_reduced_2d</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;clusters&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;component_1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;component_2&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">dim_reduced_2d</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:xlabel=&#39;component_1&#39;, ylabel=&#39;component_2&#39;&gt;
+</pre></div>
+</div>
+<img alt="_images/Clustering_Analysis_25_1.png" src="_images/Clustering_Analysis_25_1.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="p">[[</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s2">&quot;cluster labels k=&quot;</span><span class="p">]],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;YlGnBu&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ValueError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
+<span class="o">~</span>\<span class="n">AppData</span>\<span class="n">Local</span>\<span class="n">Temp</span><span class="o">/</span><span class="n">ipykernel_35604</span><span class="o">/</span><span class="mf">2755239330.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="p">[[</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s2">&quot;cluster labels k=3&quot;</span><span class="p">]],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;YlGnBu&quot;</span><span class="p">)</span>
+
+<span class="nn">c:\Users\tonyr\OneDrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\CA4015_First_Assignment\venv\lib\site-packages\seaborn\_decorators.py</span> in <span class="ni">inner_f</span><span class="nt">(*args, **kwargs)</span>
+<span class="g g-Whitespace">     </span><span class="mi">44</span>             <span class="p">)</span>
+<span class="nn">     45         kwargs.update({k: arg for k, arg</span> in <span class="ni">zip</span><span class="nt">(sig.parameters, args)})</span>
+<span class="ne">---&gt; </span><span class="mi">46</span>         <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">47</span>     <span class="k">return</span> <span class="n">inner_f</span>
+<span class="g g-Whitespace">     </span><span class="mi">48</span> 
+
+<span class="nn">c:\Users\tonyr\OneDrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\CA4015_First_Assignment\venv\lib\site-packages\seaborn\matrix.py</span> in <span class="ni">heatmap</span><span class="nt">(data, vmin, vmax, cmap, center, robust, annot, fmt, annot_kws, linewidths, linecolor, cbar, cbar_kws, cbar_ax, square, xticklabels, yticklabels, mask, ax, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">538</span>     <span class="s2">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">539</span><span class="s2">     # Initialize the plotter object</span>
+<span class="ne">--&gt; </span><span class="mi">540</span><span class="s2">     plotter = _HeatMapper(data, vmin, vmax, cmap, center, robust, annot, fmt,</span>
+<span class="g g-Whitespace">    </span><span class="mi">541</span><span class="s2">                           annot_kws, cbar, cbar_kws, xticklabels,</span>
+<span class="g g-Whitespace">    </span><span class="mi">542</span><span class="s2">                           yticklabels, mask)</span>
+
+<span class="nn">c:\Users\tonyr\OneDrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\CA4015_First_Assignment\venv\lib\site-packages\seaborn\matrix.py</span> in <span class="ni">__init__</span><span class="nt">(self, data, vmin, vmax, cmap, center, robust, annot, fmt, annot_kws, cbar, cbar_kws, xticklabels, yticklabels, mask)</span>
+<span class="g g-Whitespace">    </span><span class="mi">157</span><span class="s2"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">158</span><span class="s2">         # Determine good default values for the colormapping</span>
+<span class="ne">--&gt; </span><span class="mi">159</span><span class="s2">         self._determine_cmap_params(plot_data, vmin, vmax,</span>
+<span class="g g-Whitespace">    </span><span class="mi">160</span><span class="s2">                                     cmap, center, robust)</span>
+<span class="g g-Whitespace">    </span><span class="mi">161</span><span class="s2"> </span>
+
+<span class="nn">c:\Users\tonyr\OneDrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\CA4015_First_Assignment\venv\lib\site-packages\seaborn\matrix.py</span> in <span class="ni">_determine_cmap_params</span><span class="nt">(self, plot_data, vmin, vmax, cmap, center, robust)</span>
+<span class="g g-Whitespace">    </span><span class="mi">191</span><span class="s2"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">192</span><span class="s2">         # plot_data is a np.ma.array instance</span>
+<span class="ne">--&gt; </span><span class="mi">193</span><span class="s2">         calc_data = plot_data.astype(float).filled(np.nan)</span>
+<span class="g g-Whitespace">    </span><span class="mi">194</span><span class="s2">         if vmin is None:</span>
+<span class="g g-Whitespace">    </span><span class="mi">195</span><span class="s2">             if robust:</span>
+
+<span class="ne">ValueError</span>: could not convert string to float: &#39;healthy&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">flights</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;flights&quot;</span><span class="p">)</span>
+<span class="n">flights</span> <span class="o">=</span> <span class="n">flights</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="s2">&quot;month&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;passengers&quot;</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">flights</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="p">[[</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s2">&quot;cluster labels k=2&quot;</span><span class="p">]],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;YlGnBu&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">URLError</span><span class="g g-Whitespace">                                  </span>Traceback (most recent call last)
+<span class="o">~</span>\<span class="n">AppData</span>\<span class="n">Local</span>\<span class="n">Temp</span><span class="o">/</span><span class="n">ipykernel_35604</span><span class="o">/</span><span class="mf">2418067186.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">flights</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;flights&quot;</span><span class="p">)</span>
+
+<span class="nn">c:\Users\tonyr\OneDrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\CA4015_First_Assignment\venv\lib\site-packages\seaborn\utils.py</span> in <span class="ni">load_dataset</span><span class="nt">(name, cache, data_home, **kws)</span>
+<span class="g g-Whitespace">    </span><span class="mi">592</span>         <span class="n">cache_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_data_home</span><span class="p">(</span><span class="n">data_home</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+<span class="g g-Whitespace">    </span><span class="mi">593</span>         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cache_path</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">594</span>             <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">get_dataset_names</span><span class="p">():</span>
+<span class="g g-Whitespace">    </span><span class="mi">595</span>                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; is not one of the example datasets.&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">596</span>             <span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">)</span>
+
+<span class="nn">c:\Users\tonyr\OneDrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\CA4015_First_Assignment\venv\lib\site-packages\seaborn\utils.py</span> in <span class="ni">get_dataset_names</span><span class="nt">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">518</span>     <span class="s2">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">519</span><span class="s2">     url = &quot;https://github.com/mwaskom/seaborn-data&quot;</span>
+<span class="ne">--&gt; </span><span class="mi">520</span><span class="s2">     with urlopen(url) as resp:</span>
+<span class="g g-Whitespace">    </span><span class="mi">521</span><span class="s2">         html = resp.read()</span>
+<span class="g g-Whitespace">    </span><span class="mi">522</span><span class="s2"> </span>
+
+<span class="nn">~\anaconda3\lib\urllib\request.py</span> in <span class="ni">urlopen</span><span class="nt">(url, data, timeout, cafile, capath, cadefault, context)</span>
+<span class="g g-Whitespace">    </span><span class="mi">220</span><span class="s2">     else:</span>
+<span class="g g-Whitespace">    </span><span class="mi">221</span><span class="s2">         opener = _opener</span>
+<span class="ne">--&gt; </span><span class="mi">222</span><span class="s2">     return opener.open(url, data, timeout)</span>
+<span class="g g-Whitespace">    </span><span class="mi">223</span><span class="s2"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">224</span><span class="s2"> def install_opener(opener):</span>
+
+<span class="nn">~\anaconda3\lib\urllib\request.py</span> in <span class="ni">open</span><span class="nt">(self, fullurl, data, timeout)</span>
+<span class="g g-Whitespace">    </span><span class="mi">523</span><span class="s2"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">524</span><span class="s2">         sys.audit(&#39;urllib.Request&#39;, req.full_url, req.data, req.headers, req.get_method())</span>
+<span class="ne">--&gt; </span><span class="mi">525</span><span class="s2">         response = self._open(req, data)</span>
+<span class="g g-Whitespace">    </span><span class="mi">526</span><span class="s2"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">527</span><span class="s2">         # post-process response</span>
+
+<span class="nn">~\anaconda3\lib\urllib\request.py</span> in <span class="ni">_open</span><span class="nt">(self, req, data)</span>
+<span class="g g-Whitespace">    </span><span class="mi">545</span><span class="s2">             return result</span>
+<span class="g g-Whitespace">    </span><span class="mi">546</span><span class="s2"> </span>
+<span class="ne">--&gt; </span><span class="mi">547</span><span class="s2">         return self._call_chain(self.handle_open, &#39;unknown&#39;,</span>
+<span class="g g-Whitespace">    </span><span class="mi">548</span><span class="s2">                                 &#39;unknown_open&#39;, req)</span>
+<span class="g g-Whitespace">    </span><span class="mi">549</span><span class="s2"> </span>
+
+<span class="nn">~\anaconda3\lib\urllib\request.py</span> in <span class="ni">_call_chain</span><span class="nt">(self, chain, kind, meth_name, *args)</span>
+<span class="g g-Whitespace">    </span><span class="mi">500</span><span class="s2">         for handler in handlers:</span>
+<span class="g g-Whitespace">    </span><span class="mi">501</span><span class="s2">             func = getattr(handler, meth_name)</span>
+<span class="ne">--&gt; </span><span class="mi">502</span><span class="s2">             result = func(*args)</span>
+<span class="g g-Whitespace">    </span><span class="mi">503</span><span class="s2">             if result is not None:</span>
+<span class="g g-Whitespace">    </span><span class="mi">504</span><span class="s2">                 return result</span>
+
+<span class="nn">~\anaconda3\lib\urllib\request.py</span> in <span class="ni">unknown_open</span><span class="nt">(self, req)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1419</span><span class="s2">     def unknown_open(self, req):</span>
+<span class="g g-Whitespace">   </span><span class="mi">1420</span><span class="s2">         type = req.type</span>
+<span class="ne">-&gt; </span><span class="mi">1421</span><span class="s2">         raise URLError(&#39;unknown url type: </span><span class="si">%s</span><span class="s2">&#39; % type)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1422</span><span class="s2"> </span>
+<span class="g g-Whitespace">   </span><span class="mi">1423</span><span class="s2"> def parse_keqv_list(l):</span>
+
+<span class="ne">URLError</span>: &lt;urlopen error unknown url type: https&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">sn</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="n">cm</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Cluster&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Helth Staus&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">df_orl</span><span class="p">[</span><span class="s2">&quot;subjID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="healthy-vs-unhealthy">
+<h4>Healthy vs Unhealthy<a class="headerlink" href="#healthy-vs-unhealthy" title="Permalink to this headline">¶</a></h4>
+</div>
+<div class="section" id="study-vs-study">
+<h4>Study vs Study<a class="headerlink" href="#study-vs-study" title="Permalink to this headline">¶</a></h4>
+</div>
+</div>
+<div class="section" id="top-3-principal-compnent-dataset">
+<h3>Top 3 principal compnent  dataset<a class="headerlink" href="#top-3-principal-compnent-dataset" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h4>Healthy vs Unhealthy<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+</div>
+<div class="section" id="id3">
+<h4>Study vs Study<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+</div>
+<div class="section" id="k-2-2d-dataset">
+<h4>(k=2, 2D dataset)<a class="headerlink" href="#k-2-2d-dataset" title="Permalink to this headline">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kmeans2</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df_orl</span><span class="p">[[</span><span class="s2">&quot;BetaF&quot;</span><span class="p">,</span> <span class="s2">&quot;BetaP&quot;</span><span class="p">]])</span>
+<span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">df_orl</span><span class="p">[</span><span class="s2">&quot;subjID_label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">kmeans2</span><span class="o">.</span><span class="n">labels_</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/Clustering_Analysis_31_0.png" src="_images/Clustering_Analysis_31_0.png" />
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 
@@ -460,10 +816,10 @@ with your book. For more information about this, see <a class="reference externa
         </a>
     </div>
      <div id="next">
-        <a class="right-next" href="Conclusion.html" title="next page">
+        <a class="right-next" href="Federated_k_means.html" title="next page">
             <div class="prevnext-info">
                 <p class="prevnext-label">next</p>
-                <p class="prevnext-title">Conclusion</p>
+                <p class="prevnext-title">Clustering Analysis</p>
             </div>
             <i class="prevnext-label fas fa-angle-right"></i>
         </a>

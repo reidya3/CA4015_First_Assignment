@@ -1,19 +1,20 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Initial Data Exploration  
-# The purpose of our initial data exploration is to:
-# <ol type = "a">
-#     <li>Check the validity of the data and perform data cleaning methods if needed.</li>
-#     <li>View the statistical details of the data</li>
-#     <li>Add additional data from the {cite:t}`ahn2014decision` study as we are interested in clustering unhealthy individuals</li>
-#     <li>Perform data visualization to improve our understanding of the data</li>
-#     <li>Perform transformations (standardization, PCA)</li>
-# </ol>
-# 
-# If you are viewing this as an HTML page, please use the content toolbar to the right for quick access to different sections.
-# 
-# ## Importing required libraries 
+# # Initial Data Exploration  
+# The purpose of our initial data exploration is to:
+# <ol type = "a">
+#     <li>Check the validity of the data and perform data cleaning methods if needed.</li>
+#     <li>View the statistical details of the data</li>
+#     <li>Add additional data from the {cite:t}`ahn2014decision` study as we are interested in clustering unhealthy individuals</li>
+#     <li>Perform data visualization to improve our understanding of the data</li>
+#     <li>Feature Engineer</li>
+#     <li>Perform transformations (standardization, PCA)</li>
+# </ol>
+# 
+# If you are viewing this as an HTML page, please use the content toolbar to the right for quick access to different sections.
+# 
+# ## Importing required libraries 
 # Data processing
 
 # In[1]:
@@ -266,8 +267,8 @@ def concat_ahn_to_many_labs( many_labs_df, ahn_healthy_df, ahn_heroin_df, ahn_am
     return concated_df
 
 
-# Next, we pivot the Ahn et al. data so that it follows the many labs format i.e. split by choice, win or loss.
-# The variable name of the pivoted datasets have the form:
+# Next, we pivot the Ahn et al. data so that it follows the many labs format i.e. split by choice, win or loss.
+# The variable name of the pivoted datasets have the form:
 # -   `ahn_{health_status}_{selection_type}_100`
 
 # In[20]:
@@ -388,7 +389,7 @@ assert cum_reward_150.iloc[4,144] == 1800
 assert cum_reward_150.iloc[93, 10] == 300
 
 
-# Visualizations of the sum of the cumulative rewards, grouped by a 'many labs' study. Note, a green line indicates a positive end value where as a red line indicates a negative end value. Initially,we concluded that some data transformations incorrectly as our pre-conceptions were not met but ad-hoc analysis revealed no errors. However as {cite:t}`bull2015decision` notes "researchers have observed high inter-study and inter-individual variability in IGT performance in healthy participants."
+# 
 
 # In[26]:
 
@@ -418,7 +419,7 @@ def visualize_cumulative_reward_by_study(cum_reward_df):
         plt.show(fig)
 
 
-# Please find below the visualizations of the average cumulative grouped by the many labs studies. These visualizations can be grouped into four major observations:
+# Visualizations of the sum of the cumulative rewards, grouped by a 'many labs' study. Note, a green line indicates a positive end value where as a red line indicates a negative end value i.e. take home pay. Initially,we concluded that some data transformations incorrectly as our pre-conceptions were not met but ad-hoc analysis revealed no errors. However as {cite:t}`bull2015decision` notes "researchers have observed high inter-study and inter-individual variability in IGT performance in healthy participants.". These visualizations can be grouped into four major observations:
 # - **Kjome, wood, worthy**
 # - **Fridberg, 
 # 
@@ -444,6 +445,10 @@ visualize_cumulative_reward_by_study(cum_reward_100[cum_reward_100['study'] != '
 visualize_cumulative_reward_by_study(cum_reward_150)
 
 
+# A common held belief is that people who suffer from subsistence issues exhibit decision-making deficits. 
+# These results seem to confirm this as we observed the second lowest average cumulative reward at the end trial (i.e take home award). However, although both types of substance users exhibit similar behaviour (i.e. an initial surge followed by a decline by choosing the "bad cards")
+# the average heroin user tends to perform more poorly when compared to an amphetamine user. Different classes of drugs, such as stimulants and opiates might have different degree of impairment on the decision making progress.  For example, pre-cinical trails conduced by {cite:t}`stewart1984role` describe notable differences between stimulants and opiates, which exert fundamentally different behavioral effects, such that stimulants produce arousing and activating effects, whereas opiates produce mixed inhibitory and excitatory effects. Again, this is a small sample size so results have to be interrupted with caution!
+
 # In[30]:
 
 
@@ -459,11 +464,59 @@ plt.tight_layout()
 plt.show()
 
 
-# ## Data Processing
+# ## Data Processing
+# 
+# If we were to include every current feature, we would have high dimensional dataset. K-means suffers from the 'curse of dimensionality' as the distance metric (Euclidean distance) suffers in high dimensions.  Ah-hoc analysis using a dimensailty reduction technique known as principal component analysis (discussed later on) on the 100 trial choice dataset still revealed a high number of relevant components, 36 (Kaiser-Guttman test). This motivates us to perform feature engineering and create the following columns:
+# - **health_binary:** A binary variable, 1 if the subject is healthy. Otherwise, 0
+# - **cum_reward_25:** The cumulative reward (as explained above) at trial 25. We include the cumulative reward at specified trial intervals in attempt to model the behaviour/progress of a subject when performing the task. For example, we would expect an individual that has a propensity for gambling to initially achieve well but would loose money overtime as the decks with higher wins ($100) result in a long-term net loss, while the decks with smaller wins ($50) yield a net gain 
+# - **cum_reward_50:** The cumulative reward at trial 50. 
+# - **cum_reward_75:** The cumulative reward at trial 57. 
+# - **cum_reward_100:** The cumulative reward at trial 100. 
+# - **A:** Count of the number of times card deck A ('bad deck') was picked.
+# - **B:** Count of the number of times card deck B ('bad deck') was picked.
+# - **C:** Count of the number of times card deck C ('good deck') was picked.
+# - **D:** Count of the number of times card deck D ('good deck') was picked.
+# 
+# The performance of the 'healthy' participants on IGT may have been altered by factors that varied across the included studies (e.g. fatigue due to longer trial length). In addition, the card deck count features would be influenced by trial length and could lead to clustering by study rather than my behaviour. To mitigate against these factors and allow for more accurate comparison, we restrict our investigation to a subset of the available data. This subset contains 8 investigations, 7 that use the classical 100 trials from the 'many labs' paper and the {cite:t}`ahn2014decision` study. This subset includes 629 participants (age range: 18 to 88). Of those 5 studies that had information on gender, 54% were female. 
 # 
-# The performance of the 'healthy' participants on IGT may have been altered by factors that varied across the included studies (e.g. fatigue due to longer trial length). To mitigate against these factors and allow for more accurate comparison, we restrict our investigation to a subset of the available data. This subset contains the 7 investigations that use the classical 100 trials. This subset includes 504 participants (age range: 18 to 88). Of those 5 studies that had information on gender, 54% were female. We plan to cluster people by their:
-# - choices
-# - rewards 
+
+# Engineering the card occurrence columns:
+
+# In[31]:
+
+
+card_choice_df = total_choice_100.iloc[:,2:].apply(pd.Series.value_counts, axis=1)
+card_choice_df.columns = ['A','B','C','D']
+card_choice_df.head(5)
+
+
+# Engineering the cumulative reward columns:
+
+# In[32]:
+
+
+processed_100 = cum_reward_100[['study','health status', 'trial_25','trial_50','trial_75','trial_100']]
+processed_100
+
+
+# Engineering the healthy binary column:
+
+# In[33]:
+
+
+processed_100['health binary'] = processed_100['health status'].apply(lambda x:  1 if x =='healthy' else 0)
+
+assert processed_100[processed_100['health binary'] == 0].shape[0] == 78
+
+
+# In[34]:
+
+
+processed_100 = pd.merge(
+        processed_100, card_choice_df, left_index=True, right_index=True
+        )
+processed_100.head(5)
+
 
 # ## PCA
 # 
@@ -487,101 +540,72 @@ plt.show()
 # 
 # The standard deviation should equal 1 after standardization
 
-# In[31]:
+# In[35]:
 
 
-labeled_choice_100 = total_choice_100.loc[:,['study', 'health status']]
-values_to_be_scaled_choice_100 =  total_choice_100.iloc[:,2:]
-values_to_be_scaled_choice_100  = StandardScaler().fit_transform(values_to_be_scaled_choice_100)
+labeled_processed_100 = processed_100.loc[:,['study', 'health status']]
+values_to_be_scaled_processed_100 =  processed_100.iloc[:,2:]
+scaled_processed_100  = StandardScaler().fit_transform(values_to_be_scaled_processed_100)
 
-assert np.std(values_to_be_scaled_choice_100) == 1
+assert np.std(scaled_processed_100) == 1
 
 
 # We will use the `PCA` function supplied by the `Scikit-learn` library for dimensionality reduction.  But how do we find the optimal number of components? Which eigenvalues are important?  The scree plot below describes the cumulative explained variance for each component. We reach 80% explained variance at the 58 component mark.
 
-# In[32]:
-
-
-pca = PCA().fit(values_to_be_scaled_choice_100)
-plt.plot(np.cumsum(pca.explained_variance_ratio_))
-plt.xlabel('number of components')
-plt.ylabel('cumulative explained variance')
-plt.title('Scree plot')
-plt.show()
-
-
-# According to the average-eigenvalue test (Kaiser-Guttman test) we should retain only those eigenvalues that are above the average which is 1.0. <br>
-# Jolliffe relaxes this criterium and suggest to retain eigenvalues greater than 0.7. 
-# 
-
-# In[33]:
-
-
-kasier_criterion = np.where(pca.explained_variance_ > 1)[-1][-1]
-print(
-        f'Kasier criterion optimal component number: {kasier_criterion}, explained variance: {np.cumsum(pca.explained_variance_ratio_)[kasier_criterion]}'
-    )
-jolliffe_criterion = np.where(pca.explained_variance_ > 0.7)[-1][-1]
-print(
-    f'Jolliffe criterion optimal component number: {jolliffe_criterion} , expalined variance: {np.cumsum(pca.explained_variance_ratio_)[jolliffe_criterion]}'
-    )
-
-
-# Unfortunately, the optimal number of principal components is still quite high for either criterion and does not lend itself well to visualisation. For the purpose of this investigation, we decide to go with the Kaiser criterion as it is more accepted. In addition, 36 principal components (Kasier) account for approx. 61.79% of the explained variance whilst 57 principal components (Jolliffe). We will now repeat the process for the rewards dataframe. 
-
-# In[34]:
-
-
-labeled_rewards_100 = rewards_100.loc[:,['study', 'health status']]
-values_to_be_scaled_rewards_100 =  rewards_100.iloc[:,2:]
-values_to_be_scaled_rewards_100  = StandardScaler().fit_transform(values_to_be_scaled_rewards_100)
-
-assert np.std(values_to_be_scaled_rewards_100) == 1
-
-pca = PCA().fit(values_to_be_scaled_rewards_100)
-plt.plot(np.cumsum(pca.explained_variance_ratio_))
-plt.xlabel('number of components')
-plt.ylabel('cumulative explained variance')
-plt.title('Scree plot')
-plt.show()
-kasier_criterion = np.where(pca.explained_variance_ > 1)[-1][-1]
-print(
-        f'Kasier criterion optimal component number: {kasier_criterion}, explained variance: {np.cumsum(pca.explained_variance_ratio_)[kasier_criterion]}'
-    )
-jolliffe_criterion = np.where(pca.explained_variance_ > 0.7)[-1][-1]
-print(
-    f'Jolliffe criterion optimal component number: {jolliffe_criterion} , expalined variance: {np.cumsum(pca.explained_variance_ratio_)[jolliffe_criterion]}'
-    )
-
-
-# Finally, we fit the `pca` model with the chosen dataframe (choices or rewards), apply the dimensionality reduction on that dataframe and save the resulting dataframe with the optimal number of componenets.
-
-# In[35]:
-
-
-pca_choice = PCA(n_components=36)
-dim_reduced_choice = pca_choice.fit_transform(values_to_be_scaled_choice_100)
-dim_reduced_choice = pd.DataFrame(data=dim_reduced_choice, columns=[f'component_{num}' for num in range(1,37)])
-dim_reduced_choice = pd.merge(
-        labeled_choice_100, dim_reduced_choice, left_index=True, right_index=True
-        )
-dim_reduced_choice.to_csv("data/dim_reduced_choice.tsv", sep="\t", index=False)
-
-
 # In[36]:
 
 
-pca_reward = PCA(n_components=46)
-dim_reduced_rewards = pca_reward.fit_transform(values_to_be_scaled_rewards_100)
-dim_reduced_rewards = pd.DataFrame(data=dim_reduced_rewards, columns=[f'component_{num}' for num in range(1,47)])
-dim_reduced_rewards = pd.merge(
-        labeled_rewards_100, dim_reduced_rewards, left_index=True, right_index=True
+pca = PCA().fit(scaled_processed_100)
+plt.plot(np.cumsum(pca.explained_variance_ratio_))
+plt.xlabel('number of components')
+plt.ylabel('cumulative explained variance')
+plt.title('Scree plot')
+plt.show()
+
+
+# According to the average-eigenvalue test (Kaiser-Guttman test) we should retain only those eigenvalues that are above the average which is 1.0. <br>
+# Jolliffe relaxes this criterium and suggest to retain eigenvalues greater than 0.7. 
+# 
+
+# In[37]:
+
+
+kasier_criterion = np.where(pca.explained_variance_ > 1)[-1][-1]
+print(
+        f'Kasier criterion optimal component number: {kasier_criterion}, explained variance: {np.cumsum(pca.explained_variance_ratio_)[kasier_criterion]}'
+    )
+jolliffe_criterion = np.where(pca.explained_variance_ > 0.7)[-1][-1]
+print(
+    f'Jolliffe criterion optimal component number: {jolliffe_criterion} , expalined variance: {np.cumsum(pca.explained_variance_ratio_)[jolliffe_criterion]}'
+    )
+
+
+#  For the purpose of this investigation, we decide to go with **both** the Kaiser criterion and Jolaliffe criterion . In addition, 2 principal components (Kasier) account for approx. 71.68% of the explained variance whilst 3 principal components (Jolliffe) account for approx. 81.17% of the explained variance.
+
+# Finally, we fit the `pca` model with the dataframes containing top 2 and 3 components , apply the dimensionality reduction on those respective dataframe and save the resulting dataframes.
+
+# In[38]:
+
+
+pca_2d = PCA(n_components=2)
+dim_reduced_2d = pca_2d.fit_transform(scaled_processed_100)
+dim_reduced_2d = pd.DataFrame(data=dim_reduced_2d, columns=[f'component_{num}' for num in range(1,3)])
+dim_reduced_2d = pd.merge(
+        labeled_processed_100, dim_reduced_2d, left_index=True, right_index=True
         )
-dim_reduced_rewards.to_csv("data/dim_reduced_rewards.tsv", sep="\t",index=False)
+dim_reduced_2d.to_csv("data/dim_reduced_2d.tsv", sep="\t", index=False)
+dim_reduced_2d.head(5)
 
 
-# In[ ]:
+# In[39]:
 
 
-
+pca_3d = PCA(n_components=3)
+dim_reduced_3d = pca_3d.fit_transform(scaled_processed_100)
+dim_reduced_3d = pd.DataFrame(data=dim_reduced_3d, columns=[f'component_{num}' for num in range(1,4)])
+dim_reduced_3d = pd.merge(
+        labeled_processed_100, dim_reduced_3d, left_index=True, right_index=True
+        )
+dim_reduced_3d.to_csv("data/dim_reduced_3d.tsv", sep="\t", index=False)
+dim_reduced_3d.head(5)
 
