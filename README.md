@@ -14,7 +14,7 @@
 - [Website](#website)
 
 ## Development
-It is good practice to develop in a virtual environment. Note, this jupyter book was written using `python 3.8` and on the `Ubuntu` (Linux) operating system (OS). As such, all commands are installed for this setup and may not work for other OS's. To create a virtual environment called `venv`, execute:
+It is good practice to develop in a virtual environment. Note, this jupyter book was written using `python 3.8` and on the `Ubuntu` (Linux) operating system (OS). As such, all commands are installed for this setup may not work for other OS's. To create a virtual environment called `venv`, execute:
 ```bash
 python3 -m venv venv
 ```
@@ -23,7 +23,7 @@ To activate it, execute
 source venv/bin/activate
 ```
 
-- Execute `pip install -r requirements.txt` to install requirements for development. Please see `requirements.txt` for development requirements.
+- Execute `pip install -r requirements.txt` to install requirements for development.
 
 ## Usage
 To build the jupyter book as HTML, please execute `jupyter-book build --all book/`. To build a PDF version of the book, please run `jupyter-book build book/ --builder pdfhtml`. **Note**, you will have to build a html version first. For further information, please [click here](https://jupyterbook.org/advanced/pdf.html?highlight=build%20pdf). The PDF file can be found in the [docs](/docs) folder.
