@@ -53,7 +53,7 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Clustering Analysis" href="Clustering_Analysis.html" />
+    <link rel="next" title="Cluster Analysis" href="Clustering_Analysis.html" />
     <link rel="prev" title="Introduction" href="Introduction.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -103,7 +103,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="Clustering_Analysis.html">
-   Clustering Analysis
+   Cluster Analysis
   </a>
  </li>
  <li class="toctree-l1">
@@ -707,9 +707,7 @@ max     4.000000   4.000000   4.000000   4.000000   4.000000   4.000000
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>win_95 basic statistics
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          trial_1     trial_2     trial_3     trial_4     trial_5     trial_6
+          trial_1     trial_2     trial_3     trial_4     trial_5     trial_6
 count   15.000000   15.000000   15.000000   15.000000   15.000000   15.000000
 mean    80.000000   86.666667   70.000000   76.666667   76.666667   86.666667
 std     25.354628   22.886885   25.354628   25.819889   25.819889   22.886885
@@ -762,9 +760,7 @@ max    100.000000  100.000000  100.000000  100.000000  100.000000  100.000000
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>loss_95 basic statistics
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       trial_1  trial_2    trial_3  trial_4     trial_5  trial_6
+       trial_1  trial_2    trial_3  trial_4     trial_5  trial_6
 count     15.0     15.0  15.000000     15.0   15.000000     15.0
 mean       0.0      0.0  -3.333333      0.0  -20.000000      0.0
 std        0.0      0.0  12.909944      0.0   52.779866      0.0
@@ -773,9 +769,9 @@ min        0.0      0.0 -50.000000      0.0 -150.000000      0.0
 50%        0.0      0.0   0.000000      0.0    0.000000      0.0
 75%        0.0      0.0   0.000000      0.0    0.000000      0.0
 max        0.0      0.0   0.000000      0.0    0.000000      0.0
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>loss_100 basic statistics
+
+
+loss_100 basic statistics
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>           trial_1      trial_2      trial_3      trial_4      trial_5  \
@@ -1554,6 +1550,23 @@ the average heroin user tends to perform more poorly when compared to an ampheta
 </table>
 </div></div></div>
 </div>
+<p>Most popular card decks are B and D. This seems to contradict with the general assumption that healthy participants are only interested in long-term gain.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">deck</span> <span class="ow">in</span> <span class="n">card_choice_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Deck </span><span class="si">{</span><span class="n">deck</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">card_choice_df</span><span class="p">[</span><span class="n">deck</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Deck A: 10103
+Deck B: 19372
+Deck C: 14762
+Deck D: 18663
+</pre></div>
+</div>
+</div>
+</div>
 <p>Engineering the cumulative reward columns:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1872,7 +1885,7 @@ $<span class="math notranslate nohighlight">\(X_i = X_i - \bar{X}~~~~~~~~~~~~~~~
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_60_0.png" src="_images/Initial_Data_Exploration_60_0.png" />
+<img alt="_images/Initial_Data_Exploration_63_0.png" src="_images/Initial_Data_Exploration_63_0.png" />
 </div>
 </div>
 <p>According to the average-eigenvalue test (Kaiser-Guttman test) we should retain only those eigenvalues that are above the average which is 1.0. <br>
@@ -2107,7 +2120,7 @@ Jolliffe criterion optimal component number: 3 , expalined variance: 0.811750824
         <a class="right-next" href="Clustering_Analysis.html" title="next page">
             <div class="prevnext-info">
                 <p class="prevnext-label">next</p>
-                <p class="prevnext-title">Clustering Analysis</p>
+                <p class="prevnext-title">Cluster Analysis</p>
             </div>
             <i class="prevnext-label fas fa-angle-right"></i>
         </a>

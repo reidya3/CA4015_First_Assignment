@@ -17,46 +17,22 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-class child_kmeans(KMeans):
-        def __init__(
-            self,
-            n_clusters,
-            init_centroids='random',
-            max_iter=100,
-            tol=0.0001,
-            distance_metric='euclidean',
-            seed=None,
-            reassign_min=None,
-            reassign_after=None,
-            verbose=False,
-            batch_size=None,
-            sample_fraction=1.0,
-            epochs_per_round=1,
-            learning_rate=None,
-            max_no_change=None,
-            adaptive_lr=None,
-            momentum=None,
-            epoch_lr=1,
-    ):
-        super().__init__(
-            n_clusters=n_clusters,
-            init_centroids=init_centroids,
-            max_iter=max_iter,
-            tol=tol,
-            distance_metric=distance_metric,
-            seed=seed,
-            reassign_min=reassign_min,
-            reassign_after=reassign_after,
-            verbose=verbose
-        )
+arent server 
+        parent_server.add(cluster_centre=study_cluster_centres, n_participant=n_particpants)
+
+    # Calculating the new federated cluster centres
+    parent_server.update_cluster_centre()
     
-    pass
+# Retreving the cluster centres from Federated K-means and normal K-means    
+fkm_cluster_centres = parent_server.get_new_centres()
+km_clusters_centres = KMeans(n_clusters=3,random_state=42).fit(dim_reduced_2d.iloc[:,2:]).cluster_centers_
+
 ------------------
 
-[0;36m  File [0;32m"<tokenize>"[0;36m, line [0;32m34[0m
-[0;31m    pass[0m
+[0;36m  File [0;32m"<tokenize>"[0;36m, line [0;32m5[0m
+[0;31m    parent_server.update_cluster_centre()[0m
 [0m    ^[0m
 [0;31mIndentationError[0m[0;31m:[0m unindent does not match any outer indentation level
 
-IndentationError: unindent does not match any outer indentation level (<tokenize>, line 34)
+IndentationError: unindent does not match any outer indentation level (<tokenize>, line 5)
 

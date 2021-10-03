@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Clustering Analysis &#8212; CA4015 Iowa Gambling Clustering Task</title>
+    <title>Cluster Analysis &#8212; CA4015 Iowa Gambling Clustering Task</title>
     
   <link href="_static/css/theme.css" rel="stylesheet" />
   <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -103,7 +103,7 @@
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Clustering Analysis
+   Cluster Analysis
   </a>
  </li>
  <li class="toctree-l1">
@@ -316,8 +316,8 @@
         
               <div>
                 
-  <div class="section" id="clustering-analysis">
-<h1>Clustering Analysis<a class="headerlink" href="#clustering-analysis" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="cluster-analysis">
+<h1>Cluster Analysis<a class="headerlink" href="#cluster-analysis" title="Permalink to this headline">¶</a></h1>
 <p>The purpose of our cluster analysis is to:</p>
 <ul class="simple">
 <li><p>Measure clustering &amp; central tendency.</p></li>
@@ -443,19 +443,14 @@ H = \frac{\sum_{i=1}^{m} u_{i}^{d}}{\sum_{i=1}^{m} u_{i}^{d} + \sum_{i=1}^{m} w_
 <p>For both datasets, we reject <span class="math notranslate nohighlight">\(H_{0}\)</span> and can conclude that both datasets have a significant tendency to cluster.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Choice&#39;s hopkins statistic </span><span class="si">{</span><span class="n">hopkins</span><span class="p">(</span><span class="n">dim_reduced_choice</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reward&#39;s hopkins statistic </span><span class="si">{</span><span class="n">hopkins</span><span class="p">(</span><span class="n">dim_reduced_rewards</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> 
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;2D&#39;s hopkins statistic </span><span class="si">{</span><span class="n">hopkins</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;3D&#39;s hopkins statistic </span><span class="si">{</span><span class="n">hopkins</span><span class="p">(</span><span class="n">dim_reduced_3d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> 
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">ipykernel_1613</span><span class="o">/</span><span class="mf">3032019449.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Choice&#39;s hopkins statistic </span><span class="si">{</span><span class="n">hopkins</span><span class="p">(</span><span class="n">dim_reduced_choice</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reward&#39;s hopkins statistic </span><span class="si">{</span><span class="n">hopkins</span><span class="p">(</span><span class="n">dim_reduced_rewards</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="ne">NameError</span>: name &#39;dim_reduced_choice&#39; is not defined
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2D&#39;s hopkins statistic 0.7513608995628661
+3D&#39;s hopkins statistic 0.8050693185028648
 </pre></div>
 </div>
 </div>
@@ -577,9 +572,6 @@ where:</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">yellowbrick.cluster</span> <span class="kn">import</span> <span class="n">SilhouetteVisualizer</span>
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span>  <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Create KMeans instance for different number of clusters</span>
-<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">km</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
     <span class="n">visualizer</span> <span class="o">=</span> <span class="n">SilhouetteVisualizer</span><span class="p">(</span><span class="n">km</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;yellowbrick&#39;</span><span class="p">)</span>
     <span class="n">visualizer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:])</span>
@@ -670,20 +662,20 @@ where:</p>
   <tbody>
     <tr>
       <th>amphetamine</th>
-      <td>5.0</td>
       <td>4.0</td>
-      <td>27.0</td>
+      <td>4.0</td>
+      <td>28.0</td>
     </tr>
     <tr>
       <th>healthy</th>
-      <td>210.0</td>
-      <td>216.0</td>
-      <td>125.0</td>
+      <td>218.0</td>
+      <td>201.0</td>
+      <td>132.0</td>
     </tr>
     <tr>
       <th>heroin</th>
-      <td>2.0</td>
-      <td>3.0</td>
+      <td>0.0</td>
+      <td>5.0</td>
       <td>37.0</td>
     </tr>
   </tbody>
@@ -735,51 +727,51 @@ where:</p>
   <tbody>
     <tr>
       <th>Ahn</th>
-      <td>20.0</td>
-      <td>22.0</td>
-      <td>83.0</td>
+      <td>17.0</td>
+      <td>21.0</td>
+      <td>87.0</td>
     </tr>
     <tr>
       <th>Horstmann</th>
-      <td>89.0</td>
-      <td>66.0</td>
-      <td>7.0</td>
+      <td>97.0</td>
+      <td>57.0</td>
+      <td>8.0</td>
     </tr>
     <tr>
       <th>Kjome</th>
       <td>7.0</td>
-      <td>9.0</td>
-      <td>3.0</td>
+      <td>8.0</td>
+      <td>4.0</td>
     </tr>
     <tr>
       <th>Maia</th>
       <td>8.0</td>
-      <td>25.0</td>
-      <td>7.0</td>
+      <td>24.0</td>
+      <td>8.0</td>
     </tr>
     <tr>
       <th>Premkumar</th>
-      <td>4.0</td>
+      <td>3.0</td>
       <td>16.0</td>
-      <td>5.0</td>
+      <td>6.0</td>
     </tr>
     <tr>
       <th>SteingroverInPrep</th>
-      <td>37.0</td>
+      <td>38.0</td>
       <td>28.0</td>
-      <td>5.0</td>
+      <td>4.0</td>
     </tr>
     <tr>
       <th>Wood</th>
-      <td>41.0</td>
-      <td>47.0</td>
+      <td>40.0</td>
+      <td>48.0</td>
       <td>65.0</td>
     </tr>
     <tr>
       <th>Worthy</th>
-      <td>11.0</td>
-      <td>10.0</td>
-      <td>14.0</td>
+      <td>12.0</td>
+      <td>8.0</td>
+      <td>15.0</td>
     </tr>
   </tbody>
 </table>
