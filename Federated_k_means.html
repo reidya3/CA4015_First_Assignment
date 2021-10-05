@@ -288,7 +288,7 @@
 <h2>Child (Study):<a class="headerlink" href="#child-study" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="base-k-means">
 <h3>1. Base k-means:<a class="headerlink" href="#base-k-means" title="Permalink to this headline">¶</a></h3>
-<p>The original K-Means algorithm is only trained/ on a given dataset once. There is no update method. In this approach, we split a study’s dataset 75:25.  75% of a study’s data is trained using normal K-means. It is important to note that all child devices are independent of one another.</p>
+<p>The original K-Means algorithm is only trained on a given dataset once. There is no update method. In this approach, we split a study’s dataset 75:25.  75% of a study’s data is trained using normal K-means. It is important to note that all child devices are independent of one another.</p>
 </div>
 <div class="section" id="update">
 <h3>2. Update:<a class="headerlink" href="#update" title="Permalink to this headline">¶</a></h3>
@@ -296,13 +296,13 @@
 <ol class="simple">
 <li><p>Convert new data point to NumPy array</p></li>
 <li><p>Find the minimum Euclidean distance between that new point <span class="math notranslate nohighlight">\(X_{i}\)</span>  and the cluster centres (T) to find the closest cluster centre (<span class="math notranslate nohighlight">\(C_{i}\)</span>).
-$<span class="math notranslate nohighlight">\(
+<span class="math notranslate nohighlight">\(
 Minimum Distance = min((X_{i} - C_{1})^2.............(X_{i} - C_{T})^2)
-\)</span>$</p></li>
+\)</span></p></li>
 <li><p>Transform the cluster centre <span class="math notranslate nohighlight">\(C_{i}\)</span> by doing the operation below. N equals the number of participants assigned to that cluster thus far i.e. before the new data point :
-$<span class="math notranslate nohighlight">\(
+<span class="math notranslate nohighlight">\(
 TransformedClusterCentre = \frac{((C_{i} * N) + X_{i})}{N+1}
-\)</span>$</p></li>
+\)</span></p></li>
 <li><p>Then, the new data point is added to the cluster, and the transformed cluster centre is the new cluster centre.</p></li>
 </ol>
 </div>
