@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Clustering Analysis &#8212; CA4015 Iowa Gambling Clustering Task</title>
+    <title>Cluster Analysis &#8212; CA4015 Iowa Gambling Clustering Task</title>
     
   <link href="_static/css/theme.css" rel="stylesheet" />
   <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -53,7 +53,7 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Clustering Analysis" href="Federated_k_means.html" />
+    <link rel="next" title="Federated K-Means" href="Federated_k_means.html" />
     <link rel="prev" title="Initial Data Exploration" href="Initial_Data_Exploration.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -103,12 +103,12 @@
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Clustering Analysis
+   Cluster Analysis
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="Federated_k_means.html">
-   Clustering Analysis
+   Federated K-Means
   </a>
  </li>
  <li class="toctree-l1">
@@ -226,6 +226,33 @@
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#import-libaries">
+   Import libaries
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#data-processing">
+     Data Processing
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#scientific-computing">
+     Scientific computing
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#clustering">
+     Clustering
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#data-visualisation">
+     Data Visualisation
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#measure-cluster-tendency">
    Measure Cluster Tendency
   </a>
@@ -270,40 +297,11 @@
     <a class="reference internal nav-link" href="#top-2-principal-component-dataset">
      Top 2 principal component dataset
     </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#healthy-vs-unhealthy">
-       Healthy vs Unhealthy
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#study-vs-study">
-       Study vs Study
-      </a>
-     </li>
-    </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#top-3-principal-compnent-dataset">
-     Top 3 principal compnent  dataset
+    <a class="reference internal nav-link" href="#top-3-principal-component-dataset">
+     Top 3 principal component dataset
     </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#id2">
-       Healthy vs Unhealthy
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#id3">
-       Study vs Study
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#k-2-2d-dataset">
-       (k=2, 2D dataset)
-      </a>
-     </li>
-    </ul>
    </li>
   </ul>
  </li>
@@ -318,8 +316,8 @@
         
               <div>
                 
-  <div class="section" id="clustering-analysis">
-<h1>Clustering Analysis<a class="headerlink" href="#clustering-analysis" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="cluster-analysis">
+<h1>Cluster Analysis<a class="headerlink" href="#cluster-analysis" title="Permalink to this headline">¶</a></h1>
 <p>The purpose of our cluster analysis is to:</p>
 <ul class="simple">
 <li><p>Measure clustering &amp; central tendency.</p></li>
@@ -331,37 +329,80 @@
 </ul>
 </li>
 </ul>
+<div class="section" id="import-libaries">
+<h2>Import libaries<a class="headerlink" href="#import-libaries" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="data-processing">
+<h3>Data Processing<a class="headerlink" href="#data-processing" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyclustertend</span> <span class="kn">import</span> <span class="n">ivat</span><span class="p">,</span> <span class="n">vat</span>
-<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">scale</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">NearestNeighbors</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="scientific-computing">
+<h3>Scientific computing<a class="headerlink" href="#scientific-computing" title="Permalink to this headline">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">NearestNeighbors</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">sample</span>
 <span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">uniform</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">isnan</span>
-<span class="kn">from</span> <span class="nn">pyclustertend</span> <span class="kn">import</span> <span class="n">ivat</span>
-<span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="clustering">
+<h3>Clustering<a class="headerlink" href="#clustering" title="Permalink to this headline">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">silhouette_score</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">pyclustertend</span> <span class="kn">import</span> <span class="n">ivat</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="o">~</span>\<span class="n">AppData</span>\<span class="n">Local</span>\<span class="n">Temp</span><span class="o">/</span><span class="n">ipykernel_20928</span><span class="o">/</span><span class="mf">2925194365.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">silhouette_score</span>
+<span class="ne">----&gt; </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">pyclustertend</span> <span class="kn">import</span> <span class="n">ivat</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;pyclustertend&#39;
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="data-visualisation">
+<h3>Data Visualisation<a class="headerlink" href="#data-visualisation" title="Permalink to this headline">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">yellowbrick.cluster</span> <span class="kn">import</span> <span class="n">SilhouetteVisualizer</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 </pre></div>
 </div>
 </div>
 </div>
+</div>
+</div>
 <div class="section" id="measure-cluster-tendency">
 <h2>Measure Cluster Tendency<a class="headerlink" href="#measure-cluster-tendency" title="Permalink to this headline">¶</a></h2>
-<p>Clustering algorithms such as k-means are used to determine the structure of multi-dimensional data. Clusters are natural disjoint groups. However, K-means will find clusters in data even if none “actually” exist. Therefore, a fundamentally question to ask before applying any clustering algorithms is : Are clusters present at all?
-We will measure the clustering tendency of both datasets before subjecting it to k-means. These datasets contain the top <strong>two principal components (2D)</strong> and the top <strong>three principal components (3D)</strong>, respectively To do this, we employ two methods:</p>
+<p>Clustering algorithms such as k-means are used to determine the structure of multi-dimensional data. Clusters are disjoint natural groups. However, K-means will find clusters in data even if none “actually” exist. Therefore, a fundamental question before applying any clustering algorithms is: Are clusters present at all?
+We will measure the clustering tendency of both datasets before subjecting it to k-means. These datasets contain the top <strong>two principal components (2D)</strong> and the top <strong>three principal components (3D)</strong>, respectively. To do this, we employ two methods:</p>
 <ul class="simple">
 <li><p>Hopkins’s statistic  of randomness</p></li>
 <li><p>VAT (visual assessment of tendency)</p></li>
 </ul>
 <div class="section" id="hopkins-statistics">
 <h3>Hopkins statistics<a class="headerlink" href="#hopkins-statistics" title="Permalink to this headline">¶</a></h3>
-<p>Hopkins statistics <span id="id1">[<a class="reference internal" href="References.html#id5">Banerjee and Dave, 2004</a>]</span> tests the spatial randomness of a dataset i.e. it measures the probability that a given dataset is generated by a uniform distribution. It is based on the difference between the distance from a real point to its nearest neighbor, U, and the distance from a uniformly generated point within the data space to the nearest real data point, W.</p>
+<p>Hopkins statistics <span id="id1">[<a class="reference internal" href="References.html#id7">Banerjee and Dave, 2004</a>]</span> tests the spatial randomness of a dataset i.e. it measures the probability that a given dataset aligns with a uniform distribution. It is based on the difference between the distance from a real point to its nearest neighbour, U, and the distance from a uniformly generated point within the data space to the nearest real data point, W.</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(H_{0}\)</span>: The dataset <strong>is</strong> uniformly distributed</p></li>
 <li><p><span class="math notranslate nohighlight">\(H_{1}\)</span>: The dataset <strong>is not</strong> uniformly distributed</p></li>
@@ -370,14 +411,17 @@ We will measure the clustering tendency of both datasets before subjecting it to
 \[
 H = \frac{\sum_{i=1}^{m} u_{i}^{d}}{\sum_{i=1}^{m} u_{i}^{d} + \sum_{i=1}^{m} w_{i}^{d}}
 \]</div>
-<p>If the value of the hopkins statistic(H) is close to 1 (above 0.5), we reject <span class="math notranslate nohighlight">\(H_{0}\)</span> and can conclude that the dataset is considered significantly clusterable.  Otherwise, we fail to reject <span class="math notranslate nohighlight">\(H_{0}\)</span> and can conclude that the dataset is considered significantly uniformly distributed.</p>
+<p>If the value of the Hopkins statistic(H) is close to 1 (above 0.5), we reject <span class="math notranslate nohighlight">\(H_{0}\)</span> and can conclude that the dataset is considered significantly clusterable.  Otherwise, we fail to reject <span class="math notranslate nohighlight">\(H_{0}\)</span> and can conclude that the dataset is considered significantly uniformly distributed.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">hopkins</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Hopkins statistic. Code snippet:</span>
+<span class="sd">        https://matevzkunaver.wordpress.com/2017/06/20/hopkins-test-for-cluster-tendency/</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="c1">#d = len(vars) # columns</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="c1"># rows</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span> <span class="c1"># heuristic from article [1]</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> 
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span> 
     <span class="n">nbrs</span> <span class="o">=</span> <span class="n">NearestNeighbors</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
  
     <span class="n">rand_X</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">m</span><span class="p">)</span>
@@ -411,26 +455,21 @@ H = \frac{\sum_{i=1}^{m} u_{i}^{d}}{\sum_{i=1}^{m} u_{i}^{d} + \sum_{i=1}^{m} w_
 <p>For both datasets, we reject <span class="math notranslate nohighlight">\(H_{0}\)</span> and can conclude that both datasets have a significant tendency to cluster.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Choice&#39;s hopkins statistic </span><span class="si">{</span><span class="n">hopkins</span><span class="p">(</span><span class="n">dim_reduced_choice</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reward&#39;s hopkins statistic </span><span class="si">{</span><span class="n">hopkins</span><span class="p">(</span><span class="n">dim_reduced_rewards</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> 
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;2D&#39;s hopkins statistic </span><span class="si">{</span><span class="n">hopkins</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;3D&#39;s hopkins statistic </span><span class="si">{</span><span class="n">hopkins</span><span class="p">(</span><span class="n">dim_reduced_3d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> 
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="o">~</span>\<span class="n">AppData</span>\<span class="n">Local</span>\<span class="n">Temp</span><span class="o">/</span><span class="n">ipykernel_50684</span><span class="o">/</span><span class="mf">3032019449.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Choice&#39;s hopkins statistic </span><span class="si">{</span><span class="n">hopkins</span><span class="p">(</span><span class="n">dim_reduced_choice</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reward&#39;s hopkins statistic </span><span class="si">{</span><span class="n">hopkins</span><span class="p">(</span><span class="n">dim_reduced_rewards</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="ne">NameError</span>: name &#39;dim_reduced_choice&#39; is not defined
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2D&#39;s hopkins statistic 0.8984590772856941
+3D&#39;s hopkins statistic 0.8512912263659095
 </pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="ivat-visual-assessment-of-tendency">
 <h4>IVAT (visual assessment of tendency)<a class="headerlink" href="#ivat-visual-assessment-of-tendency" title="Permalink to this headline">¶</a></h4>
-<p>VAT is visual method of assessing the clustering likelihood of a dataset. VAT creates a minimum spanning tree of observations, where the pairwise distance between those observations is displayed as the black squares of an ordered dissimilarity square-shaped Map. The densely black squares on the diagonal can be understood as the number of clusters. The different shade of black provides insight on not only the numbers of clusters but, also the cluster hierarchy. <strong>Note</strong>, This algorithm is not a substitute for cluster evaluation metrics (Elbow, Silhouette coefficient). It merely suggests if clusters exist in the datasets, so as to avoid conducting cluster analysis on datasets in the first place. IVAT is just an improved version improved version of the VAT algorithm which produce more precise images but is more computational expensive.</p>
+<p>VAT <span id="id2">[<a class="reference internal" href="References.html#id3">Kumar and Bezdek, 2020</a>]</span> is a visual method of assessing the clustering likelihood of a dataset. VAT creates a minimum spanning tree of observations, where the pairwise distance between those observations is displayed as the black squares of an ordered dissimilarity square-shaped Map. The densely black squares on the diagonal can be understood as the number of clusters. The different shades of black provide insight on not only the numbers of clusters but also the cluster hierarchy. <strong>Note</strong>, This algorithm is not a substitute for cluster evaluation metrics (Elbow, Silhouette coefficient). It merely suggests if clusters exist in the datasets to avoid conducting cluster analysis on datasets in the first place. IVAT is just an improved version of the VAT algorithm that produces more precise images but is more computationally expensive.</p>
 <p><strong>IVAT MAP 2D</strong></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -439,7 +478,7 @@ H = \frac{\sum_{i=1}^{m} u_{i}^{d}}{\sum_{i=1}^{m} u_{i}^{d} + \sum_{i=1}^{m} w_
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Clustering_Analysis_8_0.png" src="_images/Clustering_Analysis_8_0.png" />
+<img alt="_images/Clustering_Analysis_15_0.png" src="_images/Clustering_Analysis_15_0.png" />
 </div>
 </div>
 <p><strong>IVAT MAP 3D</strong></p>
@@ -450,23 +489,23 @@ H = \frac{\sum_{i=1}^{m} u_{i}^{d}}{\sum_{i=1}^{m} u_{i}^{d} + \sum_{i=1}^{m} w_
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Clustering_Analysis_10_0.png" src="_images/Clustering_Analysis_10_0.png" />
+<img alt="_images/Clustering_Analysis_17_0.png" src="_images/Clustering_Analysis_17_0.png" />
 </div>
 </div>
-<p>From the result of implementing IVAT, it is observed from the maps produced are inconclusive for both datasets. However, as this algorithm is just meant to help us decide if we should go ahead with the cluster analysis or not, we will go ahead with the K-means cluster analysis as both hopkins stastic results were significant.</p>
+<p>From the result of implementing IVAT, it is observed that the maps produced are inconclusive for both datasets. However, as this algorithm is just meant to help us decide if we should go ahead with the cluster analysis or not, we will go ahead with the K-means cluster analysis as both Hopkins statistic results were significant.</p>
 </div>
 </div>
 </div>
 <div class="section" id="k-means">
 <h2>K-Means<a class="headerlink" href="#k-means" title="Permalink to this headline">¶</a></h2>
-<p>K-means is a common clustering algorithm. Although a simple clustering algorithm , it has wide application areas including in customer segmentation and Image compression. K-means is a centroid based algorithm that aims to minimize the sum of distances between the points and their respective cluster centroid..  The main steps of this algorithm are:</p>
+<p>K-means is a common clustering algorithm. Although a simple clustering algorithm, it has vast application areas, including customer segmentation and image compression. K-means is a centroid based algorithm that aims to minimize the sum of distances between the points and their respective cluster centroid.  The main steps of this algorithm are:</p>
 <ul class="simple">
 <li><p><strong>Step 1</strong>: Choose the number (k) of clusters</p></li>
-<li><p><strong>Step 2</strong>: Select k random points which will become the inital centroids</p></li>
+<li><p><strong>Step 2</strong>: Select k random points, which will become the initial centroids</p></li>
 <li><p><strong>Step 3</strong>: Assign all data points to the nearest centroid.</p></li>
-<li><p><strong>step 4</strong>: Compute the centroid of the newly formed clusters by by taking the
+<li><p><strong>Step 4</strong>: Compute the centroid of the newly formed clusters by taking the
 mean of data instances currently associated with that cluster.</p></li>
-<li><p><strong>Step 5</strong>: Repeat steps 3 and 4 untill either:</p>
+<li><p><strong>Step 5</strong>: Repeat steps 3 and 4 until either:</p>
 <ul>
 <li><p>Centroids of newly formed clusters do not change</p></li>
 <li><p>Points remain in the same cluster</p></li>
@@ -502,7 +541,7 @@ SSE = \sum_{i=1}^{N} {(y_i - ŷ_i)^2}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Clustering_Analysis_13_0.png" src="_images/Clustering_Analysis_13_0.png" />
+<img alt="_images/Clustering_Analysis_20_0.png" src="_images/Clustering_Analysis_20_0.png" />
 </div>
 </div>
 <p>We can see that the optimal number of clusters occur at k=2 to 4.</p>
@@ -522,15 +561,15 @@ SSE = \sum_{i=1}^{N} {(y_i - ŷ_i)^2}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Clustering_Analysis_15_0.png" src="_images/Clustering_Analysis_15_0.png" />
+<img alt="_images/Clustering_Analysis_22_0.png" src="_images/Clustering_Analysis_22_0.png" />
 </div>
 </div>
-<p>Here, determining the amount of clusters is more ambiguous. But I believe there is a dip at k=2 to k=6 mark.</p>
+<p>Here, determining the number of clusters is more ambiguous. Nevertheless, We believe there is a dip at k=2 to k=6 mark.</p>
 </div>
 </div>
 <div class="section" id="sillhoute-method">
 <h2>Sillhoute method<a class="headerlink" href="#sillhoute-method" title="Permalink to this headline">¶</a></h2>
-<p>This method is another method of finding the correct number of clusters(k). Silhouette coefficient for a particular data point (<span class="math notranslate nohighlight">\(i\)</span>), is defined as:
+<p>This method is another method of finding the correct number of clusters(k). Silhouette coefficient for a particular data point (<span class="math notranslate nohighlight">\(i\)</span>) is defined as:
 $<span class="math notranslate nohighlight">\(
 s_{i} = \frac{b_{i} - a_{i}}{max(b_{i}, a_{i})}
 \)</span>$
@@ -540,14 +579,11 @@ where:</p>
 <li><p><span class="math notranslate nohighlight">\(b_{i}\)</span>: average distance between <span class="math notranslate nohighlight">\(i\)</span> and all the other data points in its cluster.</p></li>
 <li><p><span class="math notranslate nohighlight">\(a_{i}\)</span>: minimum average distance from <span class="math notranslate nohighlight">\(i\)</span> to all clusters to which <span class="math notranslate nohighlight">\(i\)</span> does not belong to</p></li>
 </ul>
-<p>We evaluate using silhouette plots. These plots display how close each point in one cluster is to points in the neighboring clusters.</p>
+<p>We evaluate using silhouette plots. These plots display how close each point in one cluster is to points in the neighbouring clusters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">yellowbrick.cluster</span> <span class="kn">import</span> <span class="n">SilhouetteVisualizer</span>
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span>  <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Create KMeans instance for different number of clusters</span>
-<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">km</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
     <span class="n">visualizer</span> <span class="o">=</span> <span class="n">SilhouetteVisualizer</span><span class="p">(</span><span class="n">km</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;yellowbrick&#39;</span><span class="p">)</span>
     <span class="n">visualizer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:])</span>
@@ -556,13 +592,13 @@ where:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Clustering_Analysis_19_0.png" src="_images/Clustering_Analysis_19_0.png" />
-<img alt="_images/Clustering_Analysis_19_1.png" src="_images/Clustering_Analysis_19_1.png" />
-<img alt="_images/Clustering_Analysis_19_2.png" src="_images/Clustering_Analysis_19_2.png" />
+<img alt="_images/Clustering_Analysis_26_0.png" src="_images/Clustering_Analysis_26_0.png" />
+<img alt="_images/Clustering_Analysis_26_1.png" src="_images/Clustering_Analysis_26_1.png" />
+<img alt="_images/Clustering_Analysis_26_2.png" src="_images/Clustering_Analysis_26_2.png" />
 </div>
 </div>
-<p>This lies up with our previous assumption on the optimal number of clusters of the 2d dataset is 3. K=4 seem to be sub optimal due to wide foundations in size of the silhouette plot. The silhouette score for each cluster is above average silhouette scores when k =2, 3 or 4. However the fluctuation in size at 3 seems to be more uniform compared to 2. Thus, we  select the optimal number of clusters as 3.</p>
-<p>Another method of evaluating is to simply plot the silhouette coefficient</p>
+<p>This aligns with our previous assumption that the optimal number of clusters for the 2d dataset is 3. K=4 seem to be sub-optimal due to wide fluctuations in size of the silhouette plot. The silhouette score for each cluster is above average silhouette scores when k =2, 3 or 4. However, the fluctuation in size at 3 seems to be more uniform compared to 2. Thus, we select the optimal number of clusters as 3.</p>
+<p>Another method of evaluating is to simply plot the silhouette coefficient.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sill_coef</span> <span class="o">=</span> <span class="p">[]</span>
@@ -581,198 +617,255 @@ where:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Clustering_Analysis_21_0.png" src="_images/Clustering_Analysis_21_0.png" />
+<img alt="_images/Clustering_Analysis_28_0.png" src="_images/Clustering_Analysis_28_0.png" />
 </div>
 </div>
-<p>Here, we find the optimal number of cluster to be k=2 and 5 as these values of k maximizes the silhouette coefficient.</p>
+<p>Here, we find the optimal number of clusters to be k=2 and 5 as these values of k maximizes the silhouette coefficient.</p>
 </div>
 <div class="section" id="findings">
 <h2>Findings<a class="headerlink" href="#findings" title="Permalink to this headline">¶</a></h2>
-<p>As mentioned previously, clusters can be considered as disjoint groups. In this context, these clusters seek to represent people with similar latent physiological process or possible decision strategies. K-means clusters individuals by their choice options, a health binary variable variable if they are healthy or not and the cumulative reward at various intervals in the task in an attempt to relate the groupings to the the decision-making behavior of individual participants.</p>
+<p>As mentioned previously, clusters can be considered as disjoint groups. In this context, these clusters seek to represent people with similar latent physiological processes and/or possible decision strategies. K-means clusters individuals by their choices, a health binary variable indicating if they are healthy or not and the cumulative reward at various intervals in the task. We attempt to relate the groupings to the decision-making behaviour of individual participants.</p>
 <div class="section" id="top-2-principal-component-dataset">
 <h3>Top 2 principal component dataset<a class="headerlink" href="#top-2-principal-component-dataset" title="Permalink to this headline">¶</a></h3>
+<p>Healthy vs Unhealthy</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">km_2d</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dim_reduced_3d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">km_2d</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:])</span>
 <span class="n">dim_reduced_2d</span><span class="p">[</span><span class="s2">&quot;clusters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">km_2d</span><span class="o">.</span><span class="n">labels_</span> <span class="o">+</span> <span class="mi">1</span>
-<span class="n">dim_reduced_2d</span><span class="p">[</span><span class="s1">&#39;health binary&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dim_reduced_2d</span><span class="p">[</span><span class="s1">&#39;health status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span>  <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span><span class="s1">&#39;healthy&#39;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="c1"># ax1.plot(df.x, df.y)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Sharing Y axis&#39;</span><span class="p">)</span>
+<span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;component_1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;component_2&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">dim_reduced_2d</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;clusters&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">)</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;component_1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;component_2&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">dim_reduced_2d</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">)</span>
+<span class="n">results_df</span> <span class="o">=</span> <span class="n">dim_reduced_2d</span><span class="p">[[</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s1">&#39;clusters&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;health status&#39;</span><span class="p">)</span>
+<span class="n">results_df</span> <span class="o">=</span> <span class="n">results_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="o">.</span><span class="n">value_counts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;health status&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">results_df</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:xlabel=&#39;component_1&#39;, ylabel=&#39;component_2&#39;&gt;
-</pre></div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+    </tr>
+    <tr>
+      <th>health status</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>amphetamine</th>
+      <td>5.0</td>
+      <td>4.0</td>
+      <td>27.0</td>
+    </tr>
+    <tr>
+      <th>healthy</th>
+      <td>210.0</td>
+      <td>216.0</td>
+      <td>125.0</td>
+    </tr>
+    <tr>
+      <th>heroin</th>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>37.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div><img alt="_images/Clustering_Analysis_31_1.png" src="_images/Clustering_Analysis_31_1.png" />
 </div>
-<img alt="_images/Clustering_Analysis_25_1.png" src="_images/Clustering_Analysis_25_1.png" />
 </div>
-</div>
+<p>The majority of unhealthy individuals fall in cluster 2. With the majority of healthy individuals falling in either cluster 1 and 3. Although a significant proportion also fall in cluster 2. This lines with our hypothesis that people who suffer from subsistence issues exhibit similar decision-making deficits.</p>
+<p>Study vs Study</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="p">[[</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s2">&quot;cluster labels k=&quot;</span><span class="p">]],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;YlGnBu&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;component_1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;component_2&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">dim_reduced_2d</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;study&#39;</span><span class="p">)</span>
+<span class="n">results_df</span> <span class="o">=</span> <span class="n">dim_reduced_2d</span><span class="p">[[</span><span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="s1">&#39;clusters&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;study&#39;</span><span class="p">)</span>
+<span class="n">results_df</span> <span class="o">=</span> <span class="n">results_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="o">.</span><span class="n">value_counts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;study&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">results_df</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ValueError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
-<span class="o">~</span>\<span class="n">AppData</span>\<span class="n">Local</span>\<span class="n">Temp</span><span class="o">/</span><span class="n">ipykernel_35604</span><span class="o">/</span><span class="mf">2755239330.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="p">[[</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s2">&quot;cluster labels k=3&quot;</span><span class="p">]],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;YlGnBu&quot;</span><span class="p">)</span>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<span class="nn">c:\Users\tonyr\OneDrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\CA4015_First_Assignment\venv\lib\site-packages\seaborn\_decorators.py</span> in <span class="ni">inner_f</span><span class="nt">(*args, **kwargs)</span>
-<span class="g g-Whitespace">     </span><span class="mi">44</span>             <span class="p">)</span>
-<span class="nn">     45         kwargs.update({k: arg for k, arg</span> in <span class="ni">zip</span><span class="nt">(sig.parameters, args)})</span>
-<span class="ne">---&gt; </span><span class="mi">46</span>         <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">47</span>     <span class="k">return</span> <span class="n">inner_f</span>
-<span class="g g-Whitespace">     </span><span class="mi">48</span> 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
 
-<span class="nn">c:\Users\tonyr\OneDrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\CA4015_First_Assignment\venv\lib\site-packages\seaborn\matrix.py</span> in <span class="ni">heatmap</span><span class="nt">(data, vmin, vmax, cmap, center, robust, annot, fmt, annot_kws, linewidths, linecolor, cbar, cbar_kws, cbar_ax, square, xticklabels, yticklabels, mask, ax, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">538</span>     <span class="s2">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">539</span><span class="s2">     # Initialize the plotter object</span>
-<span class="ne">--&gt; </span><span class="mi">540</span><span class="s2">     plotter = _HeatMapper(data, vmin, vmax, cmap, center, robust, annot, fmt,</span>
-<span class="g g-Whitespace">    </span><span class="mi">541</span><span class="s2">                           annot_kws, cbar, cbar_kws, xticklabels,</span>
-<span class="g g-Whitespace">    </span><span class="mi">542</span><span class="s2">                           yticklabels, mask)</span>
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+    </tr>
+    <tr>
+      <th>study</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Ahn</th>
+      <td>20.0</td>
+      <td>22.0</td>
+      <td>83.0</td>
+    </tr>
+    <tr>
+      <th>Horstmann</th>
+      <td>89.0</td>
+      <td>66.0</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>Kjome</th>
+      <td>7.0</td>
+      <td>9.0</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>Maia</th>
+      <td>8.0</td>
+      <td>25.0</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>Premkumar</th>
+      <td>4.0</td>
+      <td>16.0</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>SteingroverInPrep</th>
+      <td>37.0</td>
+      <td>28.0</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>Wood</th>
+      <td>41.0</td>
+      <td>47.0</td>
+      <td>65.0</td>
+    </tr>
+    <tr>
+      <th>Worthy</th>
+      <td>11.0</td>
+      <td>10.0</td>
+      <td>14.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div><img alt="_images/Clustering_Analysis_33_1.png" src="_images/Clustering_Analysis_33_1.png" />
+</div>
+</div>
+<p>Besides the Ahn and SteingroverInPrep study, participants in each study seem to be equally distributed among the clusters. If participants could be accurately clustered by study, this would suggest that their choices are due to biases in the setup of the task rather than their behaviour. However, again, this highly depends on the assumption that k-means can accurately find the clusters within this dataset.</p>
+</div>
+<div class="section" id="top-3-principal-component-dataset">
+<h3>Top 3 principal component dataset<a class="headerlink" href="#top-3-principal-component-dataset" title="Permalink to this headline">¶</a></h3>
+<p><strong>K=2</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">visualise_cluster_heat_map</span><span class="p">(</span><span class="n">focus_feature</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Visualizes the clusters as heat maps , where the squares represents </span>
+<span class="sd">        the number of particpants in k clusters grouped by the focus feature </span>
+<span class="sd">    </span>
+<span class="sd">    :param focus_feature: focus_feature respresents the feature we want to</span>
+<span class="sd">        drill down by i.e. health status or study</span>
+<span class="sd">    :param k: Number of desired clusters</span>
+<span class="sd">    :param df: Dataframe containing study, health status and the top 3 principal</span>
+<span class="sd">        components</span>
+<span class="sd">    :param cmap: matplotlib colormap name or object, or list of colors, optional</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-<span class="nn">c:\Users\tonyr\OneDrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\CA4015_First_Assignment\venv\lib\site-packages\seaborn\matrix.py</span> in <span class="ni">__init__</span><span class="nt">(self, data, vmin, vmax, cmap, center, robust, annot, fmt, annot_kws, cbar, cbar_kws, xticklabels, yticklabels, mask)</span>
-<span class="g g-Whitespace">    </span><span class="mi">157</span><span class="s2"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">158</span><span class="s2">         # Determine good default values for the colormapping</span>
-<span class="ne">--&gt; </span><span class="mi">159</span><span class="s2">         self._determine_cmap_params(plot_data, vmin, vmax,</span>
-<span class="g g-Whitespace">    </span><span class="mi">160</span><span class="s2">                                     cmap, center, robust)</span>
-<span class="g g-Whitespace">    </span><span class="mi">161</span><span class="s2"> </span>
-
-<span class="nn">c:\Users\tonyr\OneDrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\CA4015_First_Assignment\venv\lib\site-packages\seaborn\matrix.py</span> in <span class="ni">_determine_cmap_params</span><span class="nt">(self, plot_data, vmin, vmax, cmap, center, robust)</span>
-<span class="g g-Whitespace">    </span><span class="mi">191</span><span class="s2"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">192</span><span class="s2">         # plot_data is a np.ma.array instance</span>
-<span class="ne">--&gt; </span><span class="mi">193</span><span class="s2">         calc_data = plot_data.astype(float).filled(np.nan)</span>
-<span class="g g-Whitespace">    </span><span class="mi">194</span><span class="s2">         if vmin is None:</span>
-<span class="g g-Whitespace">    </span><span class="mi">195</span><span class="s2">             if robust:</span>
-
-<span class="ne">ValueError</span>: could not convert string to float: &#39;healthy&#39;
+    <span class="n">km_3d</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:])</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;clusters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">km_3d</span><span class="o">.</span><span class="n">labels_</span> <span class="o">+</span> <span class="mi">1</span>
+    
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="n">focus_feature</span><span class="p">,</span> <span class="s1">&#39;clusters&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">focus_feature</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="o">.</span><span class="n">value_counts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="n">focus_feature</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;clusters&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">flights</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;flights&quot;</span><span class="p">)</span>
-<span class="n">flights</span> <span class="o">=</span> <span class="n">flights</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="s2">&quot;month&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;passengers&quot;</span><span class="p">)</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">flights</span><span class="p">)</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="p">[[</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="s2">&quot;cluster labels k=2&quot;</span><span class="p">]],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;YlGnBu&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">visualise_cluster_heat_map</span><span class="p">(</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dim_reduced_3d</span><span class="p">,</span> <span class="s1">&#39;Blues&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">URLError</span><span class="g g-Whitespace">                                  </span>Traceback (most recent call last)
-<span class="o">~</span>\<span class="n">AppData</span>\<span class="n">Local</span>\<span class="n">Temp</span><span class="o">/</span><span class="n">ipykernel_35604</span><span class="o">/</span><span class="mf">2418067186.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">flights</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;flights&quot;</span><span class="p">)</span>
-
-<span class="nn">c:\Users\tonyr\OneDrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\CA4015_First_Assignment\venv\lib\site-packages\seaborn\utils.py</span> in <span class="ni">load_dataset</span><span class="nt">(name, cache, data_home, **kws)</span>
-<span class="g g-Whitespace">    </span><span class="mi">592</span>         <span class="n">cache_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_data_home</span><span class="p">(</span><span class="n">data_home</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
-<span class="g g-Whitespace">    </span><span class="mi">593</span>         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cache_path</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">594</span>             <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">get_dataset_names</span><span class="p">():</span>
-<span class="g g-Whitespace">    </span><span class="mi">595</span>                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; is not one of the example datasets.&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">596</span>             <span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">)</span>
-
-<span class="nn">c:\Users\tonyr\OneDrive\fouth_year\advanced_machine_learning\assignment_1\my_assigment\CA4015_First_Assignment\venv\lib\site-packages\seaborn\utils.py</span> in <span class="ni">get_dataset_names</span><span class="nt">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">518</span>     <span class="s2">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">519</span><span class="s2">     url = &quot;https://github.com/mwaskom/seaborn-data&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">520</span><span class="s2">     with urlopen(url) as resp:</span>
-<span class="g g-Whitespace">    </span><span class="mi">521</span><span class="s2">         html = resp.read()</span>
-<span class="g g-Whitespace">    </span><span class="mi">522</span><span class="s2"> </span>
-
-<span class="nn">~\anaconda3\lib\urllib\request.py</span> in <span class="ni">urlopen</span><span class="nt">(url, data, timeout, cafile, capath, cadefault, context)</span>
-<span class="g g-Whitespace">    </span><span class="mi">220</span><span class="s2">     else:</span>
-<span class="g g-Whitespace">    </span><span class="mi">221</span><span class="s2">         opener = _opener</span>
-<span class="ne">--&gt; </span><span class="mi">222</span><span class="s2">     return opener.open(url, data, timeout)</span>
-<span class="g g-Whitespace">    </span><span class="mi">223</span><span class="s2"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">224</span><span class="s2"> def install_opener(opener):</span>
-
-<span class="nn">~\anaconda3\lib\urllib\request.py</span> in <span class="ni">open</span><span class="nt">(self, fullurl, data, timeout)</span>
-<span class="g g-Whitespace">    </span><span class="mi">523</span><span class="s2"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">524</span><span class="s2">         sys.audit(&#39;urllib.Request&#39;, req.full_url, req.data, req.headers, req.get_method())</span>
-<span class="ne">--&gt; </span><span class="mi">525</span><span class="s2">         response = self._open(req, data)</span>
-<span class="g g-Whitespace">    </span><span class="mi">526</span><span class="s2"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">527</span><span class="s2">         # post-process response</span>
-
-<span class="nn">~\anaconda3\lib\urllib\request.py</span> in <span class="ni">_open</span><span class="nt">(self, req, data)</span>
-<span class="g g-Whitespace">    </span><span class="mi">545</span><span class="s2">             return result</span>
-<span class="g g-Whitespace">    </span><span class="mi">546</span><span class="s2"> </span>
-<span class="ne">--&gt; </span><span class="mi">547</span><span class="s2">         return self._call_chain(self.handle_open, &#39;unknown&#39;,</span>
-<span class="g g-Whitespace">    </span><span class="mi">548</span><span class="s2">                                 &#39;unknown_open&#39;, req)</span>
-<span class="g g-Whitespace">    </span><span class="mi">549</span><span class="s2"> </span>
-
-<span class="nn">~\anaconda3\lib\urllib\request.py</span> in <span class="ni">_call_chain</span><span class="nt">(self, chain, kind, meth_name, *args)</span>
-<span class="g g-Whitespace">    </span><span class="mi">500</span><span class="s2">         for handler in handlers:</span>
-<span class="g g-Whitespace">    </span><span class="mi">501</span><span class="s2">             func = getattr(handler, meth_name)</span>
-<span class="ne">--&gt; </span><span class="mi">502</span><span class="s2">             result = func(*args)</span>
-<span class="g g-Whitespace">    </span><span class="mi">503</span><span class="s2">             if result is not None:</span>
-<span class="g g-Whitespace">    </span><span class="mi">504</span><span class="s2">                 return result</span>
-
-<span class="nn">~\anaconda3\lib\urllib\request.py</span> in <span class="ni">unknown_open</span><span class="nt">(self, req)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1419</span><span class="s2">     def unknown_open(self, req):</span>
-<span class="g g-Whitespace">   </span><span class="mi">1420</span><span class="s2">         type = req.type</span>
-<span class="ne">-&gt; </span><span class="mi">1421</span><span class="s2">         raise URLError(&#39;unknown url type: </span><span class="si">%s</span><span class="s2">&#39; % type)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1422</span><span class="s2"> </span>
-<span class="g g-Whitespace">   </span><span class="mi">1423</span><span class="s2"> def parse_keqv_list(l):</span>
-
-<span class="ne">URLError</span>: &lt;urlopen error unknown url type: https&gt;
-</pre></div>
+<img alt="_images/Clustering_Analysis_37_0.png" src="_images/Clustering_Analysis_37_0.png" />
 </div>
 </div>
-</div>
+<p>The healthy participants seem to be evenly spread among the two clusters. Both types of unhealthy participants have a tendency to appear in cluster 1. K-means seems to be reasonable able to cluster unhealthy patients, with 83% of unhealthy patients being clustered in the same group. However, k-means is unable to model the distinction between healthy and unhealthy individuals.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">sn</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="n">cm</span><span class="p">)</span>
-
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Cluster&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Helth Staus&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">df_orl</span><span class="p">[</span><span class="s2">&quot;subjID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="healthy-vs-unhealthy">
-<h4>Healthy vs Unhealthy<a class="headerlink" href="#healthy-vs-unhealthy" title="Permalink to this headline">¶</a></h4>
-</div>
-<div class="section" id="study-vs-study">
-<h4>Study vs Study<a class="headerlink" href="#study-vs-study" title="Permalink to this headline">¶</a></h4>
-</div>
-</div>
-<div class="section" id="top-3-principal-compnent-dataset">
-<h3>Top 3 principal compnent  dataset<a class="headerlink" href="#top-3-principal-compnent-dataset" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="id2">
-<h4>Healthy vs Unhealthy<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
-</div>
-<div class="section" id="id3">
-<h4>Study vs Study<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
-</div>
-<div class="section" id="k-2-2d-dataset">
-<h4>(k=2, 2D dataset)<a class="headerlink" href="#k-2-2d-dataset" title="Permalink to this headline">¶</a></h4>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kmeans2</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df_orl</span><span class="p">[[</span><span class="s2">&quot;BetaF&quot;</span><span class="p">,</span> <span class="s2">&quot;BetaP&quot;</span><span class="p">]])</span>
-<span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">df_orl</span><span class="p">[</span><span class="s2">&quot;subjID_label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">kmeans2</span><span class="o">.</span><span class="n">labels_</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">visualise_cluster_heat_map</span><span class="p">(</span><span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dim_reduced_3d</span><span class="p">,</span> <span class="s1">&#39;Blues&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Clustering_Analysis_31_0.png" src="_images/Clustering_Analysis_31_0.png" />
+<img alt="_images/Clustering_Analysis_39_0.png" src="_images/Clustering_Analysis_39_0.png" />
 </div>
 </div>
+<p>Ahn, Wood and Worthy seem to exhibit a clear preference for one cluster over another. Otherwise, participants in the other studies are reasonably evenly spread across the two clusters.</p>
+<p><strong>K = 5</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">visualise_cluster_heat_map</span><span class="p">(</span><span class="s1">&#39;health status&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">dim_reduced_3d</span><span class="p">)</span>
+</pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/Clustering_Analysis_42_0.png" src="_images/Clustering_Analysis_42_0.png" />
+</div>
+</div>
+<p>Healthy participants appear not to have a tendency to group in any cluster. For example, amphetamines users tend to group in clusters 2 and 3 and 4 whilst heroin users tend to be located in clusters 2 ,3 and 5. Interestingly, even with a more significant number of cluster’s, k-means groups the majority of unhealthy individuals in the same cluster (ie.e no distinction between opioid and stimulant dependents).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">visualise_cluster_heat_map</span><span class="p">(</span><span class="s1">&#39;study&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">dim_reduced_3d</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/Clustering_Analysis_44_0.png" src="_images/Clustering_Analysis_44_0.png" />
+</div>
+</div>
+<p>Ahn, Horstmann and Wood seem to exhibit a clear preference of one cluster over an another. Otherwise, participants in the other studies are reasonably evenly spread across the five clusters. Ahn’s clustering tendency throughout this investigation is most likely due to the presence of unhealthy participants exhibiting similar decision strategies as all of the other studies only consist of healthy individuals</p>
 </div>
 </div>
 </div>
@@ -819,7 +912,7 @@ where:</p>
         <a class="right-next" href="Federated_k_means.html" title="next page">
             <div class="prevnext-info">
                 <p class="prevnext-label">next</p>
-                <p class="prevnext-title">Clustering Analysis</p>
+                <p class="prevnext-title">Federated K-Means</p>
             </div>
             <i class="prevnext-label fas fa-angle-right"></i>
         </a>
