@@ -283,19 +283,19 @@
   <div class="section" id="federated-k-means">
 <h1>Federated K-Means<a class="headerlink" href="#federated-k-means" title="Permalink to this headline">¶</a></h1>
 <p>In this section, we attempt to form a federated k-means algorithm to preserve the privacy of the individual labs.</p>
-<p><strong>Federated learning:</strong>  First introduced by Google, federated learning trains an algorithm across multiple decentralized servers/devices with local data samples. There is <strong>no</strong> data sharing between servers. This is in contrast to the standard way of training a machine learning algorithm where all of the training dataset is uploaded to one server. This technique adrress critical issues relating to data privacy and security</p>
+<p><strong>Federated learning:</strong>  First introduced by Google, federated learning trains an algorithm across multiple decentralized servers/devices with local data samples. There is <strong>no</strong> data sharing between servers. This is in contrast to the standard way of training a machine learning algorithm where all of the training dataset is uploaded to one server. This technique address critical issues relating to data privacy and security</p>
 <div class="section" id="child-study">
 <h2>Child (Study):<a class="headerlink" href="#child-study" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="base-k-means">
 <h3>1. Base k-means:<a class="headerlink" href="#base-k-means" title="Permalink to this headline">¶</a></h3>
-<p>The original K-Means algorithm is only trained/ on a given dataset once. There is no update method. In this approach, we split a study’s datastet 75:25.  75% of a study’s data is trained using normal K-means. It is important to note that all child devices are independent of one another.</p>
+<p>The original K-Means algorithm is only trained/ on a given dataset once. There is no update method. In this approach, we split a study’s dataset 75:25.  75% of a study’s data is trained using normal K-means. It is important to note that all child devices are independent of one another.</p>
 </div>
 <div class="section" id="update">
 <h3>2. Update:<a class="headerlink" href="#update" title="Permalink to this headline">¶</a></h3>
-<p>In an attempt to resemble real-world federated learning where a new data point is generated on a device, we add a update step to base K-means. Rather then recompute k-means, We iterate through the remaining 25% of data and perform the following steps</p>
+<p>In an attempt to resemble real-world federated learning where a new data point is generated on a device, we add an update step to base K-means. Rather than recompute k-means, we iterate through the remaining 25% of data and perform the following steps</p>
 <ol class="simple">
-<li><p>Convert new data point to numpy array</p></li>
-<li><p>Find the minimum Euclidean distance between that new point <span class="math notranslate nohighlight">\(X_{i}\)</span>  and the cluster centers (T) to find the closest cluster centre (<span class="math notranslate nohighlight">\(C_{i}\)</span>).
+<li><p>Convert new data point to NumPy array</p></li>
+<li><p>Find the minimum Euclidean distance between that new point <span class="math notranslate nohighlight">\(X_{i}\)</span>  and the cluster centres (T) to find the closest cluster centre (<span class="math notranslate nohighlight">\(C_{i}\)</span>).
 $<span class="math notranslate nohighlight">\(
 Minimum Distance = min((X_{i} - C_{1})^2.............(X_{i} - C_{T})^2)
 \)</span>$</p></li>
@@ -303,7 +303,7 @@ Minimum Distance = min((X_{i} - C_{1})^2.............(X_{i} - C_{T})^2)
 $<span class="math notranslate nohighlight">\(
 TransformedClusterCentre = \frac{((C_{i} * N) + X_{i})}{N+1}
 \)</span>$</p></li>
-<li><p>Then, the new data point is added to the cluster, and the transformed cluster centre is the  new cluster centre.</p></li>
+<li><p>Then, the new data point is added to the cluster, and the transformed cluster centre is the new cluster centre.</p></li>
 </ol>
 </div>
 </div>
@@ -311,26 +311,12 @@ TransformedClusterCentre = \frac{((C_{i} * N) + X_{i})}{N+1}
 <h2>Parent (Server):<a class="headerlink" href="#parent-server" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="aggregate-compute-weighted-average">
 <h3>3. Aggregate &amp; Compute weighted average:<a class="headerlink" href="#aggregate-compute-weighted-average" title="Permalink to this headline">¶</a></h3>
-<p>Once all of the child devices (S) has completed their update phase, their cluster centres are added to the parent server. Then, we compute another K-means run to find the optimal number of k centroids.</p>
+<p>Once all child devices (S) have completed their update phase, their cluster centres are added to the parent server. Then, we compute another K-means run to find the optimal number of k centroids.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.cluster.vq</span> <span class="kn">import</span> <span class="n">kmeans2</span>
-<span class="kn">from</span> <span class="nn">sklearn_extra.cluster</span> <span class="kn">import</span> <span class="n">KMedoids</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">ipykernel_1634</span><span class="o">/</span><span class="mf">3986984131.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">scipy.cluster.vq</span> <span class="kn">import</span> <span class="n">kmeans2</span>
-<span class="ne">----&gt; </span><span class="mi">5</span> <span class="kn">from</span> <span class="nn">sklearn_extra.cluster</span> <span class="kn">import</span> <span class="n">KMedoids</span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;sklearn_extra&#39;
 </pre></div>
 </div>
 </div>
@@ -409,7 +395,7 @@ TransformedClusterCentre = \frac{((C_{i} * N) + X_{i})}{N+1}
         <span class="bp">self</span><span class="o">.</span><span class="n">create_maps</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span> 
         <span class="n">updated_cluster_centres</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cluster_centre</span><span class="p">)</span> <span class="k">for</span> <span class="n">cluster_centre</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_cluster_centre</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span> 
-        <span class="k">return</span> <span class="n">updated_cluster_centres</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>    
+        <span class="k">return</span> <span class="n">updated_cluster_centres</span> 
    
 </pre></div>
 </div>
@@ -420,51 +406,43 @@ TransformedClusterCentre = \frac{((C_{i} * N) + X_{i})}{N+1}
 <h3>Parent K-means class<a class="headerlink" href="#parent-k-means-class" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">parent_kmeans</span><span class="p">(</span><span class="n">kmeans</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">parent_kmeans</span><span class="p">(</span><span class="n">KMeans</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A python class that retrieves cluster centres from</span>
 <span class="sd">        each study, and then computes another k-means algorithim </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_participants</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centres</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_clusters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centres_studies</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">federated_cluster_centres</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cluster_centre</span><span class="p">,</span> <span class="n">n_participant</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centres</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cluster_centre</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_participants</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n_participant</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">weighted_average</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">child_weighted_avg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_centres</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_participants</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>        
-        <span class="k">return</span> <span class="n">child_weighted_avg</span>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cluster_centre</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centres_studies</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cluster_centre</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">update_cluster_centre</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">federated_cluster_centres</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted_average</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_participants</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centres</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_centres_studies</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">get_new_centres</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">federated_cluster_centres</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parent_server</span> <span class="o">=</span> <span class="n">parent_kmeans</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parent_server</span> <span class="o">=</span> <span class="n">parent_kmeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">study</span> <span class="ow">in</span> <span class="n">studies_list</span><span class="p">:</span>
-    <span class="c1"># First retrieving the cluster centres and number of particpants  from a study</span>
-    <span class="n">study_cluster_centres</span><span class="p">,</span> <span class="n">n_particpants</span> <span class="o">=</span> <span class="n">child_kmeans</span><span class="p">(</span><span class="nb">globals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">study</span><span class="si">}</span><span class="s1">_study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:],</span> <span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-    <span class="n">list_cluster_cenntres</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">study_cluster_centres</span><span class="p">)</span>
+    <span class="c1"># First retrieving the cluster centres from a study</span>
+    <span class="n">study_cluster_centres</span> <span class="o">=</span> <span class="n">child_kmeans</span><span class="p">(</span><span class="nb">globals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">study</span><span class="si">}</span><span class="s1">_study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:],</span> <span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
     <span class="c1"># Adding that information to the parent server </span>
-    <span class="n">parent_server</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cluster_centre</span><span class="o">=</span><span class="n">study_cluster_centres</span><span class="p">,</span> <span class="n">n_participant</span><span class="o">=</span><span class="n">n_particpants</span><span class="p">)</span>
+    <span class="n">parent_server</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cluster_centre</span><span class="o">=</span><span class="n">study_cluster_centres</span><span class="p">)</span>
 
 <span class="c1"># Calculating the new federated cluster centres</span>
 <span class="n">parent_server</span><span class="o">.</span><span class="n">update_cluster_centre</span><span class="p">()</span>
 <span class="c1"># Retreving the cluster centres from Federated K-means and normal K-means    </span>
-<span class="n">fkm_cluster_centres</span> <span class="o">=</span> <span class="n">KMedoids</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">list_cluster_cenntres</span><span class="p">)</span><span class="o">.</span><span class="n">cluster_centers_</span>
+<span class="n">fkm_cluster_centres</span> <span class="o">=</span> <span class="n">parent_server</span><span class="o">.</span><span class="n">get_new_centres</span><span class="p">()</span>
 <span class="n">km_clusters_centres</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="o">.</span><span class="n">cluster_centers_</span>
 </pre></div>
 </div>
@@ -512,27 +490,13 @@ TransformedClusterCentre = \frac{((C_{i} * N) + X_{i})}{N+1}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Federated K-mean SSE: 1498.2800508864157
-K-mean SSE: 1362.19601035772
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Federated K-mean SSE: 1498.2800508864198
+K-mean SSE: 1362.1960103577208
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">fkm_cluster_centres</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[ 1.00246288e-03 -3.38455730e-01]
- [-2.51137329e+00  5.80883100e-01]
- [ 2.75575866e+00 -4.04762233e-02]]
-</pre></div>
-</div>
-</div>
-</div>
-<p>Our chosen approach only results in a approx 26% increase in SSE when compared to the original centralized K-means algorithm</p>
+<p>Our chosen approach only results in a approximate 10% increase in SSE compared to the original centralized K-means algorithm.</p>
 </div>
 </div>
 
