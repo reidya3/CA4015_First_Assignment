@@ -14,7 +14,7 @@
 - [Website](#website)
 
 ## Development
-It is good practice to develop in a virtual environment. Note, this jupyter book was written using `python 3.8` and on the `Ubuntu` (Linux) operating system (OS). As such, all commands are installed for this setup may not work for other OS's. To create a virtual environment called `venv`, execute:
+It is good practice to develop in a virtual environment. Note, this jupyter book was written using `python 3.8` and on the `Ubuntu` (Linux) operating system (OS). As such, all commands are setup for this installation and may not work for other OS's. To create a virtual environment called `venv`, execute:
 ```bash
 python3 -m venv venv
 ```

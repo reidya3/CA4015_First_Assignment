@@ -1,11 +1,8 @@
 jupyter-book
 matplotlib
-numpy
 pyppeteer
 pandas
 sklearn
 seaborn
-plotly
-statsmodels
 pyclustertend
 yellowbrick
