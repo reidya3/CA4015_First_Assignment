@@ -9,9 +9,13 @@
 </h3>
 
 ## Table of Contents
+- [Github Link](#github-link)
 - [Development](#development)
 - [Usage](#usage)
 - [Website](#website)
+
+## Github Link
+The github link for my assignment is https://github.com/reidya3/CA4015_First_Assignment
 
 ## Development
 It is good practice to develop in a virtual environment. Note, this jupyter book was written using `python 3.8` and on the `Ubuntu` (Linux) operating system (OS). As such, all commands are setup for this installation and may not work for other OS's. To create a virtual environment called `venv`, execute:
@@ -26,7 +30,7 @@ source venv/bin/activate
 - Execute `pip install -r requirements.txt` to install requirements for development.
 
 ## Usage
-To build the jupyter book as HTML, please execute `jupyter-book build --all book/`. To build a PDF version of the book, please run `jupyter-book build book/ --builder pdfhtml`. **Note**, you will have to build a html version first. For further information, please [click here](https://jupyterbook.org/advanced/pdf.html?highlight=build%20pdf). The PDF file can be found in the [docs](/docs) folder.
+To build the jupyter book as HTML, please execute `jupyter-book build --all book/`. To build a PDF version of the book, please run `jupyter-book build book/ --builder pdfhtml`. **Note**, you will have to build a html version first. For further information, please [click here](https://jupyterbook.org/advanced/pdf.html?highlight=build%20pdf). The **PDF file** can be found in the [docs](/docs) folder.
 
 ## Website
 The content of this jupyter book is [hosted here](https://reidya3.github.io/CA4015_First_Assignment/Introduction.html). Github actions are utilized to automatically build the book and update the website when a `push` or `pull request` event occurs on the main branch.
