@@ -272,6 +272,8 @@
                 
   <div class="section" id="initial-data-exploration">
 <h1>Initial Data Exploration<a class="headerlink" href="#initial-data-exploration" title="Permalink to this headline">¶</a></h1>
+<div class="math notranslate nohighlight">
+\[\]</div>
 <p>The purpose of our initial data exploration is to:</p>
 <ol type = "a">
     <li>Check the validity of the data and perform data cleaning methods if needed.</li>
@@ -1292,10 +1294,11 @@ The variable name of the pivoted datasets have the form:<code class="docutils li
 <li><p>Environment transitions to a new state <span class="math notranslate nohighlight">\(S_{1}\)</span> (our agent is present with the same deck of cards, albeit their first choice is absent).</p></li>
 <li><p>Environment gives some reward <span class="math notranslate nohighlight">\(R_{1}\)</span> to the agent.</p></li>
 </ul>
-<p>Therefore, Cumulative reward at trial t can be defined as:
-$<span class="math notranslate nohighlight">\(
+<p>Therefore, Cumulative reward at trial t can be defined as:</p>
+<div class="math notranslate nohighlight">
+\[
 G(t) = \sum_{k=0}^T R_{t+k+1}
-\)</span>$</p>
+\]</div>
 <p>In the same respect, we attempt to plot the cumulative reward (total) for the participants surveyed. However, given the large number of participants available, it is infeasible to plot for every subject. Therefore, we will group participants by study. When plotting, the average cumulative total at trial T for a study of N participants will be calculated as follows:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1639,8 +1642,11 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </ol>
 <div class="section" id="standardisation">
 <h3>Standardisation<a class="headerlink" href="#standardisation" title="Permalink to this headline">¶</a></h3>
-<p>We now standardize the data using the following formulae:
-$<span class="math notranslate nohighlight">\(X_i = X_i - \bar{X}~~~~~~~~~~~~~~~~~~X_i = \frac{X_i}{\sigma}\)</span>$</p>
+<p>We now standardize the data using the following formulae:</p>
+<div class="math notranslate nohighlight">
+\[
+X_i = X_i - \bar{X}~~~~~~~~~~~~~~~~~~X_i = \frac{X_i}{\sigma}
+\]</div>
 <p>The standard deviation should equal 1 after standardization</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">

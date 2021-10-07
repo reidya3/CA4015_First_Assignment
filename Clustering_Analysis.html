@@ -449,8 +449,8 @@ H = \frac{\sum_{i=1}^{m} u_{i}^{d}}{\sum_{i=1}^{m} u_{i}^{d} + \sum_{i=1}^{m} w_
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2D&#39;s hopkins statistic 0.7966948664511423
-3D&#39;s hopkins statistic 0.7753612503634556
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2D&#39;s hopkins statistic 0.8110399040994339
+3D&#39;s hopkins statistic 0.8334229224796351
 </pre></div>
 </div>
 </div>
@@ -480,7 +480,7 @@ H = \frac{\sum_{i=1}^{m} u_{i}^{d}}{\sum_{i=1}^{m} u_{i}^{d} + \sum_{i=1}^{m} w_
 <img alt="_images/Clustering_Analysis_17_0.png" src="_images/Clustering_Analysis_17_0.png" />
 </div>
 </div>
-<p>From the result of implementing IVAT, it is observed that the maps suggest 4 clusters for the 2D datatset whilst the 3D dataset remains inconclusive for both datasets. However, as this algorithm is just meant to help us decide if we should go ahead with the cluster analysis or not, we will go ahead with the K-means cluster analysis as both Hopkins statistic results were significant.</p>
+<p>From the result of implementing IVAT, it is observed that approximately 4 clusters are present for the 2D datatset whilst the 3D dataset remains inconclusive. However, as this algorithm is just meant to help us decide if we should go ahead with the cluster analysis or not, we will go ahead with the K-means cluster analysis as both Hopkins statistic results were significant.</p>
 </div>
 </div>
 </div>
@@ -508,10 +508,11 @@ mean of data instances currently associated with that cluster.</p></li>
 </ul>
 <div class="section" id="elbow-method">
 <h3>Elbow method<a class="headerlink" href="#elbow-method" title="Permalink to this headline">¶</a></h3>
-<p>The Elbow method calculates the error or ‘distortion’ between the data points (<span class="math notranslate nohighlight">\(y_{i}\)</span>) and their corresponding centroid (<span class="math notranslate nohighlight">\(ŷ_{i}\)</span>) of N data points for k clusters where k ⋹ {1…10}. The error metric used is the Sum of Squared Error (SSE):
-$<span class="math notranslate nohighlight">\(
+<p>The Elbow method calculates the error or ‘distortion’ between the data points (<span class="math notranslate nohighlight">\(y_{i}\)</span>) and their corresponding centroid (<span class="math notranslate nohighlight">\(ŷ_{i}\)</span>) of N data points for k clusters where k ⋹ {1…10}. The error metric used is the Sum of Squared Error (SSE):</p>
+<div class="math notranslate nohighlight">
+\[
 SSE = \sum_{i=1}^{N} {(y_i - ŷ_i)^2}
-\)</span>$</p>
+\]</div>
 <p>We plot these values in an attempt to find an ‘elbow’ within the curve.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -557,11 +558,12 @@ SSE = \sum_{i=1}^{N} {(y_i - ŷ_i)^2}
 </div>
 <div class="section" id="sillhoute-method">
 <h2>Sillhoute method<a class="headerlink" href="#sillhoute-method" title="Permalink to this headline">¶</a></h2>
-<p>This method is another method of finding the correct number of clusters(k). Silhouette coefficient for a particular data point (<span class="math notranslate nohighlight">\(i\)</span>) is defined as:
-$<span class="math notranslate nohighlight">\(
+<p>This method is another method of finding the correct number of clusters(k). Silhouette coefficient for a particular data point (<span class="math notranslate nohighlight">\(i\)</span>) is defined as:</p>
+<div class="math notranslate nohighlight">
+\[
 s_{i} = \frac{b_{i} - a_{i}}{max(b_{i}, a_{i})}
-\)</span>$
-where:</p>
+\]</div>
+<p>where:</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(s_{i}\)</span>: the silhouette coefficient, ranging from -1 to 1. A score of 1 (the best) means that data point <span class="math notranslate nohighlight">\(i\)</span> is compact in its cluster and far away from other clusters. Conversely, the worst value is -1, while values near 0 denote overlapping clusters.</p></li>
 <li><p><span class="math notranslate nohighlight">\(b_{i}\)</span>: average distance between <span class="math notranslate nohighlight">\(i\)</span> and all the other data points in its cluster.</p></li>
