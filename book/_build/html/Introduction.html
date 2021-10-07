@@ -42,6 +42,8 @@
     <script src="_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -221,10 +223,14 @@
 <p>In this investigation, we seek to use a variety of clustering approaches to segment the participants into well-defined groups.
 To start, we perform an initial data exploration to perform transformations &amp; data sanitization checks; acquire rudimentary statistics of the datasets; perform data augmentation; create exploratory visualizations. Next, we perform cluster analysis and evaluate our clusters using metrics such as Silhouette Coefficient and an Elbow curve.
 These clusters represent participants that exhibit similar decision-making patterns and may have similar underlying psychological qualities such as impulsivity, stress reaction level to punishments or similar learnt experiences. Next, we attempt to form a federated k-means algorithm to preserve the privacy of the individual labs. Finally, we conclude with the most important outcomes of our work.</p>
+<div class="math notranslate nohighlight">
+\[\]</div>
 </div>
 <div class="toctree-wrapper compound">
 <span id="document-Initial_Data_Exploration"></span><div class="section" id="initial-data-exploration">
 <h2>Initial Data Exploration<a class="headerlink" href="#initial-data-exploration" title="Permalink to this headline">¶</a></h2>
+<div class="math notranslate nohighlight">
+\[\]</div>
 <p>The purpose of our initial data exploration is to:</p>
 <ol type = "a">
     <li>Check the validity of the data and perform data cleaning methods if needed.</li>
@@ -605,7 +611,9 @@ Kjome et al. study, and for two participants in Wood et al. study). However, the
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>choice_95 basic statistics
-         trial_1    trial_2    trial_3    trial_4
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>         trial_1    trial_2    trial_3    trial_4
 count  15.000000  15.000000  15.000000  15.000000
 mean    2.133333   2.333333   2.466667   2.600000
 std     1.355764   0.816497   1.060099   1.183216
@@ -658,9 +666,7 @@ max     4.000000   4.000000   4.000000   4.000000
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>win_95 basic statistics
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          trial_1     trial_2     trial_3     trial_4
+          trial_1     trial_2     trial_3     trial_4
 count   15.000000   15.000000   15.000000   15.000000
 mean    80.000000   86.666667   70.000000   76.666667
 std     25.354628   22.886885   25.354628   25.819889
@@ -672,7 +678,9 @@ max    100.000000  100.000000  100.000000  100.000000
 
 
 win_100 basic statistics
-          trial_1     trial_2     trial_3     trial_4
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          trial_1     trial_2     trial_3     trial_4
 count  504.000000  504.000000  504.000000  504.000000
 mean    81.646825   77.956349   76.636905   77.172619
 std     24.124146   26.566060   25.105129   25.387493
@@ -723,7 +731,9 @@ max        0.0      0.0   0.000000      0.0
 
 
 loss_100 basic statistics
-           trial_1      trial_2      trial_3      trial_4
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>           trial_1      trial_2      trial_3      trial_4
 count   504.000000   504.000000   504.000000   504.000000
 mean    -37.301587   -40.376984   -64.682540   -39.384921
 std     149.610031   175.942949   192.871723   152.257429
@@ -1241,10 +1251,11 @@ The variable name of the pivoted datasets have the form:<code class="docutils li
 <li><p>Environment transitions to a new state <span class="math notranslate nohighlight">\(S_{1}\)</span> (our agent is present with the same deck of cards, albeit their first choice is absent).</p></li>
 <li><p>Environment gives some reward <span class="math notranslate nohighlight">\(R_{1}\)</span> to the agent.</p></li>
 </ul>
-<p>Therefore, Cumulative reward at trial t can be defined as:
-$<span class="math notranslate nohighlight">\(
+<p>Therefore, Cumulative reward at trial t can be defined as:</p>
+<div class="math notranslate nohighlight">
+\[
 G(t) = \sum_{k=0}^T R_{t+k+1}
-\)</span>$</p>
+\]</div>
 <p>In the same respect, we attempt to plot the cumulative reward (total) for the participants surveyed. However, given the large number of participants available, it is infeasible to plot for every subject. Therefore, we will group participants by study. When plotting, the average cumulative total at trial T for a study of N participants will be calculated as follows:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1390,7 +1401,7 @@ the average heroin user tends to perform more poorly when compared to an ampheta
 </div>
 <div class="section" id="data-processing">
 <h3>Data Processing<a class="headerlink" href="#data-processing" title="Permalink to this headline">¶</a></h3>
-<p>If we were to include every feature currently available, we would have high dimensional dataset. K-means suffers from the ‘curse of dimensionality’ as the distance metric (Euclidean distance) suffers in high dimensions.  Ah-hoc analysis using a dimensailty reduction technique known as principal component analysis (discussed later on) on the 100 trial choice dataset still revealed a high number of relevant components, 36 (Kaiser-Guttman test). This motivates us to perform feature engineering and create the following columns:</p>
+<p>If we were to include every feature currently available, we would have a high dimensional dataset. K-means suffers from the ‘curse of dimensionality’ as the distance metric (Euclidean distance) suffers in high dimensions.  Ah-hoc analysis using a dimensailty reduction technique known as principal component analysis (discussed later on) on the 100 trial choice dataset still revealed a high number of relevant components, 36 (Kaiser-Guttman test). This motivates us to perform feature engineering and create the following columns:</p>
 <ul class="simple">
 <li><p><strong>health_binary:</strong> A binary variable, 1 if the subject is healthy. Otherwise, 0</p></li>
 <li><p><strong>cum_reward_25:</strong> The cumulative reward (as explained above) at trial 25. We include the cumulative reward at specified trial intervals in attempt to model the behaviour/progress of a subject when performing the task. For example, we would expect an individual that has a propensity for gambling to initially achieve well but would loose money overtime as the decks with higher wins (<span class="math notranslate nohighlight">\(100) result in a long-term net loss, while the decks with smaller wins (\)</span>50) yield a net gain</p></li>
@@ -1447,7 +1458,7 @@ Deck D: 18663
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\tonyr\AppData\Local\Temp/ipykernel_13604/1793568551.py:1: SettingWithCopyWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\tonyr\AppData\Local\Temp/ipykernel_22600/1793568551.py:1: SettingWithCopyWarning: 
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
@@ -1588,8 +1599,11 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </ol>
 <div class="section" id="standardisation">
 <h4>Standardisation<a class="headerlink" href="#standardisation" title="Permalink to this headline">¶</a></h4>
-<p>We now standardize the data using the following formulae:
-$<span class="math notranslate nohighlight">\(X_i = X_i - \bar{X}~~~~~~~~~~~~~~~~~~X_i = \frac{X_i}{\sigma}\)</span>$</p>
+<p>We now standardize the data using the following formulae:</p>
+<div class="math notranslate nohighlight">
+\[
+X_i = X_i - \bar{X}~~~~~~~~~~~~~~~~~~X_i = \frac{X_i}{\sigma}
+\]</div>
 <p>The standard deviation should equal 1 after standardization</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1720,18 +1734,6 @@ Jolliffe criterion optimal component number: 3 , expalined variance: 0.811750824
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="o">~</span>\<span class="n">AppData</span>\<span class="n">Local</span>\<span class="n">Temp</span><span class="o">/</span><span class="n">ipykernel_20928</span><span class="o">/</span><span class="mf">2925194365.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">silhouette_score</span>
-<span class="ne">----&gt; </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">pyclustertend</span> <span class="kn">import</span> <span class="n">ivat</span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;pyclustertend&#39;
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 <div class="section" id="data-visualisation">
@@ -1816,8 +1818,8 @@ H = \frac{\sum_{i=1}^{m} u_{i}^{d}}{\sum_{i=1}^{m} u_{i}^{d} + \sum_{i=1}^{m} w_
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2D&#39;s hopkins statistic 0.8984590772856941
-3D&#39;s hopkins statistic 0.8512912263659095
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2D&#39;s hopkins statistic 0.7566901952140672
+3D&#39;s hopkins statistic 0.7846936678782558
 </pre></div>
 </div>
 </div>
@@ -1847,7 +1849,7 @@ H = \frac{\sum_{i=1}^{m} u_{i}^{d}}{\sum_{i=1}^{m} u_{i}^{d} + \sum_{i=1}^{m} w_
 <img alt="_images/Clustering_Analysis_17_0.png" src="_images/Clustering_Analysis_17_0.png" />
 </div>
 </div>
-<p>From the result of implementing IVAT, it is observed that the maps produced are inconclusive for both datasets. However, as this algorithm is just meant to help us decide if we should go ahead with the cluster analysis or not, we will go ahead with the K-means cluster analysis as both Hopkins statistic results were significant.</p>
+<p>From the result of implementing IVAT, it is observed that approximately 4 clusters are present for the 2D datatset whilst the 3D dataset remains inconclusive. However, as this algorithm is just meant to help us decide if we should go ahead with the cluster analysis or not, we will go ahead with the K-means cluster analysis as both Hopkins statistic results were significant.</p>
 </div>
 </div>
 </div>
@@ -1875,10 +1877,11 @@ mean of data instances currently associated with that cluster.</p></li>
 </ul>
 <div class="section" id="elbow-method">
 <h4>Elbow method<a class="headerlink" href="#elbow-method" title="Permalink to this headline">¶</a></h4>
-<p>The Elbow method calculates the error or ‘distortion’ between the data points (<span class="math notranslate nohighlight">\(y_{i}\)</span>) and their corresponding centroid (<span class="math notranslate nohighlight">\(ŷ_{i}\)</span>) of N data points for k clusters where k ⋹ {1…10}. The error metric used is the Sum of Squared Error (SSE):
-$<span class="math notranslate nohighlight">\(
+<p>The Elbow method calculates the error or ‘distortion’ between the data points (<span class="math notranslate nohighlight">\(y_{i}\)</span>) and their corresponding centroid (<span class="math notranslate nohighlight">\(ŷ_{i}\)</span>) of N data points for k clusters where k ⋹ {1…10}. The error metric used is the Sum of Squared Error (SSE):</p>
+<div class="math notranslate nohighlight">
+\[
 SSE = \sum_{i=1}^{N} {(y_i - ŷ_i)^2}
-\)</span>$</p>
+\]</div>
 <p>We plot these values in an attempt to find an ‘elbow’ within the curve.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1924,11 +1927,12 @@ SSE = \sum_{i=1}^{N} {(y_i - ŷ_i)^2}
 </div>
 <div class="section" id="sillhoute-method">
 <h3>Sillhoute method<a class="headerlink" href="#sillhoute-method" title="Permalink to this headline">¶</a></h3>
-<p>This method is another method of finding the correct number of clusters(k). Silhouette coefficient for a particular data point (<span class="math notranslate nohighlight">\(i\)</span>) is defined as:
-$<span class="math notranslate nohighlight">\(
+<p>This method is another method of finding the correct number of clusters(k). Silhouette coefficient for a particular data point (<span class="math notranslate nohighlight">\(i\)</span>) is defined as:</p>
+<div class="math notranslate nohighlight">
+\[
 s_{i} = \frac{b_{i} - a_{i}}{max(b_{i}, a_{i})}
-\)</span>$
-where:</p>
+\]</div>
+<p>where:</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(s_{i}\)</span>: the silhouette coefficient, ranging from -1 to 1. A score of 1 (the best) means that data point <span class="math notranslate nohighlight">\(i\)</span> is compact in its cluster and far away from other clusters. Conversely, the worst value is -1, while values near 0 denote overlapping clusters.</p></li>
 <li><p><span class="math notranslate nohighlight">\(b_{i}\)</span>: average distance between <span class="math notranslate nohighlight">\(i\)</span> and all the other data points in its cluster.</p></li>
@@ -2029,20 +2033,20 @@ where:</p>
   <tbody>
     <tr>
       <th>amphetamine</th>
-      <td>5.0</td>
       <td>4.0</td>
-      <td>27.0</td>
+      <td>4.0</td>
+      <td>28.0</td>
     </tr>
     <tr>
       <th>healthy</th>
-      <td>210.0</td>
-      <td>216.0</td>
-      <td>125.0</td>
+      <td>218.0</td>
+      <td>201.0</td>
+      <td>132.0</td>
     </tr>
     <tr>
       <th>heroin</th>
-      <td>2.0</td>
-      <td>3.0</td>
+      <td>0.0</td>
+      <td>5.0</td>
       <td>37.0</td>
     </tr>
   </tbody>
@@ -2094,51 +2098,51 @@ where:</p>
   <tbody>
     <tr>
       <th>Ahn</th>
-      <td>20.0</td>
-      <td>22.0</td>
-      <td>83.0</td>
+      <td>17.0</td>
+      <td>21.0</td>
+      <td>87.0</td>
     </tr>
     <tr>
       <th>Horstmann</th>
-      <td>89.0</td>
-      <td>66.0</td>
-      <td>7.0</td>
+      <td>97.0</td>
+      <td>57.0</td>
+      <td>8.0</td>
     </tr>
     <tr>
       <th>Kjome</th>
       <td>7.0</td>
-      <td>9.0</td>
-      <td>3.0</td>
+      <td>8.0</td>
+      <td>4.0</td>
     </tr>
     <tr>
       <th>Maia</th>
       <td>8.0</td>
-      <td>25.0</td>
-      <td>7.0</td>
+      <td>24.0</td>
+      <td>8.0</td>
     </tr>
     <tr>
       <th>Premkumar</th>
-      <td>4.0</td>
+      <td>3.0</td>
       <td>16.0</td>
-      <td>5.0</td>
+      <td>6.0</td>
     </tr>
     <tr>
       <th>SteingroverInPrep</th>
-      <td>37.0</td>
+      <td>38.0</td>
       <td>28.0</td>
-      <td>5.0</td>
+      <td>4.0</td>
     </tr>
     <tr>
       <th>Wood</th>
-      <td>41.0</td>
-      <td>47.0</td>
+      <td>40.0</td>
+      <td>48.0</td>
       <td>65.0</td>
     </tr>
     <tr>
       <th>Worthy</th>
-      <td>11.0</td>
-      <td>10.0</td>
-      <td>14.0</td>
+      <td>12.0</td>
+      <td>8.0</td>
+      <td>15.0</td>
     </tr>
   </tbody>
 </table>
@@ -2220,34 +2224,34 @@ where:</p>
 <img alt="_images/Clustering_Analysis_44_0.png" src="_images/Clustering_Analysis_44_0.png" />
 </div>
 </div>
-<p>Ahn, Horstmann and Wood seem to exhibit a clear preference of one cluster over an another. Otherwise, participants in the other studies are reasonably evenly spread across the five clusters. Ahn’s clustering tendency throughout this investigation is most likely due to the presence of unhealthy participants exhibiting similar decision strategies as all of the other studies only consist of healthy individuals</p>
+<p>Ahn, Horstmann and Wood seem to exhibit a clear preference for one cluster over another. Otherwise, participants in the other studies are reasonably evenly spread across the five clusters. Ahn’s clustering tendency throughout this investigation is most likely due to the presence of unhealthy participants exhibiting similar decision strategies as all of the other studies only consist of healthy individuals.</p>
 </div>
 </div>
 </div>
 <span id="document-Federated_k_means"></span><div class="section" id="federated-k-means">
 <h2>Federated K-Means<a class="headerlink" href="#federated-k-means" title="Permalink to this headline">¶</a></h2>
 <p>In this section, we attempt to form a federated k-means algorithm to preserve the privacy of the individual labs.</p>
-<p><strong>Federated learning:</strong>  First introduced by Google, federated learning trains an algorithm across multiple decentralized servers/devices with local data samples. There is <strong>no</strong> data sharing between servers. This is in contrast to the standard way of training a machine learning algorithm where all of the training dataset is uploaded to one server. This technique adrress critical issues relating to data privacy and security</p>
+<p><strong>Federated learning:</strong>  First introduced by Google, federated learning trains an algorithm across multiple decentralized servers/devices with local data samples. There is <strong>no</strong> data sharing between servers. This is in contrast to the standard way of training a machine learning algorithm where all of the training dataset is uploaded to one server. This technique address critical issues relating to data privacy and security</p>
 <div class="section" id="child-study">
 <h3>Child (Study):<a class="headerlink" href="#child-study" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="base-k-means">
 <h4>1. Base k-means:<a class="headerlink" href="#base-k-means" title="Permalink to this headline">¶</a></h4>
-<p>The original K-Means algorithm is only trained/ on a given dataset once. There is no update method. In this approach, we split a study’s datastet 75:25.  75% of a study’s data is trained using normal K-means. It is important to note that all child devices are independent of one another.</p>
+<p>The original K-Means algorithm is only trained on a given dataset once. There is no update method. In this approach, we split a study’s dataset 75:25.  75% of a study’s data is trained using normal K-means. It is important to note that all child devices are independent of one another.</p>
 </div>
 <div class="section" id="update">
 <h4>2. Update:<a class="headerlink" href="#update" title="Permalink to this headline">¶</a></h4>
-<p>In an attempt to resemble real-world federated learning where a new data point is generated on a device, we add a update step to base K-means. Rather then recompute k-means, We iterate through the remaining 25% of data and perform the following steps</p>
+<p>In an attempt to resemble real-world federated learning where a new data point is generated on a device, we add an update step to base K-means. Rather than recompute k-means, we iterate through the remaining 25% of data and perform the following steps</p>
 <ol class="simple">
-<li><p>Convert new data point to numpy array</p></li>
-<li><p>Find the minimum Euclidean distance between that new point <span class="math notranslate nohighlight">\(X_{i}\)</span>  and the cluster centers (T) to find the closest cluster centre (<span class="math notranslate nohighlight">\(C_{i}\)</span>).
-$<span class="math notranslate nohighlight">\(
+<li><p>Convert new data point to NumPy array</p></li>
+<li><p>Find the minimum Euclidean distance between that new point <span class="math notranslate nohighlight">\(X_{i}\)</span>  and the cluster centres (T) to find the closest cluster centre (<span class="math notranslate nohighlight">\(C_{i}\)</span>).
+<span class="math notranslate nohighlight">\(
 Minimum Distance = min((X_{i} - C_{1})^2.............(X_{i} - C_{T})^2)
-\)</span>$</p></li>
+\)</span></p></li>
 <li><p>Transform the cluster centre <span class="math notranslate nohighlight">\(C_{i}\)</span> by doing the operation below. N equals the number of participants assigned to that cluster thus far i.e. before the new data point :
-$<span class="math notranslate nohighlight">\(
+<span class="math notranslate nohighlight">\(
 TransformedClusterCentre = \frac{((C_{i} * N) + X_{i})}{N+1}
-\)</span>$</p></li>
-<li><p>Then, the new data point is added to the cluster, and the transformed cluster centre is the  new cluster centre.</p></li>
+\)</span></p></li>
+<li><p>Then, the new data point is added to the cluster, and the transformed cluster centre is the new cluster centre.</p></li>
 </ol>
 </div>
 </div>
@@ -2255,26 +2259,12 @@ TransformedClusterCentre = \frac{((C_{i} * N) + X_{i})}{N+1}
 <h3>Parent (Server):<a class="headerlink" href="#parent-server" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="aggregate-compute-weighted-average">
 <h4>3. Aggregate &amp; Compute weighted average:<a class="headerlink" href="#aggregate-compute-weighted-average" title="Permalink to this headline">¶</a></h4>
-<p>Once all of the child devices (S) has completed their update phase, their cluster centres are added to the parent server. Then, we compute another K-means run to find the optimal number of k centroids.</p>
+<p>Once all child devices (S) have completed their update phase, their cluster centres are added to the parent server. Then, we compute another K-means run to find the optimal number of k centroids.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.cluster.vq</span> <span class="kn">import</span> <span class="n">kmeans2</span>
-<span class="kn">from</span> <span class="nn">sklearn_extra.cluster</span> <span class="kn">import</span> <span class="n">KMedoids</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="o">~</span>\<span class="n">AppData</span>\<span class="n">Local</span>\<span class="n">Temp</span><span class="o">/</span><span class="n">ipykernel_3828</span><span class="o">/</span><span class="mf">3986984131.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">scipy.cluster.vq</span> <span class="kn">import</span> <span class="n">kmeans2</span>
-<span class="ne">----&gt; </span><span class="mi">5</span> <span class="kn">from</span> <span class="nn">sklearn_extra.cluster</span> <span class="kn">import</span> <span class="n">KMedoids</span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;sklearn_extra&#39;
 </pre></div>
 </div>
 </div>
@@ -2353,7 +2343,7 @@ TransformedClusterCentre = \frac{((C_{i} * N) + X_{i})}{N+1}
         <span class="bp">self</span><span class="o">.</span><span class="n">create_maps</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span> 
         <span class="n">updated_cluster_centres</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cluster_centre</span><span class="p">)</span> <span class="k">for</span> <span class="n">cluster_centre</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_cluster_centre</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span> 
-        <span class="k">return</span> <span class="n">updated_cluster_centres</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>    
+        <span class="k">return</span> <span class="n">updated_cluster_centres</span> 
    
 </pre></div>
 </div>
@@ -2364,51 +2354,43 @@ TransformedClusterCentre = \frac{((C_{i} * N) + X_{i})}{N+1}
 <h4>Parent K-means class<a class="headerlink" href="#parent-k-means-class" title="Permalink to this headline">¶</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">parent_kmeans</span><span class="p">(</span><span class="n">kmeans</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">parent_kmeans</span><span class="p">(</span><span class="n">KMeans</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A python class that retrieves cluster centres from</span>
 <span class="sd">        each study, and then computes another k-means algorithim </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_participants</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centres</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_clusters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centres_studies</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">federated_cluster_centres</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cluster_centre</span><span class="p">,</span> <span class="n">n_participant</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centres</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cluster_centre</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_participants</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n_participant</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">weighted_average</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">child_weighted_avg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_centres</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_participants</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>        
-        <span class="k">return</span> <span class="n">child_weighted_avg</span>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cluster_centre</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centres_studies</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cluster_centre</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">update_cluster_centre</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">federated_cluster_centres</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weighted_average</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_participants</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centres</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_centres_studies</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">get_new_centres</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">federated_cluster_centres</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parent_server</span> <span class="o">=</span> <span class="n">parent_kmeans</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parent_server</span> <span class="o">=</span> <span class="n">parent_kmeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">study</span> <span class="ow">in</span> <span class="n">studies_list</span><span class="p">:</span>
-    <span class="c1"># First retrieving the cluster centres and number of particpants  from a study</span>
-    <span class="n">study_cluster_centres</span><span class="p">,</span> <span class="n">n_particpants</span> <span class="o">=</span> <span class="n">child_kmeans</span><span class="p">(</span><span class="nb">globals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">study</span><span class="si">}</span><span class="s1">_study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:],</span> <span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-    <span class="n">list_cluster_cenntres</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">study_cluster_centres</span><span class="p">)</span>
+    <span class="c1"># First retrieving the cluster centres from a study</span>
+    <span class="n">study_cluster_centres</span> <span class="o">=</span> <span class="n">child_kmeans</span><span class="p">(</span><span class="nb">globals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">study</span><span class="si">}</span><span class="s1">_study&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:],</span> <span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
     <span class="c1"># Adding that information to the parent server </span>
-    <span class="n">parent_server</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cluster_centre</span><span class="o">=</span><span class="n">study_cluster_centres</span><span class="p">,</span> <span class="n">n_participant</span><span class="o">=</span><span class="n">n_particpants</span><span class="p">)</span>
+    <span class="n">parent_server</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cluster_centre</span><span class="o">=</span><span class="n">study_cluster_centres</span><span class="p">)</span>
 
 <span class="c1"># Calculating the new federated cluster centres</span>
 <span class="n">parent_server</span><span class="o">.</span><span class="n">update_cluster_centre</span><span class="p">()</span>
 <span class="c1"># Retreving the cluster centres from Federated K-means and normal K-means    </span>
-<span class="n">fkm_cluster_centres</span> <span class="o">=</span> <span class="n">KMedoids</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">list_cluster_cenntres</span><span class="p">)</span><span class="o">.</span><span class="n">cluster_centers_</span>
+<span class="n">fkm_cluster_centres</span> <span class="o">=</span> <span class="n">parent_server</span><span class="o">.</span><span class="n">get_new_centres</span><span class="p">()</span>
 <span class="n">km_clusters_centres</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="o">.</span><span class="n">cluster_centers_</span>
 </pre></div>
 </div>
@@ -2456,27 +2438,13 @@ TransformedClusterCentre = \frac{((C_{i} * N) + X_{i})}{N+1}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Federated K-mean SSE: 1498.2800508864157
-K-mean SSE: 1362.19601035772
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Federated K-mean SSE: 1498.2800508864218
+K-mean SSE: 1362.1960103577223
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">fkm_cluster_centres</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[ 1.00246288e-03 -3.38455730e-01]
- [-2.51137329e+00  5.80883100e-01]
- [ 2.75575866e+00 -4.04762233e-02]]
-</pre></div>
-</div>
-</div>
-</div>
-<p>Our chosen approach only results in a approx 26% increase in SSE when compared to the original centralized K-means algorithm</p>
+<p>Our chosen approach only results in a approximate 10% increase in SSE compared to the original centralized K-means algorithm.</p>
 </div>
 </div>
 <span id="document-Conclusion"></span><div class="section" id="conclusion">

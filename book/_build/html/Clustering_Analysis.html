@@ -365,18 +365,6 @@
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="o">~</span>\<span class="n">AppData</span>\<span class="n">Local</span>\<span class="n">Temp</span><span class="o">/</span><span class="n">ipykernel_20928</span><span class="o">/</span><span class="mf">2925194365.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">silhouette_score</span>
-<span class="ne">----&gt; </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">pyclustertend</span> <span class="kn">import</span> <span class="n">ivat</span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;pyclustertend&#39;
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 <div class="section" id="data-visualisation">
@@ -461,8 +449,8 @@ H = \frac{\sum_{i=1}^{m} u_{i}^{d}}{\sum_{i=1}^{m} u_{i}^{d} + \sum_{i=1}^{m} w_
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2D&#39;s hopkins statistic 0.8984590772856941
-3D&#39;s hopkins statistic 0.8512912263659095
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2D&#39;s hopkins statistic 0.7566901952140672
+3D&#39;s hopkins statistic 0.7846936678782558
 </pre></div>
 </div>
 </div>
@@ -492,7 +480,7 @@ H = \frac{\sum_{i=1}^{m} u_{i}^{d}}{\sum_{i=1}^{m} u_{i}^{d} + \sum_{i=1}^{m} w_
 <img alt="_images/Clustering_Analysis_17_0.png" src="_images/Clustering_Analysis_17_0.png" />
 </div>
 </div>
-<p>From the result of implementing IVAT, it is observed that the maps produced are inconclusive for both datasets. However, as this algorithm is just meant to help us decide if we should go ahead with the cluster analysis or not, we will go ahead with the K-means cluster analysis as both Hopkins statistic results were significant.</p>
+<p>From the result of implementing IVAT, it is observed that approximately 4 clusters are present for the 2D datatset whilst the 3D dataset remains inconclusive. However, as this algorithm is just meant to help us decide if we should go ahead with the cluster analysis or not, we will go ahead with the K-means cluster analysis as both Hopkins statistic results were significant.</p>
 </div>
 </div>
 </div>
@@ -520,10 +508,11 @@ mean of data instances currently associated with that cluster.</p></li>
 </ul>
 <div class="section" id="elbow-method">
 <h3>Elbow method<a class="headerlink" href="#elbow-method" title="Permalink to this headline">¶</a></h3>
-<p>The Elbow method calculates the error or ‘distortion’ between the data points (<span class="math notranslate nohighlight">\(y_{i}\)</span>) and their corresponding centroid (<span class="math notranslate nohighlight">\(ŷ_{i}\)</span>) of N data points for k clusters where k ⋹ {1…10}. The error metric used is the Sum of Squared Error (SSE):
-$<span class="math notranslate nohighlight">\(
+<p>The Elbow method calculates the error or ‘distortion’ between the data points (<span class="math notranslate nohighlight">\(y_{i}\)</span>) and their corresponding centroid (<span class="math notranslate nohighlight">\(ŷ_{i}\)</span>) of N data points for k clusters where k ⋹ {1…10}. The error metric used is the Sum of Squared Error (SSE):</p>
+<div class="math notranslate nohighlight">
+\[
 SSE = \sum_{i=1}^{N} {(y_i - ŷ_i)^2}
-\)</span>$</p>
+\]</div>
 <p>We plot these values in an attempt to find an ‘elbow’ within the curve.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -569,11 +558,12 @@ SSE = \sum_{i=1}^{N} {(y_i - ŷ_i)^2}
 </div>
 <div class="section" id="sillhoute-method">
 <h2>Sillhoute method<a class="headerlink" href="#sillhoute-method" title="Permalink to this headline">¶</a></h2>
-<p>This method is another method of finding the correct number of clusters(k). Silhouette coefficient for a particular data point (<span class="math notranslate nohighlight">\(i\)</span>) is defined as:
-$<span class="math notranslate nohighlight">\(
+<p>This method is another method of finding the correct number of clusters(k). Silhouette coefficient for a particular data point (<span class="math notranslate nohighlight">\(i\)</span>) is defined as:</p>
+<div class="math notranslate nohighlight">
+\[
 s_{i} = \frac{b_{i} - a_{i}}{max(b_{i}, a_{i})}
-\)</span>$
-where:</p>
+\]</div>
+<p>where:</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(s_{i}\)</span>: the silhouette coefficient, ranging from -1 to 1. A score of 1 (the best) means that data point <span class="math notranslate nohighlight">\(i\)</span> is compact in its cluster and far away from other clusters. Conversely, the worst value is -1, while values near 0 denote overlapping clusters.</p></li>
 <li><p><span class="math notranslate nohighlight">\(b_{i}\)</span>: average distance between <span class="math notranslate nohighlight">\(i\)</span> and all the other data points in its cluster.</p></li>
@@ -674,20 +664,20 @@ where:</p>
   <tbody>
     <tr>
       <th>amphetamine</th>
-      <td>5.0</td>
       <td>4.0</td>
-      <td>27.0</td>
+      <td>4.0</td>
+      <td>28.0</td>
     </tr>
     <tr>
       <th>healthy</th>
-      <td>210.0</td>
-      <td>216.0</td>
-      <td>125.0</td>
+      <td>218.0</td>
+      <td>201.0</td>
+      <td>132.0</td>
     </tr>
     <tr>
       <th>heroin</th>
-      <td>2.0</td>
-      <td>3.0</td>
+      <td>0.0</td>
+      <td>5.0</td>
       <td>37.0</td>
     </tr>
   </tbody>
@@ -739,51 +729,51 @@ where:</p>
   <tbody>
     <tr>
       <th>Ahn</th>
-      <td>20.0</td>
-      <td>22.0</td>
-      <td>83.0</td>
+      <td>17.0</td>
+      <td>21.0</td>
+      <td>87.0</td>
     </tr>
     <tr>
       <th>Horstmann</th>
-      <td>89.0</td>
-      <td>66.0</td>
-      <td>7.0</td>
+      <td>97.0</td>
+      <td>57.0</td>
+      <td>8.0</td>
     </tr>
     <tr>
       <th>Kjome</th>
       <td>7.0</td>
-      <td>9.0</td>
-      <td>3.0</td>
+      <td>8.0</td>
+      <td>4.0</td>
     </tr>
     <tr>
       <th>Maia</th>
       <td>8.0</td>
-      <td>25.0</td>
-      <td>7.0</td>
+      <td>24.0</td>
+      <td>8.0</td>
     </tr>
     <tr>
       <th>Premkumar</th>
-      <td>4.0</td>
+      <td>3.0</td>
       <td>16.0</td>
-      <td>5.0</td>
+      <td>6.0</td>
     </tr>
     <tr>
       <th>SteingroverInPrep</th>
-      <td>37.0</td>
+      <td>38.0</td>
       <td>28.0</td>
-      <td>5.0</td>
+      <td>4.0</td>
     </tr>
     <tr>
       <th>Wood</th>
-      <td>41.0</td>
-      <td>47.0</td>
+      <td>40.0</td>
+      <td>48.0</td>
       <td>65.0</td>
     </tr>
     <tr>
       <th>Worthy</th>
-      <td>11.0</td>
-      <td>10.0</td>
-      <td>14.0</td>
+      <td>12.0</td>
+      <td>8.0</td>
+      <td>15.0</td>
     </tr>
   </tbody>
 </table>
@@ -865,7 +855,7 @@ where:</p>
 <img alt="_images/Clustering_Analysis_44_0.png" src="_images/Clustering_Analysis_44_0.png" />
 </div>
 </div>
-<p>Ahn, Horstmann and Wood seem to exhibit a clear preference of one cluster over an another. Otherwise, participants in the other studies are reasonably evenly spread across the five clusters. Ahn’s clustering tendency throughout this investigation is most likely due to the presence of unhealthy participants exhibiting similar decision strategies as all of the other studies only consist of healthy individuals</p>
+<p>Ahn, Horstmann and Wood seem to exhibit a clear preference for one cluster over another. Otherwise, participants in the other studies are reasonably evenly spread across the five clusters. Ahn’s clustering tendency throughout this investigation is most likely due to the presence of unhealthy participants exhibiting similar decision strategies as all of the other studies only consist of healthy individuals.</p>
 </div>
 </div>
 </div>

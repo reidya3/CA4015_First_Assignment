@@ -42,7 +42,7 @@ from pyclustertend import ivat
 
 # ### Data Visualisation
 
-# In[ ]:
+# In[4]:
 
 
 import matplotlib.pyplot as plt
@@ -68,7 +68,7 @@ import seaborn as sns
 # 
 # If the value of the Hopkins statistic(H) is close to 1 (above 0.5), we reject $H_{0}$ and can conclude that the dataset is considered significantly clusterable.  Otherwise, we fail to reject $H_{0}$ and can conclude that the dataset is considered significantly uniformly distributed.
 
-# In[203]:
+# In[5]:
 
 
 def hopkins(X):
@@ -99,7 +99,7 @@ def hopkins(X):
     return H
 
 
-# In[204]:
+# In[6]:
 
 
 dim_reduced_2d = pd.read_csv('data/dim_reduced_2d.tsv', sep="\t")
@@ -108,7 +108,7 @@ dim_reduced_3d = pd.read_csv('data/dim_reduced_3d.tsv', sep="\t")
 
 # For both datasets, we reject $H_{0}$ and can conclude that both datasets have a significant tendency to cluster.
 
-# In[316]:
+# In[7]:
 
 
 print(f"2D's hopkins statistic {hopkins(dim_reduced_2d.iloc[:,2:])}")
@@ -121,7 +121,7 @@ print(f"3D's hopkins statistic {hopkins(dim_reduced_3d.iloc[:,2:])}")
 # 
 # **IVAT MAP 2D**
 
-# In[317]:
+# In[8]:
 
 
 ivat(dim_reduced_2d.iloc[:,2:].values)
@@ -130,13 +130,13 @@ ivat(dim_reduced_2d.iloc[:,2:].values)
 # **IVAT MAP 3D**
 # 
 
-# In[207]:
+# In[9]:
 
 
 ivat(dim_reduced_3d.iloc[:,2:].values)
 
 
-# From the result of implementing IVAT, it is observed that the maps produced are inconclusive for both datasets. However, as this algorithm is just meant to help us decide if we should go ahead with the cluster analysis or not, we will go ahead with the K-means cluster analysis as both Hopkins statistic results were significant.
+# From the result of implementing IVAT, it is observed that approximately 4 clusters are present for the 2D datatset whilst the 3D dataset remains inconclusive. However, as this algorithm is just meant to help us decide if we should go ahead with the cluster analysis or not, we will go ahead with the K-means cluster analysis as both Hopkins statistic results were significant.
 
 # ## K-Means
 # 
@@ -158,13 +158,14 @@ ivat(dim_reduced_3d.iloc[:,2:].values)
 # 
 # ### Elbow method
 # The Elbow method calculates the error or 'distortion' between the data points ($y_{i}$) and their corresponding centroid ($ŷ_{i}$) of N data points for k clusters where k ⋹ {1...10}. The error metric used is the Sum of Squared Error (SSE):
+# 
 # $$
 # SSE = \sum_{i=1}^{N} {(y_i - ŷ_i)^2}
 # $$
 # 
 # We plot these values in an attempt to find an 'elbow' within the curve.
 
-# In[211]:
+# In[10]:
 
 
 Sum_of_squared_distances = []
@@ -181,7 +182,7 @@ plt.show()
 
 # We can see that the optimal number of clusters occur at k=2 to 4.
 
-# In[213]:
+# In[11]:
 
 
 Sum_of_squared_distances = []
@@ -201,6 +202,8 @@ plt.show()
 # ## Sillhoute method
 
 # This method is another method of finding the correct number of clusters(k). Silhouette coefficient for a particular data point ($i$) is defined as:
+# 
+# 
 # $$
 # s_{i} = \frac{b_{i} - a_{i}}{max(b_{i}, a_{i})}
 # $$
@@ -211,7 +214,7 @@ plt.show()
 # 
 # We evaluate using silhouette plots. These plots display how close each point in one cluster is to points in the neighbouring clusters.
 
-# In[214]:
+# In[12]:
 
 
 from yellowbrick.cluster import SilhouetteVisualizer
@@ -226,7 +229,7 @@ for k in  range(2,5):
 # 
 # Another method of evaluating is to simply plot the silhouette coefficient.
 
-# In[215]:
+# In[13]:
 
 
 sill_coef = []
@@ -253,7 +256,7 @@ plt.show()
 # 
 # Healthy vs Unhealthy
 
-# In[268]:
+# In[14]:
 
 
 
@@ -271,7 +274,7 @@ results_df
 # 
 # Study vs Study
 
-# In[271]:
+# In[15]:
 
 
 sns.scatterplot(x='component_1', y='component_2', data=dim_reduced_2d, hue='study')
@@ -286,7 +289,7 @@ results_df
 # 
 # **K=2**
 
-# In[311]:
+# In[16]:
 
 
 def visualise_cluster_heat_map(focus_feature, k, df, cmap=None):
@@ -311,7 +314,7 @@ def visualise_cluster_heat_map(focus_feature, k, df, cmap=None):
     plt.xlabel('clusters')
 
 
-# In[312]:
+# In[17]:
 
 
 visualise_cluster_heat_map('health status', 2, dim_reduced_3d, 'Blues')
@@ -319,7 +322,7 @@ visualise_cluster_heat_map('health status', 2, dim_reduced_3d, 'Blues')
 
 # The healthy participants seem to be evenly spread among the two clusters. Both types of unhealthy participants have a tendency to appear in cluster 1. K-means seems to be reasonable able to cluster unhealthy patients, with 83% of unhealthy patients being clustered in the same group. However, k-means is unable to model the distinction between healthy and unhealthy individuals.
 
-# In[313]:
+# In[18]:
 
 
 visualise_cluster_heat_map('study', 2, dim_reduced_3d, 'Blues')
@@ -329,7 +332,7 @@ visualise_cluster_heat_map('study', 2, dim_reduced_3d, 'Blues')
 
 # **K = 5**
 
-# In[314]:
+# In[19]:
 
 
 visualise_cluster_heat_map('health status', 5, dim_reduced_3d)
@@ -337,10 +340,10 @@ visualise_cluster_heat_map('health status', 5, dim_reduced_3d)
 
 # Healthy participants appear not to have a tendency to group in any cluster. For example, amphetamines users tend to group in clusters 2 and 3 and 4 whilst heroin users tend to be located in clusters 2 ,3 and 5. Interestingly, even with a more significant number of cluster's, k-means groups the majority of unhealthy individuals in the same cluster (ie.e no distinction between opioid and stimulant dependents).
 
-# In[315]:
+# In[20]:
 
 
 visualise_cluster_heat_map('study', 5, dim_reduced_3d)
 
 
-# Ahn, Horstmann and Wood seem to exhibit a clear preference of one cluster over an another. Otherwise, participants in the other studies are reasonably evenly spread across the five clusters. Ahn's clustering tendency throughout this investigation is most likely due to the presence of unhealthy participants exhibiting similar decision strategies as all of the other studies only consist of healthy individuals
+# Ahn, Horstmann and Wood seem to exhibit a clear preference for one cluster over another. Otherwise, participants in the other studies are reasonably evenly spread across the five clusters. Ahn's clustering tendency throughout this investigation is most likely due to the presence of unhealthy participants exhibiting similar decision strategies as all of the other studies only consist of healthy individuals.
