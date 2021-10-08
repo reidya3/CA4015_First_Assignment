@@ -709,7 +709,9 @@ max     4.000000   4.000000   4.000000   4.000000
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>win_95 basic statistics
-          trial_1     trial_2     trial_3     trial_4
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          trial_1     trial_2     trial_3     trial_4
 count   15.000000   15.000000   15.000000   15.000000
 mean    80.000000   86.666667   70.000000   76.666667
 std     25.354628   22.886885   25.354628   25.819889
@@ -762,7 +764,9 @@ max    100.000000  100.000000  100.000000  100.000000
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>loss_95 basic statistics
-       trial_1  trial_2    trial_3  trial_4
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       trial_1  trial_2    trial_3  trial_4
 count     15.0     15.0  15.000000     15.0
 mean       0.0      0.0  -3.333333      0.0
 std        0.0      0.0  12.909944      0.0
@@ -1447,7 +1451,7 @@ the average heroin user tends to perform more poorly when compared to an ampheta
 <p>If we were to include every feature currently available, we would have a high dimensional dataset. K-means suffers from the ‘curse of dimensionality’ as the distance metric (Euclidean distance) suffers in high dimensions.  Ah-hoc analysis using a dimensailty reduction technique known as principal component analysis (discussed later on) on the 100 trial choice dataset still revealed a high number of relevant components, 36 (Kaiser-Guttman test). This motivates us to perform feature engineering and create the following columns:</p>
 <ul class="simple">
 <li><p><strong>health_binary:</strong> A binary variable, 1 if the subject is healthy. Otherwise, 0</p></li>
-<li><p><strong>cum_reward_25:</strong> The cumulative reward (as explained above) at trial 25. We include the cumulative reward at specified trial intervals in attempt to model the behaviour/progress of a subject when performing the task. For example, we would expect an individual that has a propensity for gambling to initially achieve well but would loose money overtime as the decks with higher wins (<span class="math notranslate nohighlight">\(100) result in a long-term net loss, while the decks with smaller wins (\)</span>50) yield a net gain</p></li>
+<li><p><strong>cum_reward_25:</strong> The cumulative reward (as explained above) at trial 25. We include the cumulative reward at specified trial intervals in attempt to model the behaviour/progress of a subject when performing the task. For example, we would expect an individual that has a propensity for gambling to initially achieve well but would loose money overtime as the decks with higher wins (100 dollars) result in a long-term net loss, while the decks with smaller wins (50 dollars) yield a net gain</p></li>
 <li><p><strong>cum_reward_50:</strong> The cumulative reward at trial 50.</p></li>
 <li><p><strong>cum_reward_75:</strong> The cumulative reward at trial 57.</p></li>
 <li><p><strong>cum_reward_100:</strong> The cumulative reward at trial 100.</p></li>
