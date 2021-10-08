@@ -30,7 +30,17 @@ source venv/bin/activate
 - Execute `pip install -r requirements.txt` to install requirements for development.
 
 ## Usage
-To build the jupyter book as HTML, please execute `jupyter-book build --all book/`. To build a PDF version of the book, please run `jupyter-book build book/ --builder pdfhtml`. **Note**, you will have to build a html version first. For further information, please [click here](https://jupyterbook.org/advanced/pdf.html?highlight=build%20pdf). The **PDF file** can be found in the [docs](/docs) folder.
+To build the jupyter book as HTML, please execute `jupyter-book build --all book/`. 
+
+We use latex to build a PDF of our book for this investigation. On Ubuntu, please install the following prerequisite packages:
+```bash
+sudo apt-get install texlive-latex-recommended texlive-latex-ie \
+                     texlive-fonts-recommended texlive-fonts-extra \
+                     texlive-xetex latexmk
+```
+Next, to build a PDF of the project using LaTeX, use the following command `jupyter-book build  book/ --builder pdflatex`. **Note**, you will have to build a html version first. 
+
+For further information on how to accomplish this on other OS's, please [click here](https://jupyterbook.org/advanced/pdf.html?highlight=build%20pdf). The **PDF file** can be found in the [docs](/docs) folder.
 
 ## Website
 The content of this jupyter book is [hosted here](https://reidya3.github.io/CA4015_First_Assignment/Introduction.html). Github actions are utilized to automatically build the book and update the website when a `push` or `pull request` event occurs on the main branch.
