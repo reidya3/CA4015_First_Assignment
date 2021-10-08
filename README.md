@@ -38,7 +38,7 @@ sudo apt-get install texlive-latex-recommended texlive-latex-ie \
                      texlive-fonts-recommended texlive-fonts-extra \
                      texlive-xetex latexmk
 ```
-Next, to build a PDF of the project using LaTeX, use the following command `jupyter-book build  book/ --builder pdflatex`. **Note**, you will have to build a html version first. 
+Next, to build a PDF of the project, please use the following command `jupyter-book build  book/ --builder pdflatex`. **Note**, you will have to build a html version first. 
 
 For further information on how to accomplish this on other OS's, please [click here](https://jupyterbook.org/advanced/pdf.html?highlight=build%20pdf). The **PDF file** can be found in the [docs](/docs) folder.
 
