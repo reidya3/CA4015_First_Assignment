@@ -226,8 +226,8 @@
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#child-study">
-   Child (Study):
+  <a class="reference internal nav-link" href="#child-server-study">
+   Child Server (Study):
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
@@ -244,12 +244,12 @@
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#parent-server">
-   Parent (Server):
+   Parent Server:
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aggregate-compute-weighted-average">
-     3. Aggregate &amp; Compute weighted average:
+    <a class="reference internal nav-link" href="#aggregate-compute-k-means-run">
+     3. Aggregate &amp; Compute K-means run:
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -284,11 +284,15 @@
 <h1>Federated K-Means<a class="headerlink" href="#federated-k-means" title="Permalink to this headline">¶</a></h1>
 <p>In this section, we attempt to form a federated k-means algorithm to preserve the privacy of the individual labs.</p>
 <p><strong>Federated learning:</strong>  First introduced by Google, federated learning trains an algorithm across multiple decentralized servers/devices with local data samples. There is <strong>no</strong> data sharing between servers. This is in contrast to the standard way of training a machine learning algorithm where all of the training dataset is uploaded to one server. This technique address critical issues relating to data privacy and security</p>
-<div class="section" id="child-study">
-<h2>Child (Study):<a class="headerlink" href="#child-study" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-default" id="workflow-fkm">
+<img alt="../images/Federated_K-Means.png" src="../images/Federated_K-Means.png" />
+<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Workflow of Federated K-means <em>Note: child servers 2 to 7 are obscured</em></span><a class="headerlink" href="#workflow-fkm" title="Permalink to this image">¶</a></p>
+</div>
+<div class="section" id="child-server-study">
+<h2>Child Server (Study):<a class="headerlink" href="#child-server-study" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="base-k-means">
 <h3>1. Base k-means:<a class="headerlink" href="#base-k-means" title="Permalink to this headline">¶</a></h3>
-<p>The original K-Means algorithm is only trained on a given dataset once. There is no update method. In this approach, we split a study’s dataset 75:25.  75% of a study’s data is trained using normal K-means. It is important to note that all child devices are independent of one another.</p>
+<p>The original K-Means algorithm is only trained on a given dataset once. There is no update method. In this approach, we split a study’s dataset 75:25. 75% of a study’s data is trained using normal K-means as part of step 1. It is important to note that all child servers are independent of one another.</p>
 </div>
 <div class="section" id="update">
 <h3>2. Update:<a class="headerlink" href="#update" title="Permalink to this headline">¶</a></h3>
@@ -308,10 +312,10 @@ TransformedClusterCentre = \frac{((C_{i} * N) + X_{i})}{N+1}
 </div>
 </div>
 <div class="section" id="parent-server">
-<h2>Parent (Server):<a class="headerlink" href="#parent-server" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="aggregate-compute-weighted-average">
-<h3>3. Aggregate &amp; Compute weighted average:<a class="headerlink" href="#aggregate-compute-weighted-average" title="Permalink to this headline">¶</a></h3>
-<p>Once all child devices (S) have completed their update phase, their cluster centres are added to the parent server. Then, we compute another K-means run to find the optimal number of k centroids.</p>
+<h2>Parent Server:<a class="headerlink" href="#parent-server" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="aggregate-compute-k-means-run">
+<h3>3. Aggregate &amp; Compute K-means run:<a class="headerlink" href="#aggregate-compute-k-means-run" title="Permalink to this headline">¶</a></h3>
+<p>Once all child devices have completed their update phase, their cluster centres are added to the parent server. Then, we compute another K-means run to find the optimal number of k centroids.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>

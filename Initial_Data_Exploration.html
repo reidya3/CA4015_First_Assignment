@@ -246,16 +246,18 @@
   <a class="reference internal nav-link" href="#data-processing">
    Data Processing
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#pca">
-   PCA
-  </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#standardisation">
-     Standardisation
+    <a class="reference internal nav-link" href="#pca">
+     PCA
     </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#standardisation">
+       Standardisation
+      </a>
+     </li>
+    </ul>
    </li>
   </ul>
  </li>
@@ -641,11 +643,11 @@ Does index_150 contain any null values? False
 <p>This finding seems to contradict the original ‘many labs’ paper. They suggest that there should be missing data present in the 100 trial dataframes due to incompletely received datasets (i.e., missing data for one participant in
 Kjome et al. study, and for two participants in Wood et al. study). However, they use the word ‘might’, so this may have been rectified since then. We also further validated this assumption by using the R programming language as the organizers provided the datasets in the rdata format. The below screenshot confirms my assumption that no missing values are present.</p>
 <p><img alt="absence-of-missing-values-verified-in-r" src="_images/missing_values_verified_in_r.png" /></p>
-<p>Next, we calculate the basic statistics of each data set. This is a trivial step, and it is designed to increase understanding of the problem.</p>
+<p>Next, we calculate the basic statistics of each data set. This is a trivial step, and it is designed to increase understanding of the problem. For brevity, we only include basic statistics of the choices from the 95 trial study</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># choice dataframes</span>
-<span class="k">for</span> <span class="n">trial_num</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">trial_num</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">95</span><span class="p">]:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;choice_</span><span class="si">{</span><span class="n">trial_num</span><span class="si">}</span><span class="s1"> basic statistics&#39;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="nb">globals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;choice_</span><span class="si">{</span><span class="n">trial_num</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,:</span><span class="mi">4</span><span class="p">])</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -665,140 +667,6 @@ min     1.000000   1.000000   1.000000   1.000000
 50%     1.000000   2.000000   3.000000   2.000000
 75%     3.500000   2.500000   3.000000   4.000000
 max     4.000000   4.000000   4.000000   4.000000
-
-
-choice_100 basic statistics
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          trial_1     trial_2     trial_3     trial_4
-count  504.000000  504.000000  504.000000  504.000000
-mean     2.142857    2.416667    2.337302    2.434524
-std      1.099172    1.092628    1.090952    1.138377
-min      1.000000    1.000000    1.000000    1.000000
-25%      1.000000    1.000000    1.000000    1.000000
-50%      2.000000    2.000000    2.000000    2.000000
-75%      3.000000    3.000000    3.000000    4.000000
-max      4.000000    4.000000    4.000000    4.000000
-
-
-choice_150 basic statistics
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>         trial_1    trial_2    trial_3    trial_4
-count  98.000000  98.000000  98.000000  98.000000
-mean    2.795918   2.663265   2.469388   2.561224
-std     1.044960   1.083559   1.168346   1.175930
-min     1.000000   1.000000   1.000000   1.000000
-25%     2.000000   2.000000   1.000000   1.250000
-50%     3.000000   3.000000   2.000000   3.000000
-75%     4.000000   4.000000   4.000000   4.000000
-max     4.000000   4.000000   4.000000   4.000000
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># win dataframes</span>
-<span class="k">for</span> <span class="n">trial_num</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">]:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;win_</span><span class="si">{</span><span class="n">trial_num</span><span class="si">}</span><span class="s1"> basic statistics&#39;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="nb">globals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;win_</span><span class="si">{</span><span class="n">trial_num</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,:</span><span class="mi">4</span><span class="p">])</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>win_95 basic statistics
-          trial_1     trial_2     trial_3     trial_4
-count   15.000000   15.000000   15.000000   15.000000
-mean    80.000000   86.666667   70.000000   76.666667
-std     25.354628   22.886885   25.354628   25.819889
-min     50.000000   50.000000   50.000000   50.000000
-25%     50.000000   75.000000   50.000000   50.000000
-50%    100.000000  100.000000   50.000000  100.000000
-75%    100.000000  100.000000  100.000000  100.000000
-max    100.000000  100.000000  100.000000  100.000000
-
-
-win_100 basic statistics
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          trial_1     trial_2     trial_3     trial_4
-count  504.000000  504.000000  504.000000  504.000000
-mean    81.646825   77.956349   76.636905   77.172619
-std     24.124146   26.566060   25.105129   25.387493
-min     50.000000   40.000000   40.000000   40.000000
-25%     50.000000   50.000000   50.000000   50.000000
-50%    100.000000  100.000000   80.000000   90.000000
-75%    100.000000  100.000000  100.000000  100.000000
-max    100.000000  120.000000  120.000000  120.000000
-
-
-win_150 basic statistics
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          trial_1     trial_2     trial_3     trial_4
-count   98.000000   98.000000   98.000000   98.000000
-mean    68.877551   72.959184   75.510204   74.489796
-std     24.363343   25.044669   25.123302   25.123302
-min     50.000000   50.000000   50.000000   50.000000
-25%     50.000000   50.000000   50.000000   50.000000
-50%     50.000000   50.000000  100.000000   50.000000
-75%    100.000000  100.000000  100.000000  100.000000
-max    100.000000  100.000000  100.000000  100.000000
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># loss dataframes</span>
-<span class="k">for</span> <span class="n">trial_num</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">]:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;loss_</span><span class="si">{</span><span class="n">trial_num</span><span class="si">}</span><span class="s1"> basic statistics&#39;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="nb">globals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;loss_</span><span class="si">{</span><span class="n">trial_num</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,:</span><span class="mi">4</span><span class="p">])</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>loss_95 basic statistics
-       trial_1  trial_2    trial_3  trial_4
-count     15.0     15.0  15.000000     15.0
-mean       0.0      0.0  -3.333333      0.0
-std        0.0      0.0  12.909944      0.0
-min        0.0      0.0 -50.000000      0.0
-25%        0.0      0.0   0.000000      0.0
-50%        0.0      0.0   0.000000      0.0
-75%        0.0      0.0   0.000000      0.0
-max        0.0      0.0   0.000000      0.0
-
-
-loss_100 basic statistics
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>           trial_1      trial_2      trial_3      trial_4
-count   504.000000   504.000000   504.000000   504.000000
-mean    -37.301587   -40.376984   -64.682540   -39.384921
-std     149.610031   175.942949   192.871723   152.257429
-min   -1250.000000 -1250.000000 -1250.000000 -1250.000000
-25%       0.000000     0.000000   -50.000000     0.000000
-50%       0.000000     0.000000     0.000000     0.000000
-75%       0.000000     0.000000     0.000000     0.000000
-max       0.000000     0.000000     0.000000     0.000000
-
-
-loss_150 basic statistics
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          trial_1      trial_2      trial_3      trial_4
-count   98.000000    98.000000    98.000000    98.000000
-mean   -33.673469   -64.795918   -81.122449   -88.775510
-std     75.905364   191.872109   227.323661   255.509458
-min   -350.000000 -1250.000000 -1250.000000 -1250.000000
-25%    -50.000000   -50.000000   -50.000000   -50.000000
-50%      0.000000     0.000000     0.000000     0.000000
-75%      0.000000     0.000000     0.000000     0.000000
-max      0.000000     0.000000     0.000000     0.000000
 </pre></div>
 </div>
 </div>
@@ -1388,7 +1256,7 @@ in IGT performance in healthy participants.”. According to <span id="id3">[<a 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_41_0.png" src="_images/Initial_Data_Exploration_41_0.png" />
+<img alt="_images/Initial_Data_Exploration_39_0.png" src="_images/Initial_Data_Exploration_39_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1398,13 +1266,13 @@ in IGT performance in healthy participants.”. According to <span id="id3">[<a 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_42_0.png" src="_images/Initial_Data_Exploration_42_0.png" />
-<img alt="_images/Initial_Data_Exploration_42_1.png" src="_images/Initial_Data_Exploration_42_1.png" />
-<img alt="_images/Initial_Data_Exploration_42_2.png" src="_images/Initial_Data_Exploration_42_2.png" />
-<img alt="_images/Initial_Data_Exploration_42_3.png" src="_images/Initial_Data_Exploration_42_3.png" />
-<img alt="_images/Initial_Data_Exploration_42_4.png" src="_images/Initial_Data_Exploration_42_4.png" />
-<img alt="_images/Initial_Data_Exploration_42_5.png" src="_images/Initial_Data_Exploration_42_5.png" />
-<img alt="_images/Initial_Data_Exploration_42_6.png" src="_images/Initial_Data_Exploration_42_6.png" />
+<img alt="_images/Initial_Data_Exploration_40_0.png" src="_images/Initial_Data_Exploration_40_0.png" />
+<img alt="_images/Initial_Data_Exploration_40_1.png" src="_images/Initial_Data_Exploration_40_1.png" />
+<img alt="_images/Initial_Data_Exploration_40_2.png" src="_images/Initial_Data_Exploration_40_2.png" />
+<img alt="_images/Initial_Data_Exploration_40_3.png" src="_images/Initial_Data_Exploration_40_3.png" />
+<img alt="_images/Initial_Data_Exploration_40_4.png" src="_images/Initial_Data_Exploration_40_4.png" />
+<img alt="_images/Initial_Data_Exploration_40_5.png" src="_images/Initial_Data_Exploration_40_5.png" />
+<img alt="_images/Initial_Data_Exploration_40_6.png" src="_images/Initial_Data_Exploration_40_6.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1414,8 +1282,8 @@ in IGT performance in healthy participants.”. According to <span id="id3">[<a 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_43_0.png" src="_images/Initial_Data_Exploration_43_0.png" />
-<img alt="_images/Initial_Data_Exploration_43_1.png" src="_images/Initial_Data_Exploration_43_1.png" />
+<img alt="_images/Initial_Data_Exploration_41_0.png" src="_images/Initial_Data_Exploration_41_0.png" />
+<img alt="_images/Initial_Data_Exploration_41_1.png" src="_images/Initial_Data_Exploration_41_1.png" />
 </div>
 </div>
 <p>A common held belief is that people who suffer from subsistence issues exhibit decision-making deficits.
@@ -1437,7 +1305,7 @@ the average heroin user tends to perform more poorly when compared to an ampheta
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_45_0.png" src="_images/Initial_Data_Exploration_45_0.png" />
+<img alt="_images/Initial_Data_Exploration_43_0.png" src="_images/Initial_Data_Exploration_43_0.png" />
 </div>
 </div>
 </div>
@@ -1627,9 +1495,8 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </table>
 </div></div></div>
 </div>
-</div>
 <div class="section" id="pca">
-<h2>PCA<a class="headerlink" href="#pca" title="Permalink to this headline">¶</a></h2>
+<h3>PCA<a class="headerlink" href="#pca" title="Permalink to this headline">¶</a></h3>
 <p>Although standardization is typically used for features of incomparable units (e.g. height in cm and weight in kg), we will still standardize the choices and rewards due to k-means “isotropic” nature. In this case, if we left our variances unequal;  we would inversely putting more weight on features with high variance. In addition, we will perform <b>principal component analysis</b> due to avoid the curse of dimensionality that k-means can suffer from. The function of PCA is to reduce the dimensionality of a data set consisting of many variables correlated with each other, either heavily or lightly, while retaining the variation present in the data set to the maximum extent.</p>
 <p>The same is done by transforming the variables (i.e. features) to a new set of variables, which are known as the <b>principal components</b>, ordered such that the retention of variation present decreases as we move down the order of components.</p>
 <p>The procedure of PCA involves five steps: <br></p>
@@ -1641,7 +1508,7 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 <li><p>Recast the data <br></p></li>
 </ol>
 <div class="section" id="standardisation">
-<h3>Standardisation<a class="headerlink" href="#standardisation" title="Permalink to this headline">¶</a></h3>
+<h4>Standardisation<a class="headerlink" href="#standardisation" title="Permalink to this headline">¶</a></h4>
 <p>We now standardize the data using the following formulae:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1672,7 +1539,7 @@ X_i = X_i - \bar{X}~~~~~~~~~~~~~~~~~~X_i = \frac{X_i}{\sigma}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Initial_Data_Exploration_62_0.png" src="_images/Initial_Data_Exploration_62_0.png" />
+<img alt="_images/Initial_Data_Exploration_60_0.png" src="_images/Initial_Data_Exploration_60_0.png" />
 </div>
 </div>
 <p>According to the average-eigenvalue test (Kaiser-Guttman test) we should retain only those eigenvalues that are above the average which is 1.0. <br>
@@ -1722,6 +1589,7 @@ Jolliffe criterion optimal component number: 3 , expalined variance: 0.811750824
         <span class="p">)</span>
 <span class="n">dim_reduced_3d</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;data/dim_reduced_3d.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
+</div>
 </div>
 </div>
 </div>
