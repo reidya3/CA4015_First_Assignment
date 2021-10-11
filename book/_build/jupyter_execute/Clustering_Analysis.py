@@ -136,7 +136,7 @@ ivat(dim_reduced_2d.iloc[:,2:].values)
 ivat(dim_reduced_3d.iloc[:,2:].values)
 
 
-# From the result of implementing IVAT, it is observed that approximately 4 clusters are present for the 2D datatset whilst the 3D dataset remains inconclusive. However, as this algorithm is just meant to help us decide if we should go ahead with the cluster analysis or not, we will go ahead with the K-means cluster analysis as both Hopkins statistic results were significant.
+# From the result of implementing IVAT, it is observed that both datsets seem to be inconclusive. However, as this algorithm is just meant to help us decide if we should go ahead with the cluster analysis or not, we will go ahead with the K-means cluster analysis as both Hopkins statistic results were significant.
 
 # ## K-Means
 # 

@@ -6,9 +6,16 @@
 # 
 # **Federated learning:**  First introduced by Google, federated learning trains an algorithm across multiple decentralized servers/devices with local data samples. There is **no** data sharing between servers. This is in contrast to the standard way of training a machine learning algorithm where all of the training dataset is uploaded to one server. This technique address critical issues relating to data privacy and security 
 # 
-# ## Child (Study):
+# ```{figure} /images/Federated_K-Means.png
+# ---
+# name: workflow-fkm
+# ---
+# Workflow of Federated K-means *Note: child servers 2 to 7 are obscured*
+# ```
+# 
+# ## Child Server (Study):
 # ### 1. Base k-means:
-# The original K-Means algorithm is only trained on a given dataset once. There is no update method. In this approach, we split a study's dataset 75:25.  75% of a study's data is trained using normal K-means. It is important to note that all child devices are independent of one another. 
+# The original K-Means algorithm is only trained on a given dataset once. There is no update method. In this approach, we split a study’s dataset 75:25. 75% of a study’s data is trained using normal K-means as part of step 1. It is important to note that all child servers are independent of one another.
 # ### 2. Update:
 # In an attempt to resemble real-world federated learning where a new data point is generated on a device, we add an update step to base K-means. Rather than recompute k-means, we iterate through the remaining 25% of data and perform the following steps 
 # 1. Convert new data point to NumPy array
@@ -21,9 +28,9 @@
 # TransformedClusterCentre = \frac{((C_{i} * N) + X_{i})}{N+1}
 # $
 # 3. Then, the new data point is added to the cluster, and the transformed cluster centre is the new cluster centre.
-# ## Parent (Server):
-# ### 3. Aggregate & Compute weighted average:
-# Once all child devices (S) have completed their update phase, their cluster centres are added to the parent server. Then, we compute another K-means run to find the optimal number of k centroids.
+# ## Parent Server:
+# ### 3. Aggregate & Compute K-means run:
+# Once all child devices have completed their update phase, their cluster centres are added to the parent server. Then, we compute another K-means run to find the optimal number of k centroids.
 
 # In[1]:
 
@@ -149,7 +156,7 @@ for study in studies_list:
 
 # Calculating the new federated cluster centres
 parent_server.update_cluster_centre()
-# Retreving the cluster centres from Federated K-means and normal K-means    
+# Retrieving the cluster centres from Federated K-means and normal K-means    
 fkm_cluster_centres = parent_server.get_new_centres()
 km_clusters_centres = KMeans(n_clusters=3,random_state=42).fit(dim_reduced_2d.iloc[:,2:]).cluster_centers_
 

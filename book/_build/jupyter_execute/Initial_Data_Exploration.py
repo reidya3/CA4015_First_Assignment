@@ -138,41 +138,21 @@ print(f'Does index_100 contain any null values? {index_100.isnull().values.any()
 print(f'Does index_150 contain any null values? {index_150.isnull().values.any()}')
 
 
-# This finding seems to contradict the original 'many labs' paper. They suggest that there should be missing data present in the 100 trial dataframes due to incompletely received datasets (i.e., missing data for one participant in
-# Kjome et al. study, and for two participants in Wood et al. study). However, they use the word 'might', so this may have been rectified since then. We also further validated this assumption by using the R programming language as the organizers provided the datasets in the rdata format. The below screenshot confirms my assumption that no missing values are present.
-# 
-# ![absence-of-missing-values-verified-in-r](images/missing_values_verified_in_r.png)
-# 
-# 
-# Next, we calculate the basic statistics of each data set. This is a trivial step, and it is designed to increase understanding of the problem.
+# This finding seems to contradict the original 'many labs' paper. They suggest that there should be missing data present in the 100 trial dataframes due to incompletely received datasets (i.e., missing data for one participant in
+# Kjome et al. study, and for two participants in Wood et al. study). However, they use the word 'might', so this may have been rectified since then. We also further validated this assumption by using the R programming language as the organizers provided the datasets in the rdata format. The below screenshot confirms my assumption that no missing values are present.
+# 
+# ![absence-of-missing-values-verified-in-r](images/missing_values_verified_in_r.png)
+# 
+# 
+# Next, we calculate the basic statistics of each data set. This is a trivial step, and it is designed to increase understanding of the problem. For brevity, we only include basic statistics of the choices from the 95 trial study
 
 # In[13]:
 
 
 # choice dataframes
-for trial_num in [95, 100, 150]:
+for trial_num in [95]:
     print(f'choice_{trial_num} basic statistics')
     print(globals()[f'choice_{trial_num}'].describe().iloc[:,:4])
-    print('\n')
-
-
-# In[14]:
-
-
-# win dataframes
-for trial_num in [95, 100, 150]:
-    print(f'win_{trial_num} basic statistics')
-    print(globals()[f'win_{trial_num}'].describe().iloc[:,:4])
-    print('\n')
-
-
-# In[15]:
-
-
-# loss dataframes
-for trial_num in [95, 100, 150]:
-    print(f'loss_{trial_num} basic statistics')
-    print(globals()[f'loss_{trial_num}'].describe().iloc[:,:4])
     print('\n')
 
 
@@ -182,7 +162,7 @@ for trial_num in [95, 100, 150]:
 
 # Now, we perform the necessary processing steps  to 'pivot' the new data so that it  resembles the already created dataframes. Unfortunately not every subject had data present for all of the 100 trials. If a subject had incomplete data, they were removed from this investigation. As a result, we removed 1 healthy individual, 1 individual who takes heroin and 2 individuals who take amphetamine.
 
-# In[16]:
+# In[14]:
 
 
 def remove_incomplete_subjects(ahn_df):
@@ -199,7 +179,7 @@ def remove_incomplete_subjects(ahn_df):
     return ahn_df
 
 
-# In[17]:
+# In[15]:
 
 
 ahn_healthy_100 = pd.read_csv('data/IGTdata_healthy_control.txt', sep="\t")
@@ -217,7 +197,7 @@ assert ahn_amphetamine_100["subjID"].nunique() == 36
 
 # Down below, we define two helper functions that pivot and concat data.
 
-# In[18]:
+# In[16]:
 
 
 def pivot_ahn_to_many_labs(org_df, health_status, selection_type):
@@ -245,7 +225,7 @@ def pivot_ahn_to_many_labs(org_df, health_status, selection_type):
     
 
 
-# In[19]:
+# In[17]:
 
 
 def concat_ahn_to_many_labs( many_labs_df, ahn_healthy_df, ahn_heroin_df, ahn_amphetamine_df):
@@ -271,7 +251,7 @@ def concat_ahn_to_many_labs( many_labs_df, ahn_healthy_df, ahn_heroin_df, ahn_am
 # Next, we pivot the Ahn et al. data so that it follows the many labs format i.e. split by choice, win or loss.
 # The variable name of the pivoted datasets have the form:`ahn_{health_status}_{selection_type}_100`
 
-# In[20]:
+# In[18]:
 
 
 ahn_healthy_choice_100 = pivot_ahn_to_many_labs(ahn_healthy_100, 'healthy', 'deck')
@@ -291,7 +271,7 @@ ahn_healthy_choice_100.head(5)
 
 # We concat the many_labs dataframe with the dataframes provided by Ahn et al. for each type (i.e. choice, win or loss).
 
-# In[21]:
+# In[19]:
 
 
 total_choice_100 = concat_ahn_to_many_labs(choice_100,ahn_healthy_choice_100, ahn_heroin_choice_100, ahn_amphetamine_choice_100)
@@ -303,7 +283,7 @@ total_choice_100.head(5)
 # The next two cells map the health status('healthy') and study's first author to each subject in the 95 and 150 trial studies. **Note**, this was completed for 100 trial studies above in the `pivot_ahn_to_many_labs()` function .
 # 
 
-# In[22]:
+# In[20]:
 
 
 choice_95.insert(0,'health status', 'healthy')
@@ -314,7 +294,7 @@ loss_95.insert(0,'health status', 'healthy')
 loss_95.insert(0, 'study', index_95['Study'].values)
 
 
-# In[23]:
+# In[21]:
 
 
 choice_150.insert(0,'health status', 'healthy')
@@ -347,7 +327,7 @@ loss_150.insert(0, 'study', index_150['Study'].values)
 # 
 # The following code cells perform the data processing steps required to produce the visualizations. Asserts are used to test that the transformation has been performed correctly. 
 
-# In[24]:
+# In[22]:
 
 
 def get_cumulative_reward(win_df, loss_df):
@@ -371,7 +351,7 @@ def get_cumulative_reward(win_df, loss_df):
     return cum_reward
 
 
-# In[25]:
+# In[23]:
 
 
 
@@ -390,7 +370,7 @@ assert cum_reward_150.iloc[4,144] == 1800
 assert cum_reward_150.iloc[93, 10] == 300
 
 
-# In[26]:
+# In[24]:
 
 
 def visualize_cumulative_reward_by_study(cum_reward_df):
@@ -418,32 +398,32 @@ def visualize_cumulative_reward_by_study(cum_reward_df):
         plt.show(fig)
 
 
-# Visualizations of the **average sum** of the **cumulative** rewards, grouped by a 'many labs' study. Note, a green line indicates a positive end value where as a red line indicates a negative end value i.e. take home pay. Initially,we concluded that some data transformations incorrectly as our pre-conceptions were not met but ad-hoc analysis revealed no errors. However as {cite:t}`bull2015decision` notes "researchers have observed high inter-study and inter-individual variability 
+# Visualizations of the **average sum** of the **cumulative** rewards, grouped by a 'many labs' study. Note, a green line indicates a positive end value where as a red line indicates a negative end value i.e. take home pay. Initially, we concluded that some data transformations were performed incorrectly as our pre-conceptions were not met but ad-hoc analysis revealed no errors. However as {cite:t}`bull2015decision` notes "researchers have observed high inter-study and inter-individual variability 
 # in IGT performance in healthy participants.". According to {cite:p}`bechara1994insensitivity`.  healthy subjects should gradually learn to choose an approximately equal number of cards from decks C and D and avoid cards from decks A and B, assuming that they focus on the long-term monetary outcome i.e. the largest take home award . Although `Steingroever2011` and `Wetzel` follow this trend, the other studies do not. This confirms our hypothesis that healthy subjects do not exclusively focus on the long-term outcome. Instead, subjects predominantly consider a combination of gain and loss frequency choices and may be influenced by psychological differences such as impulsivity or  propensity to gambling.
 
-# In[27]:
+# In[25]:
 
 
 visualize_cumulative_reward_by_study(cum_reward_95)
 
 
-# In[28]:
+# In[26]:
 
 
 visualize_cumulative_reward_by_study(cum_reward_100[cum_reward_100['study'] != 'Ahn'])
 
 
-# In[29]:
+# In[27]:
 
 
 visualize_cumulative_reward_by_study(cum_reward_150)
 
 
-# A common held belief is that people who suffer from subsistence issues exhibit decision-making deficits. 
-# These results seem to confirm this as we observed the second lowest average cumulative reward at the end trial (i.e take home award). However, although both types of substance users exhibit similar behaviour (i.e. an initial surge followed by a decline by choosing the "bad cards")
+# A common held belief is that people who suffer from subsistence issues exhibit decision-making deficits. 
+# These results seem to confirm this as we observed the second lowest average cumulative reward at the end trial (i.e take home award). However, although both types of substance users exhibit similar behaviour (i.e. an initial surge followed by a decline by choosing the "bad cards")
 # the average heroin user tends to perform more poorly when compared to an amphetamine user. Different classes of drugs, such as stimulants and opiates might have different degree of impairment on the decision making progress.  For example, pre-cinical trails conduced by {cite:t}`stewart1984role` describe notable differences between stimulants and opiates, which exert fundamentally different behavioral effects, such that stimulants produce arousing and activating effects, whereas opiates produce mixed inhibitory and excitatory effects. Again, this is a small sample size so results have to be interrupted with caution!
 
-# In[30]:
+# In[28]:
 
 
 ahn_cum_reward = cum_reward_100[cum_reward_100['study'] == 'Ahn'].groupby(['health status']).sum()
@@ -458,25 +438,25 @@ plt.tight_layout()
 plt.show()
 
 
-# ## Data Processing
-# 
-# If we were to include every feature currently available, we would have a high dimensional dataset. K-means suffers from the 'curse of dimensionality' as the distance metric (Euclidean distance) suffers in high dimensions.  Ah-hoc analysis using a dimensailty reduction technique known as principal component analysis (discussed later on) on the 100 trial choice dataset still revealed a high number of relevant components, 36 (Kaiser-Guttman test). This motivates us to perform feature engineering and create the following columns:
-# - **health_binary:** A binary variable, 1 if the subject is healthy. Otherwise, 0
-# - **cum_reward_25:** The cumulative reward (as explained above) at trial 25. We include the cumulative reward at specified trial intervals in attempt to model the behaviour/progress of a subject when performing the task. For example, we would expect an individual that has a propensity for gambling to initially achieve well but would loose money overtime as the decks with higher wins ($100) result in a long-term net loss, while the decks with smaller wins ($50) yield a net gain 
-# - **cum_reward_50:** The cumulative reward at trial 50. 
-# - **cum_reward_75:** The cumulative reward at trial 57. 
-# - **cum_reward_100:** The cumulative reward at trial 100. 
-# - **A:** Count of the number of times card deck A ('bad deck') was picked.
-# - **B:** Count of the number of times card deck B ('bad deck') was picked.
-# - **C:** Count of the number of times card deck C ('good deck') was picked.
-# - **D:** Count of the number of times card deck D ('good deck') was picked.
-# 
-# The performance of the 'healthy' participants on IGT may have been altered by factors that varied across the included studies (e.g. fatigue due to longer trial length). In addition, the card deck count features would be influenced by trial length and could lead to clustering by study rather than my behaviour. (However, this could have ben rectified by scaling) To mitigate against these factors and allow for more accurate comparison, we restrict our investigation to a subset of the available data (many labs + Ahn et al.). This subset contains 8 investigations, 7 that use the classical 100 trials from the 'many labs' paper and the {cite:t}`ahn2014decision` study. This subset includes 629 participants (age range: 18 to 88). Of those 5 studies that had information on gender, 54% were female. 
+# ## Data Processing
+# 
+# If we were to include every feature currently available, we would have a high dimensional dataset. K-means suffers from the 'curse of dimensionality' as the distance metric (Euclidean distance) suffers in high dimensions.  Ah-hoc analysis using a dimensailty reduction technique known as principal component analysis (discussed later on) on the 100 trial choice dataset still revealed a high number of relevant components, 36 (Kaiser-Guttman test). This motivates us to perform feature engineering and create the following columns:
+# - **health_binary:** A binary variable, 1 if the subject is healthy. Otherwise, 0
+# - **cum_reward_25:** The cumulative reward (as explained above) at trial 25. We include the cumulative reward at specified trial intervals in attempt to model the behaviour/progress of a subject when performing the task. For example, we would expect an individual that has a propensity for gambling to initially achieve well but would loose money overtime as the decks with higher wins (100 dollars) result in a long-term net loss, while the decks with smaller wins (50 dollars) yield a net gain 
+# - **cum_reward_50:** The cumulative reward at trial 50. 
+# - **cum_reward_75:** The cumulative reward at trial 57. 
+# - **cum_reward_100:** The cumulative reward at trial 100. 
+# - **A:** Count of the number of times card deck A ('bad deck') was picked.
+# - **B:** Count of the number of times card deck B ('bad deck') was picked.
+# - **C:** Count of the number of times card deck C ('good deck') was picked.
+# - **D:** Count of the number of times card deck D ('good deck') was picked.
+# 
+# The performance of the 'healthy' participants on IGT may have been altered by factors that varied across the included studies (e.g. fatigue due to longer trial length). In addition, the card deck count features would be influenced by trial length and could lead to clustering by study rather than my behaviour. (However, this could have ben rectified by scaling) To mitigate against these factors and allow for more accurate comparison, we restrict our investigation to a subset of the available data (many labs + Ahn et al.). This subset contains 8 investigations, 7 that use the classical 100 trials from the 'many labs' paper and the {cite:t}`ahn2014decision` study. This subset includes 629 participants (age range: 18 to 88). Of those 5 studies that had information on gender, 54% were female. 
 # 
 
 # Engineering the card occurrence columns:
 
-# In[31]:
+# In[29]:
 
 
 card_choice_df = total_choice_100.iloc[:,2:].apply(pd.Series.value_counts, axis=1)
@@ -485,7 +465,7 @@ card_choice_df.columns = ['A','B','C','D']
 
 # Most popular card decks are B and D. This seems to contradict with the general assumption that healthy participants are only interested in long-term gain.
 
-# In[32]:
+# In[30]:
 
 
 for deck in card_choice_df.columns:
@@ -494,7 +474,7 @@ for deck in card_choice_df.columns:
 
 # Engineering the cumulative reward columns:
 
-# In[33]:
+# In[31]:
 
 
 processed_100 = cum_reward_100[['study','health status', 'trial_25','trial_50','trial_75','trial_100']]
@@ -502,7 +482,7 @@ processed_100 = cum_reward_100[['study','health status', 'trial_25','trial_50','
 
 # Engineering the healthy binary column:
 
-# In[34]:
+# In[32]:
 
 
 processed_100['health binary'] = processed_100['health status'].apply(lambda x:  1 if x =='healthy' else 0)
@@ -510,7 +490,7 @@ processed_100['health binary'] = processed_100['health status'].apply(lambda x: 
 assert processed_100[processed_100['health binary'] == 0].shape[0] == 78
 
 
-# In[35]:
+# In[33]:
 
 
 processed_100 = pd.merge(
@@ -519,11 +499,11 @@ processed_100 = pd.merge(
 processed_100.head(5)
 
 
-# ## PCA
-# 
-# Although standardization is typically used for features of incomparable units (e.g. height in cm and weight in kg), we will still standardize the choices and rewards due to k-means "isotropic" nature. In this case, if we left our variances unequal;  we would inversely putting more weight on features with high variance. In addition, we will perform <b>principal component analysis</b> due to avoid the curse of dimensionality that k-means can suffer from. The function of PCA is to reduce the dimensionality of a data set consisting of many variables correlated with each other, either heavily or lightly, while retaining the variation present in the data set to the maximum extent. 
-# 
-# The same is done by transforming the variables (i.e. features) to a new set of variables, which are known as the <b>principal components</b>, ordered such that the retention of variation present decreases as we move down the order of components. 
+# ### PCA
+# 
+# Although standardization is typically used for features of incomparable units (e.g. height in cm and weight in kg), we will still standardize the choices and rewards due to k-means "isotropic" nature. In this case, if we left our variances unequal;  we would inversely putting more weight on features with high variance. In addition, we will perform <b>principal component analysis</b> due to avoid the curse of dimensionality that k-means can suffer from. The function of PCA is to reduce the dimensionality of a data set consisting of many variables correlated with each other, either heavily or lightly, while retaining the variation present in the data set to the maximum extent. 
+# 
+# The same is done by transforming the variables (i.e. features) to a new set of variables, which are known as the <b>principal components</b>, ordered such that the retention of variation present decreases as we move down the order of components. 
 # 
 
 # The procedure of PCA involves five steps: <br>
@@ -544,7 +524,7 @@ processed_100.head(5)
 # 
 # The standard deviation should equal 1 after standardization
 
-# In[36]:
+# In[34]:
 
 
 labeled_processed_100 = processed_100.loc[:,['study', 'health status']]
@@ -556,7 +536,7 @@ assert np.std(scaled_processed_100) == 1
 
 # We will use the `PCA` function supplied by the `Scikit-learn` library for dimensionality reduction.  But how do we find the optimal number of components? Which eigenvalues are important?  The scree plot below describes the cumulative explained variance for each component. We reach 80% explained variance at the three component mark.
 
-# In[37]:
+# In[35]:
 
 
 pca = PCA().fit(scaled_processed_100)
@@ -571,7 +551,7 @@ plt.show()
 # Jolliffe relaxes this criterium and suggest to retain eigenvalues greater than 0.7. 
 # 
 
-# In[38]:
+# In[36]:
 
 
 kasier_criterion = np.where(pca.explained_variance_ > 1)[-1][-1]
@@ -588,7 +568,7 @@ print(
 
 # Finally, we fit the `pca` model with the dataframes containing top 2 and 3 components , apply the dimensionality reduction on those respective dataframe and save the resulting dataframes.
 
-# In[39]:
+# In[37]:
 
 
 pca_2d = PCA(n_components=2)
@@ -600,7 +580,7 @@ dim_reduced_2d = pd.merge(
 dim_reduced_2d.to_csv("data/dim_reduced_2d.tsv", sep="\t", index=False)
 
 
-# In[40]:
+# In[38]:
 
 
 pca_3d = PCA(n_components=3)
