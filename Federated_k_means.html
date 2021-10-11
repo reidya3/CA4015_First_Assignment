@@ -285,7 +285,7 @@
 <p>In this section, we attempt to form a federated k-means algorithm to preserve the privacy of the individual labs.</p>
 <p><strong>Federated learning:</strong>  First introduced by Google, federated learning trains an algorithm across multiple decentralized servers/devices with local data samples. There is <strong>no</strong> data sharing between servers. This is in contrast to the standard way of training a machine learning algorithm where all of the training dataset is uploaded to one server. This technique address critical issues relating to data privacy and security</p>
 <div class="figure align-default" id="workflow-fkm">
-<img alt="../images/Federated_K-Means.png" src="../images/Federated_K-Means.png" />
+<img alt="images/Federated_K-Means.png" src="images/Federated_K-Means.png" />
 <p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Workflow of Federated K-means <em>Note: child servers 2 to 7 are obscured</em></span><a class="headerlink" href="#workflow-fkm" title="Permalink to this image">¶</a></p>
 </div>
 <div class="section" id="child-server-study">
@@ -445,7 +445,7 @@ TransformedClusterCentre = \frac{((C_{i} * N) + X_{i})}{N+1}
 
 <span class="c1"># Calculating the new federated cluster centres</span>
 <span class="n">parent_server</span><span class="o">.</span><span class="n">update_cluster_centre</span><span class="p">()</span>
-<span class="c1"># Retreving the cluster centres from Federated K-means and normal K-means    </span>
+<span class="c1"># Retrieving the cluster centres from Federated K-means and normal K-means    </span>
 <span class="n">fkm_cluster_centres</span> <span class="o">=</span> <span class="n">parent_server</span><span class="o">.</span><span class="n">get_new_centres</span><span class="p">()</span>
 <span class="n">km_clusters_centres</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dim_reduced_2d</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:])</span><span class="o">.</span><span class="n">cluster_centers_</span>
 </pre></div>
