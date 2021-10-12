@@ -282,7 +282,7 @@
     <li>View the statistical details of the data</li>
     <li>Add additional data from the {cite:t}`ahn2014decision` study as we are interested in clustering unhealthy individuals</li>
     <li>Perform data visualization to improve our understanding of the data</li>
-    <li>Feature Engineer</li>
+    <li>Feature engineer</li>
     <li>Perform transformations (standardization, PCA)</li>
 </ol>
 <p>If you are viewing this as an HTML page, please use the content toolbar to the right for quick access to different sections.</p>
@@ -1497,11 +1497,16 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </div>
 <div class="section" id="pca">
 <h3>PCA<a class="headerlink" href="#pca" title="Permalink to this headline">¶</a></h3>
-<p>Although standardization is typically used for features of incomparable units (e.g. height in cm and weight in kg), we will still standardize the choices and rewards due to k-means “isotropic” nature. In this case, if we left our variances unequal;  we would inversely putting more weight on features with high variance. In addition, we will perform <b>principal component analysis</b> due to avoid the curse of dimensionality that k-means can suffer from. The function of PCA is to reduce the dimensionality of a data set consisting of many variables correlated with each other, either heavily or lightly, while retaining the variation present in the data set to the maximum extent.</p>
+<p>Standardization is typically used for features of incomparable units. E.g. card deck choice (count) and monetary gain
+(in dollars). We will also standardize the newly engineered features due to k-means “isotropic” nature. In this case, if
+we left our variances unequal; we would inversely be putting more weight on features with high variance. In addition, we
+will perform principal component analysis due to avoid the curse of dimensionality that k-means can suffer from. The
+function of PCA is to reduce the dimensionality of a data set consisting of many variables correlated with each other,
+either heavily or lightly, while retaining the variation present in the data set to the maximum extent.</p>
 <p>The same is done by transforming the variables (i.e. features) to a new set of variables, which are known as the <b>principal components</b>, ordered such that the retention of variation present decreases as we move down the order of components.</p>
 <p>The procedure of PCA involves five steps: <br></p>
 <ol class="simple">
-<li><p>Standardise the data <br></p></li>
+<li><p>Standardize the data <br></p></li>
 <li><p>Compute covariance matrix <br></p></li>
 <li><p>Identify the eigenvalues and eigenvectors of the covariance matrix and order them according to the eigenvalues <br></p></li>
 <li><p>Compute a feature vector <br></p></li>
